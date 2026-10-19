@@ -26,6 +26,13 @@ async function sagirdMelumati(code) {
   return r.json();
 }
 
+/* Səviyyə testinin nəticəsi: start – başlanğıc mövzu (1–28, 29 = hamısını bilir), log – [mövzu, tapşırıq, düz(1)/səhv(0)] */
+async function seviyyeGonder(code, start, log) {
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'level', s: code, start: start, log: log }) });
+  if (!r.ok) throw new Error('http ' + r.status);
+  return r.json();
+}
+
 async function testiGonder(code, ans, hints) {
   // text/plain: brauzer əlavə yoxlama sorğusu göndərmir
   const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'submit', s: code, ans: ans, hints: hints }) });

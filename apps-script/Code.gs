@@ -5,6 +5,7 @@
  *  - 학생 명단(Şagirdlər)에서 학생마다 고유 코드·개인 링크·왓츠앱 보내기 링크를 만듭니다.
  *  - 학습지 사이트(test.html)가 보낸 시험 답안을 여기서 채점해 결과(Nəticələr) 탭에 저장합니다.
  *  - 학생당 1번만 저장되고, 저장되는 순간 선생님 텔레그램으로 알림을 보냅니다.
+ *  - 레벨테스트(Səviyyə testi) 결과로 학생마다 시작 단원을 정하고, 선생님이 J칸에서 바꿀 수 있습니다.
  *
  * 개인정보(생년월일, 전화번호)는 이 시트 안에만 있고, 사이트에는 학생 이름만 전달됩니다.
  */
@@ -13,11 +14,15 @@
 const SH_STUDENTS = 'Şagirdlər';
 const SH_RESULTS = 'Nəticələr';
 const SH_SETTINGS = 'Ayarlar';
+const SH_LEVEL = 'Səviyyə';
 const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
-const C = { NAME: 1, BIRTH: 2, PHONE: 3, CODE: 4, LINK: 5, WA: 6, STATUS: 7, DATE: 8 };
-const STUDENT_HEADERS = ['Ad (이름)', 'Doğum tarixi (생년월일)', 'Valideyn telefonu (부모 전화)', 'Kod (코드)', 'Şəxsi link (개인 링크)', 'WhatsApp (보내기)', 'Test (테스트)', 'Test tarixi (날짜)'];
+const C = { NAME: 1, BIRTH: 2, PHONE: 3, CODE: 4, LINK: 5, WA: 6, STATUS: 7, DATE: 8, LV_START: 9, LV_DATE: 10, LV_RETRY: 11 };
+const NCOL = 11;
+const STUDENT_HEADERS = ['Ad (이름)', 'Doğum tarixi (생년월일)', 'Valideyn telefonu (부모 전화)', 'Kod (코드)', 'Şəxsi link (개인 링크)', 'WhatsApp (보내기)', 'Test (테스트)', 'Test tarixi (날짜)',
+  'Başlanğıc mövzu (시작 단원)', 'Səviyyə tarixi (레벨테스트 날짜)', 'Yenidən (레벨테스트 재응시 허용)'];
+const LEVEL_HEADERS = ['Tarix (날짜)', 'Kod', 'Ad (이름)', 'Doğum tarixi', 'Başlanğıc mövzu (시작 단원)', 'Mövzu adı', 'Bölmələr (단계별)', 'Düz / sual (정답 수)', 'Cavablar (기록)'];
 const RESULT_HEADERS = ['Tarix (날짜)', 'Kod', 'Ad (이름)', 'Doğum tarixi', 'Bal (점수)', 'Nəticə (등급)', 'A', 'B', 'C', 'D', 'E', 'Səhv (틀린 문제)', 'Kömək (힌트 사용)', 'Cavablar (답안 기록)'];
 
 /* ---------------- 시험 정답 (test.html 의 20문제와 같은 순서) ---------------- */
@@ -30,6 +35,11 @@ const KEY = [
 ];
 const AREAS = ['A', 'B', 'C', 'D', 'E'];
 const OVERALL = [[18, 'Əla'], [14, 'Yaxşı'], [10, 'Orta'], [0, 'Əlavə dəstək lazımdır']];
+
+/* ---------------- 레벨테스트 (index.html 의 SECTIONS 와 같은 단계) ---------------- */
+const LV_ALL = 29; // 29 = 모든 단계 통과
+const LV_SECTIONS = [[1, 2], [3, 8], [9, 12], [13, 18], [19, 23], [24, 28]];
+const TOPICS = ["Əşyanın yeri", "Əşyanın əlaməti", "10-a qədər sayma", "0, 1 və 2 ədədləri", "3, 4 və 5 ədədləri", "6, 7 və 8 ədədləri", "9 və 10 ədədləri", "Sıra sayları", "Azdır, çoxdur", "Ədədlərin müqayisəsi", "Ədəd oxu", "Sıralama", "Ədəd üçlüyü", "Əlavə etmək, artırmaq", "Ədədlərin toplanması", "Ədəd oxu üzərində toplama", "Üç toplananlı ifadələr", "Toplamanın digər üsulları", "Azaltmaq, çıxmaq", "Ədədlərin çıxılması", "Ədəd oxu üzərində çıxma", "Toplama və çıxmanın əlaqəsi", "Məchulun tapılması", "20-yə qədər sayma", "İrəli və geri sayma", "Onluq və təklik", "Ədədlərin müqayisəsi (20-yə qədər)", "Sıralama (20-yə qədər)"];
 
 /* ---------------- 시트 메뉴 ---------------- */
 function onOpen() {
@@ -51,12 +61,23 @@ function setup() {
     st.getRange('B:C').setNumberFormat('@'); // 생년월일·전화번호를 글자 그대로 저장
     st.setColumnWidths(1, 8, 150);
   }
+  // 레벨테스트 칸 (I~K) — 예전에 만든 시트에도 추가됩니다
+  if (!st.getRange(1, C.LV_START).getValue()) {
+    st.getRange(1, C.LV_START, 1, 3).setValues([STUDENT_HEADERS.slice(C.LV_START - 1, NCOL)]).setFontWeight('bold').setBackground('#FFE2C2');
+    st.setColumnWidths(C.LV_START, 3, 170);
+  }
+  st.getRange(2, C.LV_RETRY, Math.max(1, st.getMaxRows() - 1), 1).insertCheckboxes();
+  let lv = ss.getSheetByName(SH_LEVEL) || ss.insertSheet(SH_LEVEL, 2);
+  if (!lv.getRange(1, 1).getValue()) {
+    lv.getRange(1, 1, 1, LEVEL_HEADERS.length).setValues([LEVEL_HEADERS]).setFontWeight('bold').setBackground('#FFE2C2');
+    lv.setFrozenRows(1);
+  }
   let rs = ss.getSheetByName(SH_RESULTS) || ss.insertSheet(SH_RESULTS, 1);
   if (!rs.getRange(1, 1).getValue()) {
     rs.getRange(1, 1, 1, RESULT_HEADERS.length).setValues([RESULT_HEADERS]).setFontWeight('bold').setBackground('#E3F7EA');
     rs.setFrozenRows(1);
   }
-  let se = ss.getSheetByName(SH_SETTINGS) || ss.insertSheet(SH_SETTINGS, 2);
+  let se = ss.getSheetByName(SH_SETTINGS) || ss.insertSheet(SH_SETTINGS, 3);
   if (!se.getRange(1, 1).getValue()) {
     se.getRange(1, 1, 3, 3).setValues([
       ['SAYT_LINKI', 'https://skyazery.github.io/riyaziyyat/', '학습지 사이트 주소'],
@@ -66,7 +87,8 @@ function setup() {
     se.getRange('A1:A3').setFontWeight('bold');
     se.setColumnWidth(2, 380);
   }
-  SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.');
+  SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.\n\n' +
+    '레벨테스트: I칸(시작 단원)은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자(1~28)를 직접 바꾸면 그 단원부터 시작하게 되고, 비우면 레벨테스트를 다시 봅니다. K칸에 체크하면 한 번 더 볼 수 있습니다.');
 }
 
 /* ---------------- 학생 링크 만들기 ---------------- */
@@ -75,7 +97,7 @@ function makeLinks() {
   const site = setting_('SAYT_LINKI') || 'https://skyazery.github.io/riyaziyyat/';
   const last = st.getLastRow();
   if (last < 2) { SpreadsheetApp.getUi().alert('Şagirdlər 탭 2번째 줄부터 학생을 적어 주세요.'); return; }
-  const rows = st.getRange(2, 1, last - 1, 8).getValues();
+  const rows = st.getRange(2, 1, last - 1, NCOL).getValues();
   const used = {};
   rows.forEach(r => { if (r[C.CODE - 1]) used[String(r[C.CODE - 1])] = true; });
   let made = 0;
@@ -96,7 +118,8 @@ function makeLinks() {
     const cell = st.getRange(row, C.WA);
     if (phone) {
       const msg = 'Salam! Bu, ' + name + ' üçün riyaziyyat tapşırıqlarının şəxsi linkidir:\n' + link +
-        '\n\nTapşırıqları istədiyiniz qədər həll edə bilərsiniz. Ən sonda olan yoxlama testi isə yalnız bir dəfə edilir.' +
+        '\n\nLinki ilk dəfə açanda qısa səviyyə testi olacaq – uşağın hansı mövzudan başlamalı olduğunu göstərir.' +
+        '\nTapşırıqları istədiyiniz qədər həll edə bilərsiniz. Ən sonda olan yoxlama testi isə yalnız bir dəfə edilir.' +
         '\nNəticəni sonra da bu linklə görə bilərsiniz. Xahiş edirik, linki başqası ilə paylaşmayın.';
       const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
       cell.setRichTextValue(SpreadsheetApp.newRichTextValue().setText('💬 Göndər').setLinkUrl(url).build());
@@ -134,6 +157,7 @@ function doGet(e) {
 function doPost(e) {
   let body = {};
   try { body = JSON.parse(e.postData.contents); } catch (err) { return json_({ ok: false, error: 'bad' }); }
+  if (body.action === 'level') return saveLevel_(body);
   if (body.action !== 'submit') return json_({ ok: false, error: 'bad' });
   const code = cleanCode_(body.s);
   const lock = LockService.getScriptLock();
@@ -172,9 +196,66 @@ function doPost(e) {
 function studentInfo_(code) {
   const f = findStudent_(code);
   if (!f) return { ok: false, error: 'notfound' };
-  const out = { ok: true, name: f.name, done: f.status === DONE };
+  const out = { ok: true, name: f.name, done: f.status === DONE, level: levelInfo_(f) };
   if (out.done) out.result = lastResult_(code);
   return out;
+}
+
+/* ---------------- 레벨테스트 저장 ---------------- */
+function levelInfo_(f) {
+  const start = parseInt(f.lvStart, 10);
+  const ok = start >= 1 && start <= LV_ALL;
+  return { done: ok, start: ok ? start : null, date: fmtBirth_(f.lvDate), retry: f.lvRetry === true };
+}
+
+function saveLevel_(body) {
+  const code = cleanCode_(body.s);
+  const start = parseInt(body.start, 10);
+  if (!(start >= 1 && start <= LV_ALL)) return json_({ ok: false, error: 'bad' });
+  const log = (Array.isArray(body.log) ? body.log : []).slice(0, 12)
+    .map(e => (Array.isArray(e) ? [Number(e[0]) || 0, Number(e[1]) || 0, e[2] ? 1 : 0] : null))
+    .filter(e => e && e[0] >= 1 && e[0] <= TOPICS.length);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const found = findStudent_(code);
+    if (!found) return json_({ ok: false, error: 'notfound' });
+    const cur = levelInfo_(found);
+    if (cur.done && !cur.retry) return json_({ ok: true, already: true, level: cur });
+    const now = new Date();
+    const tz = Session.getScriptTimeZone();
+    const dateStr = Utilities.formatDate(now, tz, 'dd.MM.yyyy');
+    const birth = fmtBirth_(found.birth);
+    const steps = levelSteps_(log);
+    const right = log.filter(e => e[2]).length;
+    const topicName = start >= LV_ALL ? 'Hamısı keçildi (모든 단원 통과)' : TOPICS[start - 1];
+    sheet_(SH_LEVEL).appendRow([
+      Utilities.formatDate(now, tz, 'yyyy-MM-dd HH:mm'), code, found.name, birth, start >= LV_ALL ? 'Hamısı' : start, topicName,
+      steps, right + ' / ' + log.length, JSON.stringify(log)
+    ]);
+    const st = sheet_(SH_STUDENTS);
+    st.getRange(found.row, C.LV_START).setValue(start);
+    st.getRange(found.row, C.LV_DATE).setValue(dateStr);
+    st.getRange(found.row, C.LV_RETRY).setValue(false);
+    SpreadsheetApp.flush();
+    sendTelegram_('🧭 레벨테스트 · ' + found.name + (birth ? ' (' + birth + ')' : '') + '\n' +
+      (start >= LV_ALL ? '모든 단계 통과 → 복습 후 최종 테스트 가능' : '시작 단원: Mövzu ' + start + '. ' + topicName) + '\n' +
+      steps + '\n정답 ' + right + ' / ' + log.length + (cur.done ? ' · 재응시' : ''));
+    return json_({ ok: true, level: { done: true, start: start, date: dateStr, retry: false } });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// 단계별 결과: 예) "1✓ 2✓ 3✗" (단계 = 사이트의 6개 bölmə)
+function levelSteps_(log) {
+  const res = {};
+  log.forEach(e => {
+    const i = LV_SECTIONS.findIndex(r => e[0] >= r[0] && e[0] <= r[1]);
+    if (i < 0) return;
+    res[i] = (res[i] === undefined ? true : res[i]) && !!e[2];
+  });
+  return Object.keys(res).map(Number).sort((a, b) => a - b).map(i => (i + 1) + (res[i] ? '✓' : '✗')).join(' ') || '-';
 }
 
 function findStudent_(code) {
@@ -182,10 +263,12 @@ function findStudent_(code) {
   const st = sheet_(SH_STUDENTS);
   const last = st.getLastRow();
   if (last < 2) return null;
-  const rows = st.getRange(2, 1, last - 1, 8).getValues();
+  const rows = st.getRange(2, 1, last - 1, NCOL).getValues();
   for (let i = 0; i < rows.length; i++) {
     if (String(rows[i][C.CODE - 1]).trim().toUpperCase() === code) {
-      return { row: i + 2, name: String(rows[i][C.NAME - 1]).trim(), birth: rows[i][C.BIRTH - 1], status: String(rows[i][C.STATUS - 1]).trim() };
+      const r = rows[i];
+      return { row: i + 2, name: String(r[C.NAME - 1]).trim(), birth: r[C.BIRTH - 1], status: String(r[C.STATUS - 1]).trim(),
+        lvStart: r[C.LV_START - 1], lvDate: r[C.LV_DATE - 1], lvRetry: r[C.LV_RETRY - 1] };
     }
   }
   return null;
