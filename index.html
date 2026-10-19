@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
 <link rel="stylesheet" href="base.css">
+<script src="sagird.js"></script>
 <style>
 :root{color-scheme:light}
 body{margin:0}
@@ -26,6 +27,9 @@ a{color:inherit}
 .tcard.done .num{background:var(--good-soft);color:var(--good)}
 .testcard{display:flex;align-items:center;gap:14px;text-decoration:none;background:linear-gradient(135deg,#5145E6,#7A6BFF);color:#fff;border-radius:24px;padding:18px;box-shadow:0 6px 0 #3A30B8}
 .testcard .ic{font-size:40px}
+.testcard.lock{background:var(--card);color:var(--muted);border:2px dashed var(--edge);box-shadow:none}
+.testcard.done{background:linear-gradient(135deg,#2F9E5B,#45C27A);box-shadow:0 6px 0 #1F7A43}
+.hello{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;padding:12px 16px}
 .testcard b{font-size:20px;font-weight:900;display:block}
 .testcard span{font-size:14px;opacity:.9;font-weight:700}
 .concept .paper img{max-height:340px}
@@ -69,15 +73,21 @@ const totalStars=()=>Object.values(P.t).reduce((s,v)=>s+(v.stars||0),0);
 
 /* ---------- home ---------- */
 function home(){
-  app.append(brand(totalStars()),
-    h('a',{class:'testcard',href:'test.html'},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'20 tapşırıq · valideyn üçün hesabat'))));
+  app.append(brand(totalStars()));
+  if(SAGIRD&&SAGIRD.name)app.append(h('div',{class:'card hello'},'👋 Salam, '+SAGIRD.name+'!'));
   SECTIONS.forEach(([name,a,b],si)=>{
     app.append(h('p',{class:'sec-title'},(si+1)+'. '+name));
     const g=h('div',{class:'topics'});
     for(let n=a;n<=b;n++){const t=D.topics[n-1],pr=P.t[n];
       g.append(h('a',{class:'tcard'+(pr&&pr.done?' done':''),href:'#t'+n},h('span',{class:'num'},pr&&pr.done?'✓':String(n)),h('b',{},ICON[n]+' '+t.title),h('small',{},pr?('⭐ '+(pr.stars||0)+' / '+autoCount(t)):'Başla →')))}
     app.append(g)});
+  app.append(h('p',{class:'sec-title'},'🏆 Sonda'),testCard());
   app.append(h('footer',{},'Mövzular Azərbaycan Respublikasının «Riyaziyyat 1» dərsliyinin (1-ci hissə) ardıcıllığı ilə hazırlanıb.'));
+}
+function testCard(){
+  if(!KOD)return h('div',{class:'testcard lock'},h('span',{class:'ic'},'🔒'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Test yalnız müəllimin göndərdiyi şəxsi linklə açılır.')));
+  if(SAGIRD&&SAGIRD.done)return h('a',{class:'testcard done',href:'test.html?s='+KOD},h('span',{class:'ic'},'📋'),h('div',{},h('b',{},'Testin nəticəsi'),h('span',{},'Valideyn hesabatına bax')));
+  return h('a',{class:'testcard',href:'test.html?s='+KOD},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Bütün mövzulardan sonra · yalnız 1 dəfə · 20 tapşırıq')));
 }
 const autoCount=t=>t.problems.filter(p=>p.check).length;
 
@@ -165,6 +175,9 @@ function setBar(k,label,fn,kind,disabled){
 function render(){stop();app.replaceChildren();bar.hidden=true;const m=location.hash.match(/^#t(\d+)$/);if(m&&D.topics[m[1]-1])topic(+m[1]);else home()}
 function go(){render();scrollTo(0,0)}
 addEventListener('hashchange',()=>{st=null;step=0;go()});
+const KOD=sagirdKodu();
+let SAGIRD=KOD?{name:sagirdAdiYaddas(KOD),done:false}:null;
+if(KOD&&API_URL)sagirdMelumati(KOD).then(r=>{if(r&&r.ok){SAGIRD={name:r.name,done:!!r.done};sagirdAdiYaddas(KOD,r.name);if(D&&!location.hash)render()}}).catch(()=>{});
 Promise.all([fetch('data/topics.json').then(r=>r.json()),fetch('data/audio.json').then(r=>r.json()).catch(()=>[])]).then(([d,a])=>{D=d;a.forEach(id=>AUD[id]=1);go()}).catch(()=>{app.replaceChildren(h('p',{class:'muted'},'Məlumat yüklənmədi. Səhifəni yeniləyin.'))});
 </script>
 </body>
