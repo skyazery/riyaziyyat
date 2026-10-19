@@ -121,11 +121,13 @@ function topic(n){
     h('div',{class:'prog'},h('div',{class:'lbl'},h('span',{},'Mövzu '+n+'. '+T.title),h('span',{},lbl)),h('div',{class:'track'},h('i',{style:'width:'+Math.max(4,step/(total+1)*100)+'%'}))));
   if(step===0)conceptView(); else if(step<=total)problemView(T.problems[step-1],step-1); else doneView(n);
 }
+let lastAuto=null;
 function teacher(text,aud,tag){
   foxEl=h('div',{class:'fox','aria-hidden':'true'},'🦊');
   vEl=audioUrl(aud)?h('button',{class:'vbtn',onclick(){player&&!player.paused?stop():play(aud)}},'🔊 Dinlə'):null;
   const auto=audioUrl(aud)?h('button',{class:'auto'+(P.sound?'':' off'),onclick(){P.sound=!P.sound;save();auto.className='auto'+(P.sound?'':' off');auto.lastChild.textContent=P.sound?'Avtomatik səs: açıq':'Avtomatik səs: bağlı';if(!P.sound)stop()}},h('i'),P.sound?'Avtomatik səs: açıq':'Avtomatik səs: bağlı'):null;
-  if(P.sound&&audioUrl(aud))setTimeout(()=>play(aud),300);
+  const akey=location.hash+'|'+step+'|'+aud;
+  if(P.sound&&audioUrl(aud)&&akey!==lastAuto){lastAuto=akey;setTimeout(()=>play(aud),300)}
   return h('div',{class:'card teach'},foxEl,h('div',{class:'tag'},h('b',{},'Müəllim oxuyur'),h('span',{},tag)),h('h2',{},text),(vEl||auto)?h('div',{class:'voice'},vEl,auto):null);
 }
 function conceptView(){
@@ -242,7 +244,7 @@ function doneView(n){
     h('p',{},'İlk cəhddə düzgün: ⭐ '+stars+' / '+auto),
     h('p',{class:'muted'},stars>=auto*0.7?'Əla iş! Növbəti mövzuya keçə bilərsən.':'Yaxşı çalışdın! Bu mövzunu bir də təkrar etmək faydalı olar.'),
     n<D.topics.length?h('a',{class:'big',href:'#t'+(n+1),style:'text-decoration:none;display:block'},'Növbəti mövzu →'):null,
-    h('button',{class:'sec',onclick(){st=null;step=0;go()}},'🔄 Mövzunu təkrarla'),
+    h('button',{class:'sec',onclick(){st=null;step=0;lastAuto=null;go()}},'🔄 Mövzunu təkrarla'),
     h('a',{class:'backlink',href:'#'},'← Bütün mövzular')));
 }
 function setBar(k,label,fn,kind,disabled){
@@ -254,7 +256,7 @@ function setBar(k,label,fn,kind,disabled){
 /* ---------- router ---------- */
 function render(){stop();app.replaceChildren();bar.hidden=true;const m=location.hash.match(/^#t(\d+)$/);if(m&&D.topics[m[1]-1])topic(+m[1]);else home()}
 function go(){render();scrollTo(0,0)}
-addEventListener('hashchange',()=>{st=null;step=0;go()});
+addEventListener('hashchange',()=>{st=null;step=0;lastAuto=null;go()});
 const KOD=sagirdKodu();
 let SAGIRD=KOD?{name:sagirdAdiYaddas(KOD),done:false}:null;
 if(KOD&&API_URL)sagirdMelumati(KOD).then(r=>{if(r&&r.ok){SAGIRD={name:r.name,done:!!r.done};sagirdAdiYaddas(KOD,r.name);if(D&&!location.hash)render()}}).catch(()=>{});
