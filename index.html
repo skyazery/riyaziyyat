@@ -40,6 +40,25 @@ a{color:inherit}
 .self button.on{border-color:var(--good);background:var(--good-soft);color:var(--good)}
 .donebox{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:26px 18px}
 .donebox .big{max-width:420px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:12px}
+.opts.few{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.opt{position:relative;background:#fff;border:4px solid #E3E6EF;border-radius:20px;padding:8px;min-height:84px;display:grid;place-items:center;font-size:40px;font-weight:900;color:#1F2433;box-shadow:0 4px 0 #E3E6EF;cursor:pointer;font-family:inherit}
+.opt img{max-width:100%;max-height:130px;object-fit:contain;pointer-events:none}
+.opt.sel{border-color:#F0A020;box-shadow:0 0 0 5px #FFE2A6;transform:translateY(-2px)}
+.opt.right{border-color:var(--good);background:#E6F6EC;box-shadow:0 0 0 5px #BFE8CF}
+.opt.wrong{border-color:var(--bad);background:#FDECEC}
+.opt:disabled{cursor:default}
+.opt .badge{position:absolute;top:-12px;left:-12px;width:38px;height:38px;border-radius:50%;background:#F0A020;color:#fff;font-size:22px;display:grid;place-items:center;box-shadow:0 2px 0 #C47F10}
+.mrows{display:flex;flex-direction:column;gap:12px}
+.mrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;background:var(--chip);border-radius:20px;padding:10px}
+.mrow .lft{background:#fff;border-radius:16px;padding:6px;flex:1 1 180px;display:grid;place-items:center}
+.mrow .lft img{max-height:110px;max-width:100%}
+.mrow .nums{display:flex;gap:8px}
+.mrow .opt{min-height:64px;width:64px;font-size:32px;padding:0}
+.dframe{box-sizing:border-box;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:440px;width:100%;margin:0 auto;background:#fff;border-radius:20px;padding:12px;border:3px solid #E3E6EF}
+.dcell{aspect-ratio:1;border-radius:50%;border:4px dashed #B8BDD0;background:#fff;cursor:pointer;padding:0}
+.dcell.on{background:var(--primary);border:4px solid var(--primary)}
+.dcount{text-align:center;font-size:30px;font-weight:900}
 .paperhint{font-size:14px;font-weight:800;color:var(--muted);text-align:center}
 .backlink{display:inline-flex;align-items:center;gap:6px;font-weight:900;text-decoration:none;color:var(--muted);padding:6px 4px}
 footer{font-size:12.5px;color:var(--muted);text-align:center;padding:10px}
@@ -89,7 +108,7 @@ function testCard(){
   if(SAGIRD&&SAGIRD.done)return h('a',{class:'testcard done',href:'test.html?s='+KOD},h('span',{class:'ic'},'📋'),h('div',{},h('b',{},'Testin nəticəsi'),h('span',{},'Valideyn hesabatına bax')));
   return h('a',{class:'testcard',href:'test.html?s='+KOD},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Bütün mövzulardan sonra · yalnız 1 dəfə · 20 tapşırıq')));
 }
-const autoCount=t=>t.problems.filter(p=>p.check).length;
+const autoCount=t=>t.problems.filter(p=>p.check||p.web).length;
 
 /* ---------- topic ---------- */
 let T=null,step=0,st=null;
@@ -116,8 +135,10 @@ function conceptView(){
 function problemView(p,k){
   const c=p.check, done=st.first[k]!==undefined||st.shown[k];
   app.append(teacher(p.ins,p.audio,'Tapşırıq '+(k+1)));
-  const task=h('div',{class:'card task pop'},h('div',{class:'paper'},h('img',{src:p.img,alt:''})));
+  const w=p.web,src=w?w.stem:p.img;
+  const task=h('div',{class:'card task pop'},src?h('div',{class:'paper'},h('img',{src,alt:''})):null);
   app.append(task);
+  if(w){webView(p,k,task);return}
   if(c){
     let a=st.ans[k]||(st.ans[k]=c.slots.map(()=>null)); let active=Math.max(0,a.indexOf(null));
     const solved=st.first[k]!==undefined&&a.every((v,j)=>String(v)===String(c.slots[j]));
@@ -152,6 +173,65 @@ function problemView(p,k){
     task.append(r);
     setBar(k,'Növbəti →',next,'go');
   }
+}
+/* ---------- tap answers: choice, multi, order, match, dots ---------- */
+function webView(p,k,task){
+  const w=p.web,m=w.mode;
+  const area=h('div',{class:'task'});task.append(area);
+  const init={choice:null,multi:[],order:[],match:(w.left||[]).map(()=>null),dots:Array(10).fill(false)}[m];
+  let a=st.ans[k]!==undefined?st.ans[k]:(st.ans[k]=JSON.parse(JSON.stringify(init)));
+  const same=(x,y)=>JSON.stringify(x)===JSON.stringify(y);
+  const isOk=()=>m==='choice'?a===w.ans:m==='multi'?same([...a].sort((x,y)=>x-y),w.ans):m==='order'?same(a,w.ans):m==='match'?same(a,w.ans):a.filter(Boolean).length===w.n;
+  const set=v=>{st.ans[k]=a=v;draw()};
+  draw();
+  function draw(){
+  area.replaceChildren();
+  const solved=st.first[k]!==undefined&&isOk(), shown=!!st.shown[k], locked=solved||shown;
+  const optEl=(o,j,cls,fn)=>h('button',{class:'opt'+cls,disabled:locked,onclick:fn},o.img?h('img',{src:o.img,alt:''}):o.t);
+  let hint;
+  if(m==='choice'||m==='multi'||m==='order'){
+    hint=m==='choice'?'Düzgün cavaba toxun:':m==='multi'?'Uyğun olanların hamısına toxun:':'Heyvanlara sıra ilə toxun: 1-ci, 2-ci, 3-cü yer.';
+    const box=h('div',{class:'opts'+(w.opts.length<=3?' few':'')});
+    w.opts.forEach((o,j)=>{
+      let cls='';const pos=m==='order'?a.indexOf(j):-1;
+      const sel=m==='choice'?a===j:m==='multi'?a.includes(j):pos>=0;
+      const good=m==='choice'?w.ans===j:m==='multi'?w.ans.includes(j):false;
+      if(sel)cls+=' sel';
+      if(locked&&m!=='order'){if(good)cls+=' right';else if(sel)cls+=' wrong'}
+      const b=optEl(o,j,cls,()=>{
+        if(m==='choice')set(j);
+        else if(m==='multi')set(a.includes(j)?a.filter(x=>x!==j):[...a,j]);
+        else set(pos>=0?a.slice(0,pos):[...a,j]);
+      });
+      const badge=m==='order'?(locked&&shown?w.ans.indexOf(j)+1:pos>=0?pos+1:0):0;
+      if(badge)b.append(h('span',{class:'badge'},String(badge)));
+      box.append(b)});
+    area.append(h('p',{class:'paperhint'},hint),box);
+  }else if(m==='match'){
+    hint='Hər qrupu say və onun ədədinə toxun:';
+    const rows=h('div',{class:'mrows'});
+    w.left.forEach((L,i)=>{const nums=h('div',{class:'nums'});
+      w.right.forEach((t,j)=>{let cls='';if(a[i]===j)cls+=' sel';if(locked){if(w.ans[i]===j)cls+=' right';else if(a[i]===j)cls+=' wrong'}
+        nums.append(optEl({t},j,cls,()=>{const b=[...a];b[i]=j;set(b)}))});
+      rows.append(h('div',{class:'mrow'},h('div',{class:'lft'},h('img',{src:L.img,alt:''})),nums))});
+    area.append(h('p',{class:'paperhint'},hint),rows);
+  }else if(m==='dots'){
+    hint='Dairələrə toxun və rənglə:';
+    const fr=h('div',{class:'dframe'});
+    a.forEach((on,j)=>fr.append(h('button',{class:'dcell'+(on?' on':''),disabled:locked,'aria-label':'dairə',onclick(){const b=[...a];b[j]=!b[j];set(b)}})));
+    area.append(h('p',{class:'paperhint'},hint),fr,h('div',{class:'dcount'},'🔵 '+a.filter(Boolean).length));
+  }
+  if(m==='order'&&!locked&&a.length)area.append(h('button',{class:'sec',onclick(){set([])}},'⌫ Yenidən başla'));
+  if(solved)area.append(h('div',{class:'fb ok'},h('span',{},'🌟'),st.first[k]?'Əla! Düzgün cavab!':'Düzgün! Afərin, tapdın!'));
+  else if(shown)area.append(h('div',{class:'fb no'},h('span',{},'💡'),'Düzgün cavab: '+p.ans));
+  else if(st.tries[k])area.append(h('div',{class:'fb no'},h('span',{},'💪'),'Yenə cəhd et!'));
+  if(locked){setBar(k,'Növbəti →',next,'go');return}
+  const ready=m==='choice'?a!==null:m==='multi'?a.length>0:m==='order'?a.length===w.opts.length:m==='match'?a.every(v=>v!==null):a.some(Boolean);
+  setBar(k,'Cavabı yoxla ✓',()=>{const ok=isOk();st.tries[k]=(st.tries[k]||0)+1;
+    if(ok){if(st.first[k]===undefined)st.first[k]=st.tries[k]===1;chime(true);confetti()}
+    else{chime(false);if(st.tries[k]>=2){st.shown[k]=true;if(st.first[k]===undefined)st.first[k]=false}}
+    render()},'main',!ready);
+}
 }
 function next(){step++;go()}
 function doneView(n){
