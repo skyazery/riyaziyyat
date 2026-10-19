@@ -1,6 +1,6 @@
 /* Şagird idarəsi – şəxsi link və nəticələrin müəllim cədvəlinə göndərilməsi.
    API_URL: Google Apps Script "Web app" ünvanı (müəllim cədvəlində Deploy edəndən sonra yazılır). */
-const API_URL = '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxjApYNtMnXK15asxzco_qI-H9a4pqpYvlgVbNtTl8XT1ex-wXyuVJ4zFy73eh4rWZ7/exec';
 
 const SAGIRD_KEY = 'riyaziyyat-sagird';
 
