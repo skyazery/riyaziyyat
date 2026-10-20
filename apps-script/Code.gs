@@ -219,7 +219,7 @@ function doPost(e) {
     st.getRange(found.row, bk.col.DATE).setValue(dateStr);
     SpreadsheetApp.flush();
     notify_(bk, found.name, birth, sc, hints.length);
-    return json_({ ok: true, name: found.name, done: true, result: { ans: ans, hints: hints, date: dateStr } });
+    return json_({ ok: true, b: bk.name, name: found.name, done: true, result: { ans: ans, hints: hints, date: dateStr } });
   } finally {
     lock.releaseLock();
   }
@@ -228,7 +228,7 @@ function doPost(e) {
 function studentInfo_(code, bk) {
   const f = findStudent_(code, bk);
   if (!f) return { ok: false, error: 'notfound' };
-  const out = { ok: true, name: f.name, done: f.status === DONE, level: levelInfo_(f, bk) };
+  const out = { ok: true, b: bk.name, name: f.name, done: f.status === DONE, level: levelInfo_(f, bk) };
   if (out.done) out.result = lastResult_(code, bk);
   return out;
 }
