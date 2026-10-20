@@ -4,6 +4,9 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxjApYNtMnXK15asxzco_qI
 
 const SAGIRD_KEY = 'riyaziyyat-sagird';
 
+/* Hansı kitab: səhifədə KITAB ('1-1' və ya '1-2') təyin olunubsa onu götürür */
+function kitab() { try { if (typeof KITAB !== 'undefined' && KITAB) return KITAB; } catch (e) {} return '1-1'; }
+
 /* URL-də ?s=KOD varsa onu yadda saxlayır, yoxdursa əvvəl yadda saxlananı qaytarır */
 function sagirdKodu() {
   let c = null;
@@ -21,21 +24,21 @@ function sagirdAdiYaddas(code, name) {
 }
 
 async function sagirdMelumati(code) {
-  const r = await fetch(API_URL + '?action=student&s=' + encodeURIComponent(code), { cache: 'no-store' });
+  const r = await fetch(API_URL + '?action=student&s=' + encodeURIComponent(code) + '&b=' + kitab(), { cache: 'no-store' });
   if (!r.ok) throw new Error('http ' + r.status);
   return r.json();
 }
 
-/* Səviyyə testinin nəticəsi: start – başlanğıc mövzu (1–28, 29 = hamısını bilir), log – [mövzu, tapşırıq, düz(1)/səhv(0)] */
+/* Səviyyə testinin nəticəsi: start – başlanğıc mövzu (kitabın son mövzusundan 1 çox = hamısını bilir), log – [mövzu, tapşırıq, düz(1)/səhv(0)] */
 async function seviyyeGonder(code, start, log) {
-  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'level', s: code, start: start, log: log }) });
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'level', b: kitab(), s: code, start: start, log: log }) });
   if (!r.ok) throw new Error('http ' + r.status);
   return r.json();
 }
 
 async function testiGonder(code, ans, hints) {
   // text/plain: brauzer əlavə yoxlama sorğusu göndərmir
-  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'submit', s: code, ans: ans, hints: hints }) });
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'submit', b: kitab(), s: code, ans: ans, hints: hints }) });
   if (!r.ok) throw new Error('http ' + r.status);
   return r.json();
 }
