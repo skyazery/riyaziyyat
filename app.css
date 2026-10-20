@@ -67,5 +67,17 @@ a{color:inherit}
 .lvsec div.cur{background:var(--primary-soft);color:var(--primary)}
 .lvsec div.later{opacity:.55}
 footer{font-size:12.5px;color:var(--muted);text-align:center;padding:10px}
-.tcard.other{min-height:0;background:var(--primary-soft);border-color:var(--primary)}
-.tcard.other b{color:var(--primary)}
+.tcard.other{min-height:0;background:color-mix(in srgb,var(--bkink) 10%,var(--card));border:3px solid var(--bkink)}
+.tcard.other b{color:var(--bkink)}
+
+/* kitab başlığı: 1-ci hissə göy, 2-ci hissə yaşıl */
+.hdr.bk{border:0;color:#fff;background:linear-gradient(135deg,var(--bk1),var(--bk2));box-shadow:0 6px 0 var(--bk3),var(--shadow);padding:14px 16px;gap:14px}
+.bk-1-1{--bk1:#2F6FE4;--bk2:#5B9BFF;--bk3:#1F4FB0;--bkink:#2F6FE4}
+.bk-1-2{--bk1:#139067;--bk2:#3CCB8E;--bk3:#0B6A4B;--bkink:#139067}
+.hdr.bk .part{flex:none;width:58px;height:58px;border-radius:18px;background:#fff;color:var(--bkink);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.hdr.bk .part b{font-size:30px;font-weight:900}
+.hdr.bk .part span{font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.hdr.bk .brand b{font-size:19px;color:#fff}
+.hdr.bk .brand span{display:block;color:#fff;opacity:.92}
+.hdr.bk .brand i{display:table;font-style:normal;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:1px 9px;margin:4px 0 3px;font-size:13px;font-weight:900;letter-spacing:.04em}
+.hdr.bk .pill.star{background:rgba(255,255,255,.95);border-color:transparent;color:var(--bkink)}

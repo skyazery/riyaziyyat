@@ -17,7 +17,7 @@ function stop(){try{if(player){player.onpause=null;player.pause()}}catch(e){}tal
 let ac=null;function chime(ok){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;(ok?[523,659,784]:[392,330]).forEach((f,k)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+k*.12);g.gain.exponentialRampToValueAtTime(.18,t+k*.12+.02);g.gain.exponentialRampToValueAtTime(.0001,t+k*.12+.3);o.connect(g).connect(ac.destination);o.start(t+k*.12);o.stop(t+k*.12+.32)})}catch(e){}}
 function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.getElementById('cf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#F6C343','#5145E6','#38C172','#E35D7F','#3BA6F5'];const Q=Array.from({length:60},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.45,vx:(Math.random()-.5)*9,vy:-Math.random()*11-4,s:6+Math.random()*6,c:cols[Math.random()*5|0],r:Math.random()*6}));let n=0;(function f(){x.clearRect(0,0,c.width,c.height);Q.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++n<70)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
 
-function brand(stars){return h('div',{class:'card hdr'},h('div',{class:'logo','aria-hidden':'true'},BOOK.logo||'📐'),h('div',{class:'brand'},h('b',{},BOOK.title),h('span',{},BOOK.sub)),stars!=null?h('span',{class:'pill star'},'⭐ '+stars):null)}
+function brand(stars){return h('div',{class:'card hdr bk bk-'+BOOK.id},h('div',{class:'part','aria-hidden':'true'},h('b',{},BOOK.part),h('span',{},'hissə')),h('div',{class:'brand'},h('b',{},BOOK.title),h('i',{},BOOK.partName),h('span',{},BOOK.sub)),stars!=null?h('span',{class:'pill star'},'⭐ '+stars):null)}
 const totalStars=()=>Object.values(P.t).reduce((s,v)=>s+(v.stars||0),0);
 
 /* ---------- home ---------- */
@@ -42,7 +42,7 @@ function testCard(){
   if(SAGIRD&&SAGIRD.done)return h('a',{class:'testcard done',href:'test.html?s='+KOD},h('span',{class:'ic'},'📋'),h('div',{},h('b',{},'Testin nəticəsi'),h('span',{},'Valideyn hesabatına bax')));
   return h('a',{class:'testcard',href:'test.html?s='+KOD},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Bütün mövzulardan sonra · yalnız 1 dəfə · 20 tapşırıq')));
 }
-function otherCard(){const o=BOOK.other;return h('a',{class:'tcard other',href:o.href+(KOD?'?s='+KOD:'')},h('b',{},o.label),h('small',{},o.text))}
+function otherCard(){const o=BOOK.other;return h('a',{class:'tcard other bk-'+o.id,href:o.href+(KOD?'?s='+KOD:'')},h('b',{},o.label),h('small',{},o.text))}
 const autoCount=t=>t.problems.filter(p=>p.check||p.web).length;
 
 /* ---------- səviyyə testi ----------

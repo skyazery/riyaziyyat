@@ -155,6 +155,18 @@ textarea{font:inherit;font-size:14px;width:100%;box-sizing:border-box;min-height
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:20}
 @media (prefers-reduced-motion:reduce){.fox.talk{animation:none}.track i{transition:none}}
 @media (prefers-reduced-motion:no-preference){.pop{animation:pop .28s ease-out}@keyframes pop{from{transform:translateY(6px);opacity:.5}to{transform:none;opacity:1}}}
+
+/* kitab başlığı: 1-ci hissə göy, 2-ci hissə yaşıl */
+.hdr.bk{border:0;color:#fff;background:linear-gradient(135deg,var(--bk1),var(--bk2));box-shadow:0 6px 0 var(--bk3),var(--shadow);padding:14px 16px;gap:14px}
+.bk-1-1{--bk1:#2F6FE4;--bk2:#5B9BFF;--bk3:#1F4FB0;--bkink:#2F6FE4}
+.bk-1-2{--bk1:#139067;--bk2:#3CCB8E;--bk3:#0B6A4B;--bkink:#139067}
+.hdr.bk .part{flex:none;width:58px;height:58px;border-radius:18px;background:#fff;color:var(--bkink);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.hdr.bk .part b{font-size:30px;font-weight:900}
+.hdr.bk .part span{font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.hdr.bk .brand b{font-size:19px;color:#fff}
+.hdr.bk .brand span{display:block;color:#fff;opacity:.92}
+.hdr.bk .brand i{display:table;font-style:normal;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:1px 9px;margin:4px 0 3px;font-size:13px;font-weight:900;letter-spacing:.04em}
+.hdr.bk .pill.star{background:rgba(255,255,255,.95);border-color:transparent;color:var(--bkink)}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -189,8 +201,8 @@ const stars=()=>Object.keys(S.checked).filter(k=>S.checked[k]&&correct(+k)).leng
 
 function header(){
   const done=Object.keys(S.checked).length, total=DATA.items.length;
-  return [h('div',{class:'card hdr'},h('div',{class:'logo','aria-hidden':'true'},'📐'),
-      h('div',{class:'brand'},h('b',{},'1-ci sinif riyaziyyat'),h('span',{},'Yoxlama testi · səsli tapşırıqlar')),
+  return [h('div',{class:'card hdr bk bk-1-1'},h('div',{class:'part','aria-hidden':'true'},h('b',{},'1'),h('span',{},'hissə')),
+      h('div',{class:'brand'},h('b',{},'1-ci sinif riyaziyyat'),h('i',{},'1-ci hissə'),h('span',{},'Yoxlama testi · səsli tapşırıqlar')),
       h('span',{class:'pill star','aria-label':'Ulduzlar'},'⭐ '+stars())),
     h('div',{class:'prog'},h('div',{class:'lbl'},h('span',{},'Sual '+(S.i+1)+' / '+total),h('span',{},Math.round(done/total*100)+'% tamamlandı')),
       h('div',{class:'track'},h('i',{style:'width:'+Math.max(4,done/total*100)+'%'})))];
