@@ -33,9 +33,11 @@ function home(){
   SECTIONS.forEach(([name,a,b],si)=>{
     app.append(h('p',{class:'sec-title'},(si+1)+'. '+name));
     const g=h('div',{class:'topics'});
-    for(let n=a;n<=b;n++){const t=TP(n),pr=P.t[n],done=pr&&pr.done;
-      const pass=!done&&s!=null&&n<s, here=!done&&s===n;
-      g.append(h('a',{class:'tcard'+(done?' done':pass?' pass':here?' here':''),href:'#t'+n},h('span',{class:'num'},done||pass?'✓':String(n)),h('b',{},ICON[n]+' '+t.title),h('small',{},pr?('⭐ '+(pr.stars||0)+' / '+autoCount(t)):pass?'Keçildi · təkrar et':here?'👉 Buradan başla':'Başla →')))}
+    for(let n=a;n<=b;n++){const t=TP(n),pr=P.t[n],done=isDone(n),gt=gate(n);
+      const pass=!done&&s!=null&&n<s, here=!done&&(KOD?gt==='new':s===n);
+      if(gt==='tomorrow'||gt==='later'||gt==='level'){
+        g.append(h('div',{class:'tcard lock'+(gt==='tomorrow'?' soon':''),'aria-disabled':'true'},h('span',{class:'num'},'🔒'),h('b',{},ICON[n]+' '+t.title),h('small',{},gt==='tomorrow'?'🌙 Sabah açılacaq':gt==='level'?'🧭 Əvvəl səviyyə testi':'Bağlıdır')));continue}
+      g.append(h('a',{class:'tcard'+(done?' done':pass?' pass':here?' here':''),href:'#t'+n},h('span',{class:'num'},done||pass?'✓':String(n)),h('b',{},ICON[n]+' '+t.title),h('small',{},pr?('⭐ '+(pr.stars||0)+' / '+autoCount(t)):done?'✓ Bitib · təkrar et':pass?'Keçildi · təkrar et':here?(KOD?'👉 Bugünkü mövzu':'👉 Buradan başla'):'Başla →')))}
     app.append(g)});
   app.append(h('p',{class:'sec-title'},'🏆 Sonda'),testCard());
   if(BOOK.other)app.append(otherCard());
@@ -62,11 +64,76 @@ function lvStart(){
   return P.lv?P.lv.start:null;
 }
 function lvCanRetake(){return !KOD||!!(SAGIRD&&SAGIRD.level&&SAGIRD.level.retry)}
+
+/* ---------- gündəlik limit ----------
+   Yalnız şəxsi linklə: yeni mövzu gündə LIMIT dənə açılır (geri qalan uşaq gündə 2×LIMIT-ə qədər çata bilər).
+   Bitmiş mövzular və səviyyə testinə görə keçilmiş mövzular həmişə açıqdır (təkrar).
+   LIMIT müəllim cədvəlindən gəlir (Ayarlar → GUNDELIK_LIMIT, 0 = limitsiz). Gün Tbilisi vaxtı ilə dəyişir. */
+const dayStr=()=>{try{return new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Tbilisi'})}catch(e){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}};
+const dKey=()=>'riyaziyyat-gundelik-'+KOD;
+function dLocal(){try{return JSON.parse(localStorage.getItem(dKey()))||[]}catch(e){return[]}}
+function dSaveLocal(a){try{localStorage.setItem(dKey(),JSON.stringify(a))}catch(e){}}
+function dLimit(){const d=SAGIRD&&SAGIRD.daily;return d&&typeof d.limit==='number'?d.limit:1}
+/* yeni bitirilmiş mövzular (bütün kitablar): serverdəki + hələ göndərilməyənlər */
+function dNews(){
+  const m=new Map(),add=(d,b,n)=>{const k=b+':'+n;if(!m.has(k))m.set(k,{d,b,n:+n})};
+  ((SAGIRD&&SAGIRD.daily&&SAGIRD.daily.news)||[]).forEach(([d,b,n])=>add(d,b,n));
+  dLocal().forEach(e=>add(e.d,e.b,e.n));
+  return [...m.values()];
+}
+const dDiff=(a,b)=>Math.round((Date.parse(b)-Date.parse(a))/864e5);
+/* bu gün neçə yeni mövzu açmaq olar */
+function dLeft(){
+  const L=dLimit();if(!L)return Infinity;
+  const ns=dNews(),t=dayStr();if(!ns.length)return L;
+  const first=ns.reduce((m,x)=>x.d<m?x.d:m,ns[0].d);
+  const earned=(Math.max(0,dDiff(first,t))+1)*L;
+  return Math.max(0,Math.min(2*L-ns.filter(x=>x.d===t).length,earned-ns.length));
+}
+const isDone=n=>!!(P.t[n]&&P.t[n].done)||(!!KOD&&dNews().some(x=>x.b===BOOK.id&&x.n===n));
+function nextNew(){const s=lvStart();if(s==null)return null;for(let n=Math.max(s,BOOK.first);n<=BOOK.last;n++)if(!isDone(n))return n;return null}
+/* open – açıq (təkrar), new – bugünkü yeni mövzu, tomorrow – sabah açılacaq, later – sonra, level – əvvəl səviyyə testi */
+function gate(n){
+  if(!KOD||isDone(n)||!dLimit())return 'open';
+  const s=lvStart();if(s==null)return 'level';
+  if(n<s)return 'open';
+  if(n!==nextNew())return 'later';
+  return dLeft()>0?'new':'tomorrow';
+}
+/* mövzu bitəndə müəllim cədvəlinə yazılır; yeni mövzu göndərilənə qədər telefonda da saxlanır */
+function dRecord(n,stars,total,isNew){
+  if(!KOD)return;
+  const e={d:dayStr(),b:BOOK.id,n,s:stars,t:total};
+  if(isNew){const a=dLocal();if(!a.some(x=>x.b===e.b&&x.n===e.n)){a.push(e);dSaveLocal(a)}}
+  dPost(e,isNew);
+}
+function dPost(e,isNew){
+  if(!API_URL)return Promise.resolve();
+  return movzuGonder(KOD,e.n,e.s,e.t,e.d).then(r=>{
+    if(!r||!r.ok)throw 0;
+    if(SAGIRD&&r.daily)SAGIRD.daily=r.daily;
+    if(isNew)dSaveLocal(dLocal().filter(x=>!(x.b===e.b&&x.n===e.n)));
+  }).catch(()=>{});
+}
+/* əvvəl internet olmayanda göndərilməyənlər */
+function dResend(){
+  const srv=(SAGIRD&&SAGIRD.daily&&SAGIRD.daily.news)||[];
+  const a=dLocal(),keep=a.filter(e=>!srv.some(([,b,n])=>b===e.b&&+n===e.n));
+  if(keep.length!==a.length)dSaveLocal(keep);
+  keep.filter(e=>e.b===BOOK.id).reduce((p,e)=>p.then(()=>dPost(e,true)),Promise.resolve());
+}
+function todayCard(){
+  const nx=nextNew();if(nx==null)return null;
+  const left=dLeft();
+  if(left<=0)return h('div',{class:'lvcard rest'},h('span',{class:'ic'},'🌙'),h('div',{},h('b',{},'Bugünlük bitdi! Afərin!'),h('span',{},'Sabah yeni mövzu açılacaq. İstəsən, keçdiyin mövzuları təkrar et.')));
+  return h('a',{class:'lvcard today',href:'#t'+nx},h('span',{class:'ic'},'🎯'),h('div',{},h('b',{},'Bugünkü mövzu: Mövzu '+nx),h('span',{},ICON[nx]+' '+TP(nx).title+(left>1&&left!==Infinity?' · bu gün '+left+' mövzu aça bilərsən':''))));
+}
 const today=()=>{const d=new Date();return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear()};
 function levelCard(){
   const s=lvStart();
   if(s==null)return h('a',{class:'lvcard',href:'#seviyye'},h('span',{class:'ic'},'🧭'),h('div',{},h('b',{},'Səviyyə testi – əvvəlcə bunu et'),h('span',{},'Haradan başlamalı olduğunu tapır · 2–12 sual')));
   const again=lvCanRetake()?h('button',{class:'lvagain',onclick(){LT={phase:'intro'};if(location.hash==='#seviyye')go();else location.hash='#seviyye'}},'🔄 Səviyyə testini yenidən et'):null;
+  if(KOD&&s<LV_ALL&&nextNew()!=null)return h('div',{},todayCard(),again);
   const card=s>=LV_ALL
     ?h('a',{class:'lvcard done',href:'#seviyye'},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Səviyyə: bütün mövzular keçildi'),h('span',{},'Mövzuları təkrar et, sonra yoxlama testini et')))
     :h('a',{class:'lvcard done',href:'#t'+s},h('span',{class:'ic'},'🧭'),h('div',{},h('b',{},'Buradan başla: Mövzu '+s),h('span',{},ICON[s]+' '+TP(s).title+' · səviyyə testinə görə')));
@@ -144,7 +211,17 @@ function maybeAutoLevel(){
 
 /* ---------- topic ---------- */
 let T=null,step=0,st=null;
+let LOCKV=false;
+function lockedView(n,gt){
+  const t=TP(n);LOCKV=true;
+  app.append(h('a',{class:'backlink',href:'#'},'← Bütün mövzular'),brand(null),
+    h('div',{class:'card donebox pop'},h('div',{class:'trophy'},gt==='level'?'🧭':'🔒'),h('h2',{style:'font-size:24px;font-weight:900'},'Mövzu '+n+'. '+t.title),
+      h('p',{style:'font-weight:800'},gt==='level'?'Əvvəlcə səviyyə testini et – haradan başlamalı olduğunu tapaq.':gt==='tomorrow'?'Bu mövzu sabah açılacaq. Bu gün çox yaxşı çalışdın!':'Bu mövzu hələ bağlıdır. Mövzular hər gün bir-bir açılır.'),
+      gt==='level'?h('a',{class:'big',href:'#seviyye',style:'text-decoration:none;display:block'},'🧭 Səviyyə testi →'):null,
+      h('a',{class:'backlink',href:'#'},'← Bütün mövzular')));
+}
 function topic(n){
+  const gt=gate(n);if(gt!=='open'&&gt!=='new')return lockedView(n,gt);
   T=TP(n);
   if(!st||st.n!==n)st={n,ans:{},tries:{},first:{},shown:{},self:{}};
   const total=T.problems.length;
@@ -270,12 +347,16 @@ function webView(p,k,task){
 function next(){step++;go()}
 function doneView(n){
   const t=T,auto=autoCount(t),stars=Object.entries(st.first).filter(([k,v])=>v===true).length;
-  P.t[n]={done:true,stars:Math.max(stars,(P.t[n]&&P.t[n].stars)||0)};save();
+  if(!st.logged){st.logged=true;const isNew=!!KOD&&gate(n)==='new';
+    P.t[n]={done:true,stars:Math.max(stars,(P.t[n]&&P.t[n].stars)||0)};save();
+    dRecord(n,stars,auto,isNew)}
+  const g=n<BOOK.last?gate(n+1):null,rest=!!KOD&&g!=null&&g!=='open'&&g!=='new';
   if(stars>=auto*0.7)setTimeout(confetti,200);
   app.append(h('div',{class:'card donebox pop'},h('div',{class:'trophy'},stars>=auto*0.7?'🏆':'🌱'),h('h2',{style:'font-size:28px;font-weight:900'},'Mövzu bitdi!'),
     h('p',{},'İlk cəhddə düzgün: ⭐ '+stars+' / '+auto),
     h('p',{class:'muted'},stars>=auto*0.7?'Əla iş! Növbəti mövzuya keçə bilərsən.':'Yaxşı çalışdın! Bu mövzunu bir də təkrar etmək faydalı olar.'),
-    n<BOOK.last?h('a',{class:'big',href:'#t'+(n+1),style:'text-decoration:none;display:block'},'Növbəti mövzu →'):null,
+    rest?h('div',{class:'lvcard rest',style:'width:100%;box-sizing:border-box;text-align:left'},h('span',{class:'ic'},'🌙'),h('div',{},h('b',{},'Bugünlük bitdi! Afərin!'),h('span',{},'Sabah yeni mövzu açılacaq. İstəsən, keçdiyin mövzuları təkrar et.')))
+      :n<BOOK.last?h('a',{class:'big',href:'#t'+(n+1),style:'text-decoration:none;display:block'},'Növbəti mövzu →'):null,
     h('button',{class:'sec',onclick(){st=null;step=0;lastAuto=null;go()}},'🔄 Mövzunu təkrarla'),
     h('a',{class:'backlink',href:'#'},'← Bütün mövzular')));
 }
@@ -287,16 +368,17 @@ function setBar(k,label,fn,kind,disabled){
 }
 
 /* ---------- router ---------- */
-function render(){stop();LVM=false;app.replaceChildren();bar.hidden=true;if(location.hash==='#seviyye'){levelPage();return}const m=location.hash.match(/^#t(\d+)$/);if(m&&TP(+m[1]))topic(+m[1]);else home();playPraise()}
+function render(){stop();LVM=false;LOCKV=false;app.replaceChildren();bar.hidden=true;if(location.hash==='#seviyye'){levelPage();return}const m=location.hash.match(/^#t(\d+)$/);if(m&&TP(+m[1]))topic(+m[1]);else home();playPraise()}
 function go(){render();scrollTo(0,0)}
 addEventListener('hashchange',()=>{st=null;step=0;lastAuto=null;if(location.hash!=='#seviyye'||!LT||LT.phase!=='intro')LT=null;go()});
 const KOD=sagirdKodu();
 let SAGIRD=KOD?{name:sagirdAdiYaddas(KOD),done:false}:null;
 if(KOD&&API_URL)sagirdMelumati(KOD).then(r=>{if(r&&r.ok){
-  SAGIRD={name:r.name,done:!!r.done,level:r.level||null,loaded:true};sagirdAdiYaddas(KOD,r.name);
+  SAGIRD={name:r.name,done:!!r.done,level:r.level||null,daily:r.daily||null,loaded:true};sagirdAdiYaddas(KOD,r.name);
+  dResend();
   const srv=r.level&&r.level.done;
   if(!srv&&P.lv&&P.lv.sent){delete P.lv;save()} // müəllim nəticəni silib – testi yenidən etmək olar
   if(!srv&&P.lv&&!P.lv.sent)lvSend();             // əvvəl göndərilməyən nəticə
-  if(D){if(!location.hash)render();maybeAutoLevel()}
+  if(D){if(!location.hash||LOCKV)render();maybeAutoLevel()}
 }}).catch(()=>{});
 Promise.all([fetch('data/topics.json').then(r=>r.json()),fetch('data/audio.json').then(r=>r.json()).catch(()=>[])]).then(([d,a])=>{D=d;a.forEach(id=>AUD[id]=1);go();maybeAutoLevel()}).catch(()=>{app.replaceChildren(h('p',{class:'muted'},'Məlumat yüklənmədi. Səhifəni yeniləyin.'))});

@@ -58,3 +58,11 @@ async function testiGonder(code, ans, hints) {
   if (!r.ok) throw new Error('http ' + r.status);
   return r.json();
 }
+
+/* Mövzu bitəndə: gündəlik qeyd (müəllim cədvəlinin Gündəlik tabına). Cavabda daily – yeni mövzuların siyahısı */
+async function movzuGonder(code, n, stars, total, d) {
+  await serverYoxla_(code);
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'topic', b: kitab(), s: code, n: n, stars: stars, total: total, d: d }) });
+  if (!r.ok) throw new Error('http ' + r.status);
+  return r.json();
+}

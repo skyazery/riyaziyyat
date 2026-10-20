@@ -8,6 +8,8 @@
  *  - 레벨테스트(Səviyyə testi) 결과로 책마다 학생의 시작 단원을 정하고, 선생님이 시트에서 바꿀 수 있습니다.
  *  - 부모가 동의서(qeydiyyat.html)를 내면 Qeydiyyat 탭에 동의 기록이 남고, Şagirdlər 탭에 학생이
  *    자동으로 추가되며(코드·개인 링크·왓츠앱 보내기 링크까지), 선생님 텔레그램으로 알림이 갑니다.
+ *  - 학생이 주제(10문제)를 끝낼 때마다 Gündəlik 탭에 기록됩니다. 개인 링크로 공부하는 학생은
+ *    새 주제가 하루 GUNDELIK_LIMIT개(Ayarlar 탭, 기본 1)씩 열리고, 밀렸으면 하루 그 2배까지 따라잡을 수 있습니다.
  *
  * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름
  * 개인정보(생년월일, 전화번호)는 이 시트 안에만 있고, 사이트에는 학생 이름만 전달됩니다.
@@ -18,6 +20,10 @@ const SERVICE_NAME = 'Riyaziyyat Dostu';
 const SH_STUDENTS = 'Şagirdlər';
 const SH_SETTINGS = 'Ayarlar';
 const SH_REG = 'Qeydiyyat';
+const SH_DAILY = 'Gündəlik';
+const TZ_LOCAL = 'Asia/Tbilisi'; // 하루가 바뀌는 기준 (학습지 사이트와 같아야 함)
+const DAILY_HEADERS = ['Tarix (날짜)', 'Saat (시각)', 'Kod', 'Ad (이름)', 'Kitab (책)', 'Mövzu (주제)', 'Mövzu adı',
+  'Ulduz (첫 시도 정답)', 'Tapşırıq (채점 문제 수)', 'Növ (새/복습)'];
 const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
@@ -128,7 +134,12 @@ function setup() {
     se.appendRow(['ELAQE_NOMRESI', '', '동의서에 보일 왓츠앱 번호 (예: +995 555 12 34 56)']);
     se.getRange(se.getLastRow(), 1).setFontWeight('bold');
   }
+  if (!hasSetting_('GUNDELIK_LIMIT')) {
+    se.appendRow(['GUNDELIK_LIMIT', 1, '하루에 열리는 새 주제 수 (0 = 제한 없음). 밀린 학생은 하루 이 수의 2배까지 따라잡기']);
+    se.getRange(se.getLastRow(), 1).setFontWeight('bold');
+  }
   setupRegistration_(ss);
+  setupDaily_(ss);
   SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.\n\n' +
     '동의서(qeydiyyat.html)로 등록한 학생은 자동으로 추가되고 링크도 자동으로 만들어집니다. Ayarlar 탭 ELAQE_NOMRESI 칸에 연락처를 넣어 주세요.\n\n' +
     '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름.\n' +
@@ -211,6 +222,7 @@ function doPost(e) {
   if (body.action === 'register') return saveRegister_(body);
   const bk = book_(body.b);
   if (body.action === 'level') return saveLevel_(body, bk);
+  if (body.action === 'topic') return saveTopic_(body, bk);
   if (body.action !== 'submit') return json_({ ok: false, error: 'bad' });
   const code = cleanCode_(body.s);
   const lock = LockService.getScriptLock();
@@ -249,9 +261,87 @@ function doPost(e) {
 function studentInfo_(code, bk) {
   const f = findStudent_(code, bk);
   if (!f) return { ok: false, error: 'notfound' };
-  const out = { ok: true, b: bk.name, name: f.name, done: f.status === DONE, level: levelInfo_(f, bk) };
+  const out = { ok: true, b: bk.name, name: f.name, done: f.status === DONE, level: levelInfo_(f, bk), daily: dailyInfo_(code) };
   if (out.done) out.result = lastResult_(code, bk);
   return out;
+}
+
+/* ---------------- 매일 기록(Gündəlik) ----------------
+   사이트가 주제를 끝낼 때마다 보냅니다. 새 주제(시작 단원 이상, 처음 끝낸 것)는 「Yeni」, 나머지는 「Təkrar」.
+   사이트는 이 기록으로 하루에 열 수 있는 새 주제 수를 계산합니다. */
+function setupDaily_(ss) {
+  let dg = ss.getSheetByName(SH_DAILY) || ss.insertSheet(SH_DAILY);
+  if (!dg.getRange(1, 1).getValue()) {
+    dg.getRange(1, 1, 1, DAILY_HEADERS.length).setValues([DAILY_HEADERS]).setFontWeight('bold').setBackground('#E8F1FF');
+    dg.setFrozenRows(1);
+    dg.getRange('A:B').setNumberFormat('@');
+  }
+  return dg;
+}
+
+function dailyLimit_() {
+  if (!hasSetting_('GUNDELIK_LIMIT')) return 1;
+  const v = parseInt(setting_('GUNDELIK_LIMIT'), 10);
+  return v >= 0 ? v : 1;
+}
+
+// 이 학생의 기록: new = 새 주제를 끝낸 [날짜, 책, 주제] 목록 (사이트가 열림 계산에 씀)
+function dailyRows_(code) {
+  const dg = SpreadsheetApp.getActive().getSheetByName(SH_DAILY);
+  if (!dg || dg.getLastRow() < 2) return [];
+  return dg.getRange(2, 1, dg.getLastRow() - 1, DAILY_HEADERS.length).getValues()
+    .filter(r => String(r[2]) === code)
+    .map(r => ({ d: fmtDay_(r[0]), b: String(r[4]), n: Number(r[5]), isNew: String(r[9]).indexOf('Yeni') === 0 }));
+}
+
+function dailyInfo_(code) {
+  const rows = dailyRows_(code);
+  return { limit: dailyLimit_(), today: Utilities.formatDate(new Date(), TZ_LOCAL, 'yyyy-MM-dd'),
+    news: rows.filter(r => r.isNew).map(r => [r.d, r.b, r.n]),
+    days: Array.from(new Set(rows.map(r => r.d))).length };
+}
+
+function fmtDay_(v) {
+  if (v instanceof Date) return Utilities.formatDate(v, TZ_LOCAL, 'yyyy-MM-dd');
+  return String(v || '').trim();
+}
+
+function saveTopic_(body, bk) {
+  const code = cleanCode_(body.s);
+  const n = parseInt(body.n, 10);
+  const last = bk.first + bk.topics.length - 1;
+  if (!(n >= bk.first && n <= last)) return json_({ ok: false, error: 'bad' });
+  const total = Math.max(0, Math.min(20, parseInt(body.total, 10) || 0));
+  const stars = Math.max(0, Math.min(total, parseInt(body.stars, 10) || 0));
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const found = findStudent_(code, bk);
+    if (!found) return json_({ ok: false, error: 'notfound' });
+    const dg = setupDaily_(SpreadsheetApp.getActive());
+    const start = levelInfo_(found, bk).start;
+    const before = dailyRows_(code).some(r => r.b === bk.name && r.n === n);
+    const isNew = start != null && n >= start && !before;
+    const now = new Date();
+    // 인터넷이 없어서 늦게 보낸 기록은 실제로 푼 날짜(최근 7일 안)로 저장
+    const today = Utilities.formatDate(now, TZ_LOCAL, 'yyyy-MM-dd');
+    let day = today;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(body.d || ''));
+    if (m) {
+      const diff = (Date.parse(today) - Date.parse(m[0])) / 864e5;
+      if (diff >= 0 && diff <= 7) day = m[0];
+    }
+    const r0 = dg.getLastRow() + 1;
+    dg.getRange(r0, 1, 1, 2).setNumberFormat('@');
+    dg.getRange(r0, 1, 1, DAILY_HEADERS.length).setValues([[
+      day, Utilities.formatDate(now, TZ_LOCAL, 'HH:mm'), code, found.name,
+      bk.name, n, topicName_(bk, n), stars, total, isNew ? 'Yeni (새 주제)' : 'Təkrar (복습)'
+    ]]);
+    SpreadsheetApp.flush();
+    return json_({ ok: true, isNew: isNew, daily: dailyInfo_(code) });
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /* ---------------- 동의서(Qeydiyyat) 저장 ----------------
