@@ -6,7 +6,7 @@
 <title>Riyaziyyat Dostu – qeydiyyat</title>
 <meta name="description" content="Riyaziyyat Dostu proqramına qeydiyyat və şəxsi məlumatların istifadəsinə razılıq forması.">
 <meta property="og:title" content="Riyaziyyat Dostu – qeydiyyat">
-<meta property="og:description" content="1–3-cü sinif şagirdləri üçün şəkilli və səsli riyaziyyat. Qeydiyyat formasını doldurun.">
+<meta property="og:description" content="1–6-cı sinif şagirdləri üçün şəkilli və səsli riyaziyyat. Qeydiyyat formasını doldurun.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
@@ -60,7 +60,7 @@
 <body>
 <div class="wrap" id="app">
 
-<div class="card hdr"><div class="logo">🦊</div><div class="brand"><b>Riyaziyyat Dostu</b><span>1–3-cü sinif · şəkilli və səsli riyaziyyat</span></div></div>
+<div class="card hdr"><div class="logo">🦊</div><div class="brand"><b>Riyaziyyat Dostu</b><span>1–6-cı sinif · şəkilli və səsli riyaziyyat</span></div></div>
 
 <form id="f" class="stack" novalidate>
   <div class="card intro">
@@ -98,6 +98,9 @@
         <input type="radio" name="sinif" id="s1" value="1"><label for="s1"><b>1</b><small>1-ci sinif</small></label>
         <input type="radio" name="sinif" id="s2" value="2"><label for="s2"><b>2</b><small>2-ci sinif</small></label>
         <input type="radio" name="sinif" id="s3" value="3"><label for="s3"><b>3</b><small>3-cü sinif</small></label>
+        <input type="radio" name="sinif" id="s4" value="4"><label for="s4"><b>4</b><small>4-cü sinif</small></label>
+        <input type="radio" name="sinif" id="s5" value="5"><label for="s5"><b>5</b><small>5-ci sinif</small></label>
+        <input type="radio" name="sinif" id="s6" value="6"><label for="s6"><b>6</b><small>6-cı sinif</small></label>
       </div>
       <p class="err">Sinfi seçin.</p>
     </div>
@@ -155,7 +158,7 @@
   for (let d = 1; d <= 31; d++) add($('dg'), d, d);
   AYLAR.forEach((m, i) => add($('da'), i + 1, m));
   const y0 = new Date().getFullYear();
-  for (let y = y0 - 4; y >= y0 - 14; y--) add($('di'), y, y);
+  for (let y = y0 - 4; y >= y0 - 15; y--) add($('di'), y, y);
 
   // Əlaqə nömrəsi müəllim cədvəlindən (Ayarlar → ELAQE_NOMRESI)
   fetch(API_URL + '?action=info', { cache: 'no-store' }).then(r => r.json()).then(j => {

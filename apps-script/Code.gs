@@ -277,7 +277,7 @@ function cleanText_(v, max) {
   return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max || 60);
 }
 
-// 'YYYY-MM-DD' → 'dd.MM.yyyy' (만 4~14살 범위만 받음)
+// 'YYYY-MM-DD' → 'dd.MM.yyyy' (만 4~15살 범위만 받음, 초1~6학년)
 function cleanBirth_(v) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v || '').trim());
   if (!m) return '';
@@ -285,7 +285,7 @@ function cleanBirth_(v) {
   const dt = new Date(y, mo - 1, d);
   if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return '';
   const age = (new Date() - dt) / (365.25 * 24 * 3600 * 1000);
-  if (age < 4 || age > 14) return '';
+  if (age < 4 || age > 15) return '';
   return m[3] + '.' + m[2] + '.' + m[1];
 }
 
@@ -294,7 +294,8 @@ function saveRegister_(body) {
   const nameOk = s => s.length >= 2 && /^[\p{L}][\p{L} '’\-]*$/u.test(s);
   const ad = cleanText_(body.ad), soyad = cleanText_(body.soyad), parent = cleanText_(body.valideyn, 80);
   const birth = cleanBirth_(body.dogum);
-  const grade = ['1', '2', '3'].indexOf(String(body.sinif)) >= 0 ? String(body.sinif) : '';
+  const grade = ['1', '2', '3', '4', '5', '6'].indexOf(String(body.sinif)) >= 0 ? String(body.sinif) : '';
+  const gradeName = grade ? grade + ({ '3': '-cü', '4': '-cü', '6': '-cı' }[grade] || '-ci') + ' sinif' : '';
   const wa = waPhone_(body.telefon);
   const c = Array.isArray(body.razi) ? body.razi.map(x => x === true) : [];
   const bad = [];
@@ -340,7 +341,7 @@ function saveRegister_(body) {
       const row = lastNamed + 1;
       st.getRange(row, C.BIRTH, 1, 2).setNumberFormat('@');
       st.getRange(row, 1, 1, C.CODE).setValues([[full, birth, phone, code]]);
-      st.getRange(row, C.GRADE, 1, 2).setValues([[grade + '-ci sinif', parent]]);
+      st.getRange(row, C.GRADE, 1, 2).setValues([[gradeName, parent]]);
       Object.keys(BOOKS).forEach(id => st.getRange(row, BOOKS[id].col.LV_RETRY).insertCheckboxes());
       writeLinks_(st, row, full, phone, code, site);
     }
@@ -349,7 +350,7 @@ function saveRegister_(body) {
     rg.getRange(r0, 4).setNumberFormat('@');
     rg.getRange(r0, 7).setNumberFormat('@');
     rg.getRange(r0, 1, 1, REG_HEADERS.length).setValues([[
-      Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd HH:mm'), ad, soyad, birth, grade + '-ci sinif', parent, phone,
+      Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd HH:mm'), ad, soyad, birth, gradeName, parent, phone,
       'Bəli', 'Bəli', 'Bəli', c[3] ? 'Bəli' : 'Xeyr', code, note
     ]]);
     SpreadsheetApp.flush();
