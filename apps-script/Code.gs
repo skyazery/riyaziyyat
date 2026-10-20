@@ -6,19 +6,26 @@
  *  - 학습지 사이트(1-1권: test.html, 1-2권: 1-2/test.html)가 보낸 시험 답안을 채점해 결과 탭에 저장합니다.
  *  - 시험은 책마다 학생당 1번만 저장되고, 저장되는 순간 선생님 텔레그램으로 알림을 보냅니다.
  *  - 레벨테스트(Səviyyə testi) 결과로 책마다 학생의 시작 단원을 정하고, 선생님이 시트에서 바꿀 수 있습니다.
+ *  - 부모가 동의서(qeydiyyat.html)를 내면 Qeydiyyat 탭에 동의 기록이 남고, Şagirdlər 탭에 학생이
+ *    자동으로 추가되며(코드·개인 링크·왓츠앱 보내기 링크까지), 선생님 텔레그램으로 알림이 갑니다.
  *
- * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권
+ * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름
  * 개인정보(생년월일, 전화번호)는 이 시트 안에만 있고, 사이트에는 학생 이름만 전달됩니다.
  */
 
 /* ---------------- 설정 ---------------- */
+const SERVICE_NAME = 'Riyaziyyat Dostu';
 const SH_STUDENTS = 'Şagirdlər';
 const SH_SETTINGS = 'Ayarlar';
+const SH_REG = 'Qeydiyyat';
 const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
-const C = { NAME: 1, BIRTH: 2, PHONE: 3, CODE: 4, LINK: 5, WA: 6 };
+const C = { NAME: 1, BIRTH: 2, PHONE: 3, CODE: 4, LINK: 5, WA: 6, GRADE: 17, PARENT: 18 };
 const NCOL = 16;
+const REG_HEADERS = ['Tarix (제출 시각)', 'Şagirdin adı (이름)', 'Soyadı (성)', 'Doğum tarixi (생년월일)', 'Sinif (학년)',
+  'Valideyn (부모 이름)', 'Telefon (전화)', 'Valideyn təsdiqi (보호자 확인)', 'Razılıq 1 (정보 이용)', 'Razılıq 2 (결과 저장·발송)',
+  'Razılıq 3 – reklam (홍보, 선택)', 'Kod (코드)', 'Qeyd (메모)'];
 const BASE_HEADERS = ['Ad (이름)', 'Doğum tarixi (생년월일)', 'Valideyn telefonu (부모 전화)', 'Kod (코드)', 'Şəxsi link (개인 링크)', 'WhatsApp (보내기)'];
 const LEVEL_HEADERS = ['Tarix (날짜)', 'Kod', 'Ad (이름)', 'Doğum tarixi', 'Başlanğıc mövzu (시작 단원)', 'Mövzu adı', 'Bölmələr (단계별)', 'Düz / sual (정답 수)', 'Cavablar (기록)'];
 const RESULT_HEADERS = ['Tarix (날짜)', 'Kod', 'Ad (이름)', 'Doğum tarixi', 'Bal (점수)', 'Nəticə (등급)', 'A', 'B', 'C', 'D', 'E', 'Səhv (틀린 문제)', 'Kömək (힌트 사용)', 'Cavablar (답안 기록)'];
@@ -116,8 +123,15 @@ function setup() {
     se.getRange('A1:A3').setFontWeight('bold');
     se.setColumnWidth(2, 380);
   }
+  // 동의서 화면에 보일 연락처 (예전 시트에는 없으면 맨 아래에 추가)
+  if (!hasSetting_('ELAQE_NOMRESI')) {
+    se.appendRow(['ELAQE_NOMRESI', '', '동의서에 보일 왓츠앱 번호 (예: +995 555 12 34 56)']);
+    se.getRange(se.getLastRow(), 1).setFontWeight('bold');
+  }
+  setupRegistration_(ss);
   SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.\n\n' +
-    '칸 안내: G~K = 1-1권, L~P = 1-2권.\n' +
+    '동의서(qeydiyyat.html)로 등록한 학생은 자동으로 추가되고 링크도 자동으로 만들어집니다. Ayarlar 탭 ELAQE_NOMRESI 칸에 연락처를 넣어 주세요.\n\n' +
+    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름.\n' +
     '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
 }
 
@@ -142,23 +156,28 @@ function makeLinks() {
       st.getRange(row, C.CODE).setValue(code);
       made++;
     }
-    const link = site.replace(/\/?$/, '/') + '?s=' + code;
-    st.getRange(row, C.LINK).setValue(link);
-    const phone = waPhone_(r[C.PHONE - 1]);
-    const cell = st.getRange(row, C.WA);
-    if (phone) {
-      const msg = 'Salam! Bu, ' + name + ' üçün riyaziyyat tapşırıqlarının şəxsi linkidir:\n' + link +
-        '\n\nLinki ilk dəfə açanda qısa səviyyə testi olacaq – uşağın hansı mövzudan başlamalı olduğunu göstərir.' +
-        '\nTapşırıqları istədiyiniz qədər həll edə bilərsiniz. Hər hissənin sonunda olan yoxlama testi isə yalnız bir dəfə edilir.' +
-        '\n2-ci hissə də eyni linkdən açılır (səhifənin aşağısında).' +
-        '\nNəticəni sonra da bu linklə görə bilərsiniz. Xahiş edirik, linki başqası ilə paylaşmayın.';
-      const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
-      cell.setRichTextValue(SpreadsheetApp.newRichTextValue().setText('💬 Göndər').setLinkUrl(url).build());
-    } else {
-      cell.setValue('전화번호 확인');
-    }
+    writeLinks_(st, row, name, r[C.PHONE - 1], code, site);
   });
   SpreadsheetApp.getUi().alert('새 링크 ' + made + '개를 만들었어요. F칸의 「💬 Göndər」를 누르면 왓츠앱이 열립니다.');
+}
+
+// 한 학생 줄에 개인 링크(E칸)와 왓츠앱 보내기 링크(F칸)를 씁니다
+function writeLinks_(st, row, name, phoneRaw, code, site) {
+  const link = site.replace(/\/?$/, '/') + '?s=' + code;
+  st.getRange(row, C.LINK).setValue(link);
+  const phone = waPhone_(phoneRaw);
+  const cell = st.getRange(row, C.WA);
+  if (phone) {
+    const msg = 'Salam! Bu, ' + name + ' üçün riyaziyyat tapşırıqlarının şəxsi linkidir:\n' + link +
+      '\n\nLinki ilk dəfə açanda qısa səviyyə testi olacaq – uşağın hansı mövzudan başlamalı olduğunu göstərir.' +
+      '\nTapşırıqları istədiyiniz qədər həll edə bilərsiniz. Hər hissənin sonunda olan yoxlama testi isə yalnız bir dəfə edilir.' +
+      '\n2-ci hissə də eyni linkdən açılır (səhifənin aşağısında).' +
+      '\nNəticəni sonra da bu linklə görə bilərsiniz. Xahiş edirik, linki başqası ilə paylaşmayın.';
+    const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+    cell.setRichTextValue(SpreadsheetApp.newRichTextValue().setText('💬 Göndər').setLinkUrl(url).build());
+  } else {
+    cell.setValue('전화번호 확인');
+  }
 }
 
 function newCode_() {
@@ -182,12 +201,14 @@ function waPhone_(v) {
 function doGet(e) {
   const p = (e && e.parameter) || {};
   if (p.action === 'student') return json_(studentInfo_(cleanCode_(p.s), book_(p.b)));
+  if (p.action === 'info') return json_({ ok: true, name: SERVICE_NAME, phone: setting_('ELAQE_NOMRESI') });
   return json_({ ok: true, app: 'riyaziyyat' });
 }
 
 function doPost(e) {
   let body = {};
   try { body = JSON.parse(e.postData.contents); } catch (err) { return json_({ ok: false, error: 'bad' }); }
+  if (body.action === 'register') return saveRegister_(body);
   const bk = book_(body.b);
   if (body.action === 'level') return saveLevel_(body, bk);
   if (body.action !== 'submit') return json_({ ok: false, error: 'bad' });
@@ -231,6 +252,115 @@ function studentInfo_(code, bk) {
   const out = { ok: true, b: bk.name, name: f.name, done: f.status === DONE, level: levelInfo_(f, bk) };
   if (out.done) out.result = lastResult_(code, bk);
   return out;
+}
+
+/* ---------------- 동의서(Qeydiyyat) 저장 ----------------
+   qeydiyyat.html 이 보낸 내용을 확인하고
+   ① Qeydiyyat 탭에 동의 기록  ② Şagirdlər 탭에 학생 추가(코드·링크 자동)  ③ 텔레그램 알림 */
+function setupRegistration_(ss) {
+  let rg = ss.getSheetByName(SH_REG) || ss.insertSheet(SH_REG);
+  if (!rg.getRange(1, 1).getValue()) {
+    rg.getRange(1, 1, 1, REG_HEADERS.length).setValues([REG_HEADERS]).setFontWeight('bold').setBackground('#FDE7EF');
+    rg.setFrozenRows(1);
+    rg.getRange('D:D').setNumberFormat('@');
+    rg.getRange('G:G').setNumberFormat('@');
+  }
+  const st = ss.getSheetByName(SH_STUDENTS);
+  if (st && !st.getRange(1, C.GRADE).getValue()) {
+    st.getRange(1, C.GRADE, 1, 2).setValues([['Sinif (학년)', 'Valideyn (부모 이름)']]).setFontWeight('bold').setBackground('#FDE7EF');
+    st.setColumnWidths(C.GRADE, 2, 140);
+  }
+  return rg;
+}
+
+function cleanText_(v, max) {
+  return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max || 60);
+}
+
+// 'YYYY-MM-DD' → 'dd.MM.yyyy' (만 4~14살 범위만 받음)
+function cleanBirth_(v) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v || '').trim());
+  if (!m) return '';
+  const y = +m[1], mo = +m[2], d = +m[3];
+  const dt = new Date(y, mo - 1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return '';
+  const age = (new Date() - dt) / (365.25 * 24 * 3600 * 1000);
+  if (age < 4 || age > 14) return '';
+  return m[3] + '.' + m[2] + '.' + m[1];
+}
+
+function saveRegister_(body) {
+  if (body.hp) return json_({ ok: true }); // 자동 스팸 프로그램이 숨은 칸을 채운 경우: 저장하지 않음
+  const nameOk = s => s.length >= 2 && /^[\p{L}][\p{L} '’\-]*$/u.test(s);
+  const ad = cleanText_(body.ad), soyad = cleanText_(body.soyad), parent = cleanText_(body.valideyn, 80);
+  const birth = cleanBirth_(body.dogum);
+  const grade = ['1', '2', '3'].indexOf(String(body.sinif)) >= 0 ? String(body.sinif) : '';
+  const wa = waPhone_(body.telefon);
+  const c = Array.isArray(body.razi) ? body.razi.map(x => x === true) : [];
+  const bad = [];
+  if (!nameOk(ad)) bad.push('ad');
+  if (!nameOk(soyad)) bad.push('soyad');
+  if (!birth) bad.push('dogum');
+  if (!grade) bad.push('sinif');
+  if (parent.length < 2) bad.push('valideyn');
+  if (!/^995\d{9}$/.test(wa)) bad.push('telefon');
+  if (!(c[0] && c[1] && c[2])) bad.push('razi');
+  if (bad.length) return json_({ ok: false, error: 'invalid', fields: bad });
+
+  const phone = '+995 ' + wa.slice(3, 6) + ' ' + wa.slice(6, 8) + ' ' + wa.slice(8, 10) + ' ' + wa.slice(10, 12);
+  const full = ad + ' ' + soyad;
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const ss = SpreadsheetApp.getActive();
+    const rg = setupRegistration_(ss);
+    const st = sheet_(SH_STUDENTS);
+    const site = setting_('SAYT_LINKI') || 'https://skyazery.github.io/riyaziyyat/';
+    const last = st.getLastRow();
+    const rows = last >= 2 ? st.getRange(2, 1, last - 1, C.CODE).getValues() : [];
+    const used = {};
+    let dupRow = 0, code = '', lastNamed = 1; // 재응시 체크박스가 시트 끝까지 있어서 이름이 있는 마지막 줄을 따로 찾습니다
+    rows.forEach((r, i) => {
+      if (String(r[C.NAME - 1]).trim()) lastNamed = i + 2;
+      if (r[C.CODE - 1]) used[String(r[C.CODE - 1])] = true;
+      if (!dupRow && String(r[C.NAME - 1]).trim().toLowerCase() === full.toLowerCase() && fmtBirth_(r[C.BIRTH - 1]) === birth) {
+        dupRow = i + 2; code = String(r[C.CODE - 1]).trim();
+      }
+    });
+    let note = '';
+    if (dupRow) {
+      note = 'Təkrar qeydiyyat (이미 ' + dupRow + '번째 줄에 있음)';
+      if (!code) {
+        do { code = newCode_(); } while (used[code]);
+        st.getRange(dupRow, C.CODE).setValue(code);
+        writeLinks_(st, dupRow, full, st.getRange(dupRow, C.PHONE).getValue() || phone, code, site);
+      }
+    } else {
+      do { code = newCode_(); } while (used[code]);
+      const row = lastNamed + 1;
+      st.getRange(row, C.BIRTH, 1, 2).setNumberFormat('@');
+      st.getRange(row, 1, 1, C.CODE).setValues([[full, birth, phone, code]]);
+      st.getRange(row, C.GRADE, 1, 2).setValues([[grade + '-ci sinif', parent]]);
+      Object.keys(BOOKS).forEach(id => st.getRange(row, BOOKS[id].col.LV_RETRY).insertCheckboxes());
+      writeLinks_(st, row, full, phone, code, site);
+    }
+    const tz = Session.getScriptTimeZone();
+    const r0 = rg.getLastRow() + 1;
+    rg.getRange(r0, 4).setNumberFormat('@');
+    rg.getRange(r0, 7).setNumberFormat('@');
+    rg.getRange(r0, 1, 1, REG_HEADERS.length).setValues([[
+      Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd HH:mm'), ad, soyad, birth, grade + '-ci sinif', parent, phone,
+      'Bəli', 'Bəli', 'Bəli', c[3] ? 'Bəli' : 'Xeyr', code, note
+    ]]);
+    SpreadsheetApp.flush();
+    sendTelegram_('📝 새 동의서 · ' + full + ' (' + grade + '학년, ' + birth + ')\n' +
+      '부모: ' + parent + ' · 홍보 동의: ' + (c[3] ? '예' : '아니오') + '\n' +
+      (dupRow ? '⚠️ 이미 등록된 학생입니다 (' + dupRow + '번째 줄)\n' : '') +
+      '→ Şagirdlər 탭 F칸 「💬 Göndər」로 개인 링크를 보내 주세요.');
+    return json_({ ok: true });
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /* ---------------- 레벨테스트 저장 ---------------- */
@@ -400,6 +530,12 @@ function setting_(key) {
   const rows = s.getRange(1, 1, Math.max(1, s.getLastRow()), 2).getValues();
   for (const r of rows) if (String(r[0]).trim() === key) return String(r[1]).trim();
   return '';
+}
+
+function hasSetting_(key) {
+  const s = SpreadsheetApp.getActive().getSheetByName(SH_SETTINGS);
+  if (!s) return false;
+  return s.getRange(1, 1, Math.max(1, s.getLastRow()), 1).getValues().some(r => String(r[0]).trim() === key);
 }
 
 function cleanCode_(s) {

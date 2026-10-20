@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Riyaziyyat Dostu – qeydiyyat</title>
+<meta name="description" content="Riyaziyyat Dostu proqramına qeydiyyat və şəxsi məlumatların istifadəsinə razılıq forması.">
+<meta property="og:title" content="Riyaziyyat Dostu – qeydiyyat">
+<meta property="og:description" content="1–3-cü sinif şagirdləri üçün şəkilli və səsli riyaziyyat. Qeydiyyat formasını doldurun.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="base.css">
+<script src="sagird.js"></script>
+<style>
+.wrap{padding-bottom:48px}
+.intro{display:flex;gap:14px;align-items:flex-start}
+.intro .fox{width:64px;height:64px;font-size:36px;flex:none}
+.intro h1{font-size:clamp(24px,6.5vw,32px);font-weight:900;margin-bottom:6px}
+[hidden]{display:none!important}
+.stack{display:flex;flex-direction:column;gap:16px}
+.stack h2{font-size:19px;font-weight:900}
+.field input,.field select{font:inherit;font-size:19px;font-weight:800;padding:12px 14px;border-radius:16px;border:2px solid var(--edge);background:var(--card);color:var(--ink);width:100%;box-sizing:border-box;min-height:54px}
+.field select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:34px}
+.field .hint{font-size:13.5px;color:var(--muted);font-weight:700}
+.row3{display:grid;grid-template-columns:minmax(92px,1fr) 1.6fr minmax(100px,1.2fr);gap:8px}
+.row3 select{padding-left:12px;padding-right:30px}
+.phone{display:flex;align-items:stretch;gap:8px}
+.phone span{display:grid;place-items:center;padding:0 14px;border-radius:16px;background:var(--bg2);border:2px solid var(--edge);font-weight:900;font-size:19px}
+.grades{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.grades input{position:absolute;opacity:0;pointer-events:none}
+.grades label{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border-radius:18px;border:2px solid var(--edge);background:var(--card);cursor:pointer;font-weight:900;text-align:center}
+.grades label b{font-size:28px;line-height:1}
+.grades label small{font-size:13px;color:var(--muted);font-weight:800}
+.grades input:checked+label{border-color:var(--primary);background:var(--primary-soft);box-shadow:0 0 0 2px var(--primary) inset}
+.grades input:focus-visible+label{outline:3px solid var(--primary);outline-offset:2px}
+.info{background:var(--bg2);border:1px solid var(--edge);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.info p{margin:0}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:18px;border:2px solid var(--edge);background:var(--card);cursor:pointer;font-size:15.5px;font-weight:700}
+.chk input{width:24px;height:24px;flex:none;margin:1px 0 0;accent-color:var(--primary)}
+.chk .tg{display:inline-block;font-size:12px;font-weight:900;border-radius:999px;padding:2px 8px;margin-right:6px;vertical-align:1px}
+.chk .tg.m{background:var(--warn-soft);color:var(--warn)}
+.chk .tg.o{background:var(--good-soft);color:var(--good)}
+.err{color:var(--bad);font-size:14px;font-weight:800;display:none}
+.bad .err{display:block}
+.bad input,.bad select,.bad .phone span{border-color:var(--bad)}
+.bad.chks .chk{border-color:var(--bad)}
+.bad.chks .chk:last-of-type{border-color:var(--edge)}
+.bad .grades label{border-color:var(--bad)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.msg{border-radius:16px;padding:12px 14px;font-weight:800;display:none}
+.msg.show{display:block}
+.msg.e{background:color-mix(in srgb,var(--bad) 12%,var(--card));color:var(--bad)}
+.done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:30px 18px}
+.done .fox{width:96px;height:96px;font-size:52px}
+.done h1{font-size:28px;font-weight:900}
+@media (max-width:380px){.row3{grid-template-columns:1fr 1fr}.row3 .y{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+<div class="card hdr"><div class="logo">🦊</div><div class="brand"><b>Riyaziyyat Dostu</b><span>1–3-cü sinif · şəkilli və səsli riyaziyyat</span></div></div>
+
+<form id="f" class="stack" novalidate>
+  <div class="card intro">
+    <div class="fox" aria-hidden="true">🦊</div>
+    <div>
+      <h1>Şəxsi məlumatların istifadəsinə razılıq forması</h1>
+      <p>Riyaziyyat Dostu proqramına qeydiyyat üçün aşağıdakı məlumatları doldurun.</p>
+    </div>
+  </div>
+
+  <div class="card stack">
+    <h2>Şagird</h2>
+    <div class="field" data-f="ad">
+      <label for="ad">Şagirdin adı</label>
+      <input id="ad" name="ad" autocomplete="off" maxlength="40" required>
+      <p class="err">Zəhmət olmasa, bu xananı doldurun.</p>
+    </div>
+    <div class="field" data-f="soyad">
+      <label for="soyad">Şagirdin soyadı</label>
+      <input id="soyad" name="soyad" autocomplete="off" maxlength="40" required>
+      <p class="err">Zəhmət olmasa, bu xananı doldurun.</p>
+    </div>
+    <div class="field" data-f="dogum">
+      <label id="dl">Şagirdin doğum tarixi</label>
+      <div class="row3" role="group" aria-labelledby="dl">
+        <select id="dg" aria-label="Gün"><option value="">Gün</option></select>
+        <select id="da" aria-label="Ay"><option value="">Ay</option></select>
+        <select id="di" class="y" aria-label="İl"><option value="">İl</option></select>
+      </div>
+      <p class="err">Doğum tarixini seçin.</p>
+    </div>
+    <div class="field" data-f="sinif">
+      <label id="sl">Sinfi</label>
+      <div class="grades" role="radiogroup" aria-labelledby="sl">
+        <input type="radio" name="sinif" id="s1" value="1"><label for="s1"><b>1</b><small>1-ci sinif</small></label>
+        <input type="radio" name="sinif" id="s2" value="2"><label for="s2"><b>2</b><small>2-ci sinif</small></label>
+        <input type="radio" name="sinif" id="s3" value="3"><label for="s3"><b>3</b><small>3-cü sinif</small></label>
+      </div>
+      <p class="err">Sinfi seçin.</p>
+    </div>
+  </div>
+
+  <div class="card stack">
+    <h2>Valideyn</h2>
+    <div class="field" data-f="valideyn">
+      <label for="valideyn">Valideynin adı və soyadı</label>
+      <input id="valideyn" name="valideyn" autocomplete="name" maxlength="80" required>
+      <p class="err">Zəhmət olmasa, bu xananı doldurun.</p>
+    </div>
+    <div class="field" data-f="telefon">
+      <label for="telefon">Valideynin telefon nömrəsi (WhatsApp)</label>
+      <div class="phone"><span>+995</span><input id="telefon" name="telefon" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="555 12 34 56" maxlength="14" required></div>
+      <p class="hint">Bu nömrəyə WhatsApp vasitəsilə şəxsi link və hesabat göndəriləcək.</p>
+      <p class="err">Nömrəni 9 rəqəmlə yazın (məsələn, 555 12 34 56).</p>
+    </div>
+  </div>
+
+  <div class="card stack">
+    <h2>Məlumatların istifadəsi haqqında</h2>
+    <div class="info">
+      <p>Bu məlumatlar yalnız şagirdin təhsilini izləmək, gündəlik tapşırıqları göndərmək və nəticələr barədə valideynə hesabat vermək üçün istifadə olunur.</p>
+      <p>Məlumatlar üçüncü şəxslərə verilmir. Xidmət bitdikdən sonra 6 ay saxlanılır və sonra silinir.</p>
+      <p>İstədiyiniz vaxt məlumatların silinməsini tələb edə və ya razılığınızı geri götürə bilərsiniz – bunun üçün WhatsApp-a yazmağınız kifayətdir.</p>
+      <p id="elaqe" hidden>Əlaqə: <b id="nomre"></b></p>
+    </div>
+    <div class="field chks" data-f="razi">
+      <label class="chk"><input type="checkbox" id="c0"><span><span class="tg m">Mütləq</span>Mən bu şagirdin valideyniyəm və ya qanuni nümayəndəsiyəm.</span></label>
+      <label class="chk"><input type="checkbox" id="c1"><span><span class="tg m">Mütləq</span>Yuxarıdakı məlumatların şagirdin təhsilinin izlənməsi, tapşırıqların göndərilməsi və hesabat üçün istifadə olunmasına razıyam.</span></label>
+      <label class="chk"><input type="checkbox" id="c2"><span><span class="tg m">Mütləq</span>Övladımın öyrənmə nəticələrinin (tapşırıqlar, düzgün cavabların faizi, test balları) saxlanılmasına və mənə WhatsApp vasitəsilə göndərilməsinə razıyam.</span></label>
+      <label class="chk"><input type="checkbox" id="c3"><span><span class="tg o">İstəyə görə</span>Övladımın adı göstərilmədən, onun nəticələrindəki irəliləyişin reklam məqsədilə istifadə olunmasına razıyam.</span></label>
+      <p class="err">Davam etmək üçün «Mütləq» olan üç xananı qeyd edin.</p>
+    </div>
+  </div>
+
+  <div class="hp" aria-hidden="true"><label>Sayt <input id="hp" tabindex="-1" autocomplete="off"></label></div>
+  <p class="msg e" id="msg" role="alert"></p>
+  <button class="big" id="go" type="submit">Göndər</button>
+</form>
+
+<div class="card done" id="ok" hidden>
+  <div class="fox" aria-hidden="true">🦊</div>
+  <h1>Təşəkkür edirik!</h1>
+  <p>Qeydiyyatınız qəbul olundu. Tezliklə WhatsApp vasitəsilə sizinlə əlaqə saxlayacağıq.</p>
+</div>
+
+</div>
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const AYLAR = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'İyun', 'İyul', 'Avqust', 'Sentyabr', 'Oktyabr', 'Noyabr', 'Dekabr'];
+  const add = (sel, v, t) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sel.appendChild(o); };
+  for (let d = 1; d <= 31; d++) add($('dg'), d, d);
+  AYLAR.forEach((m, i) => add($('da'), i + 1, m));
+  const y0 = new Date().getFullYear();
+  for (let y = y0 - 4; y >= y0 - 14; y--) add($('di'), y, y);
+
+  // Əlaqə nömrəsi müəllim cədvəlindən (Ayarlar → ELAQE_NOMRESI)
+  fetch(API_URL + '?action=info', { cache: 'no-store' }).then(r => r.json()).then(j => {
+    if (j && j.phone) { $('nomre').textContent = j.phone; $('elaqe').hidden = false; }
+  }).catch(() => {});
+
+  const digits = () => $('telefon').value.replace(/\D/g, '').replace(/^(995|0)/, '');
+  const pad = n => String(n).padStart(2, '0');
+  function birth() {
+    const d = +$('dg').value, m = +$('da').value, y = +$('di').value;
+    if (!d || !m || !y) return '';
+    const dt = new Date(y, m - 1, d);
+    if (dt.getMonth() !== m - 1) return '';
+    return y + '-' + pad(m) + '-' + pad(d);
+  }
+  const grade = () => (document.querySelector('input[name=sinif]:checked') || {}).value || '';
+  const nameOk = s => s.trim().length >= 2;
+
+  function check() {
+    const bad = {
+      ad: !nameOk($('ad').value), soyad: !nameOk($('soyad').value), dogum: !birth(), sinif: !grade(),
+      valideyn: !nameOk($('valideyn').value), telefon: digits().length !== 9,
+      razi: !($('c0').checked && $('c1').checked && $('c2').checked)
+    };
+    let first = null;
+    document.querySelectorAll('[data-f]').forEach(el => {
+      const b = bad[el.dataset.f];
+      el.classList.toggle('bad', b);
+      if (b && !first) first = el;
+    });
+    return first;
+  }
+  // Səhv düzələn kimi qırmızı işarə itsin
+  $('f').addEventListener('input', () => { if (document.querySelector('.bad')) check(); });
+  $('f').addEventListener('change', () => { if (document.querySelector('.bad')) check(); });
+
+  let busy = false;
+  $('f').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (busy) return;
+    $('msg').classList.remove('show');
+    const first = check();
+    if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    busy = true; $('go').disabled = true; $('go').textContent = 'Göndərilir...';
+    const body = {
+      action: 'register', hp: $('hp').value,
+      ad: $('ad').value.trim(), soyad: $('soyad').value.trim(), dogum: birth(), sinif: grade(),
+      valideyn: $('valideyn').value.trim(), telefon: '995' + digits(),
+      razi: [$('c0').checked, $('c1').checked, $('c2').checked, $('c3').checked]
+    };
+    try {
+      // text/plain: brauzer əlavə yoxlama sorğusu göndərmir
+      const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify(body) });
+      const j = await r.json();
+      if (!j || !j.ok) throw new Error((j && j.error) || 'server');
+      $('f').hidden = true; $('ok').hidden = false; window.scrollTo(0, 0);
+    } catch (err) {
+      $('msg').textContent = 'Göndərmək alınmadı. İnterneti yoxlayıb yenidən cəhd edin. Problem davam edərsə, bizə WhatsApp-a yazın.';
+      $('msg').classList.add('show');
+      busy = false; $('go').disabled = false; $('go').textContent = 'Göndər';
+    }
+  });
+})();
+</script>
+</body>
+</html>

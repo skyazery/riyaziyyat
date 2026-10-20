@@ -6,6 +6,7 @@ Gürcüstandakı azərbaycanlı uşaqlar üçün pulsuz riyaziyyat materialı (1
 - **Səviyyə testi:** `index.html#seviyye` – 2–12 sual, uşağın hansı mövzudan başlamalı olduğunu tapır
 - **Yoxlama testi:** `test.html` – 20 tapşırıq və valideyn hesabatı
 - **Müəllim üçün:** `muellim.html` – cavablar və qiymətləndirmə bələdçisi
+- **Qeydiyyat (Riyaziyyat Dostu):** `qeydiyyat.html` – valideyn razılıq forması; göndərilən məlumat müəllim cədvəlinə (Qeydiyyat və Şagirdlər) avtomatik yazılır
 
 ## 2-ci hissə (`1-2/`)
 
