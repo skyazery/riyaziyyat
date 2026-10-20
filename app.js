@@ -13,6 +13,10 @@ let player=null,foxEl=null,vEl=null;
 function talking(on){if(foxEl)foxEl.classList.toggle('talk',on);if(vEl){vEl.classList.toggle('stop',on);vEl.textContent=on?'⏸ Dayandır':'🔊 Dinlə'}}
 function audioUrl(id){return AUD[id]?'audio/'+id+'.mp3':null}
 function play(id){const u=audioUrl(id);if(!u)return;try{stop();player=new Audio(u);player.onended=player.onpause=()=>talking(false);talking(true);const p=player.play();if(p&&p.catch)p.catch(()=>talking(false))}catch(e){}}
+/* tərif səsi: cavab yoxlananda (səhifə yenidən çəkiləndən sonra) oxunur */
+let PRAISE=null;
+function praise(ok){PRAISE=ok}
+function playPraise(){if(PRAISE===null||!P.sound){PRAISE=null;return}const f=PRAISE?'p_ok'+(1+Math.random()*4|0):'p_no'+(1+Math.random()*2|0);PRAISE=null;setTimeout(()=>{try{stop();player=new Audio((BOOK.praise||'audio/')+f+'.mp3');player.play().catch(()=>{})}catch(e){}},450)}
 function stop(){try{if(player){player.onpause=null;player.pause()}}catch(e){}talking(false)}
 let ac=null;function chime(ok){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;(ok?[523,659,784]:[392,330]).forEach((f,k)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+k*.12);g.gain.exponentialRampToValueAtTime(.18,t+k*.12+.02);g.gain.exponentialRampToValueAtTime(.0001,t+k*.12+.3);o.connect(g).connect(ac.destination);o.start(t+k*.12);o.stop(t+k*.12+.32)})}catch(e){}}
 function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.getElementById('cf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#F6C343','#5145E6','#38C172','#E35D7F','#3BA6F5'];const Q=Array.from({length:60},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.45,vx:(Math.random()-.5)*9,vy:-Math.random()*11-4,s:6+Math.random()*6,c:cols[Math.random()*5|0],r:Math.random()*6}));let n=0;(function f(){x.clearRect(0,0,c.width,c.height);Q.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++n<70)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
@@ -192,7 +196,7 @@ function problemView(p,k){
       if(locked){setBar(k,'Növbəti →',next,'go');return}
       const full=a.every(v=>v!==null);
       setBar(k,'Cavabı yoxla ✓',()=>{const ok=a.every((v,j)=>String(v)===String(c.slots[j]));if(LVM)return lvAnswer(ok);st.tries[k]=(st.tries[k]||0)+1;
-        if(ok){if(st.first[k]===undefined)st.first[k]=st.tries[k]===1;chime(true);confetti()}else{chime(false);if(st.tries[k]>=2)st.shown[k]=true;if(st.first[k]===undefined&&st.tries[k]>=2)st.first[k]=false}
+        if(ok){if(st.first[k]===undefined)st.first[k]=st.tries[k]===1;chime(true);confetti();praise(true)}else{chime(false);praise(st.tries[k]<2?false:null);if(st.tries[k]>=2)st.shown[k]=true;if(st.first[k]===undefined&&st.tries[k]>=2)st.first[k]=false}
         render()},'main',!full);
     }
     upd();
@@ -258,8 +262,8 @@ function webView(p,k,task){
   if(locked){setBar(k,'Növbəti →',next,'go');return}
   const ready=m==='choice'?a!==null:m==='multi'?a.length>0:m==='order'?a.length===w.opts.length:m==='match'?a.every(v=>v!==null):a.some(Boolean);
   setBar(k,'Cavabı yoxla ✓',()=>{const ok=isOk();if(LVM)return lvAnswer(ok);st.tries[k]=(st.tries[k]||0)+1;
-    if(ok){if(st.first[k]===undefined)st.first[k]=st.tries[k]===1;chime(true);confetti()}
-    else{chime(false);if(st.tries[k]>=2){st.shown[k]=true;if(st.first[k]===undefined)st.first[k]=false}}
+    if(ok){if(st.first[k]===undefined)st.first[k]=st.tries[k]===1;chime(true);confetti();praise(true)}
+    else{chime(false);praise(st.tries[k]<2?false:null);if(st.tries[k]>=2){st.shown[k]=true;if(st.first[k]===undefined)st.first[k]=false}}
     render()},'main',!ready);
 }
 }
@@ -283,7 +287,7 @@ function setBar(k,label,fn,kind,disabled){
 }
 
 /* ---------- router ---------- */
-function render(){stop();LVM=false;app.replaceChildren();bar.hidden=true;if(location.hash==='#seviyye'){levelPage();return}const m=location.hash.match(/^#t(\d+)$/);if(m&&TP(+m[1]))topic(+m[1]);else home()}
+function render(){stop();LVM=false;app.replaceChildren();bar.hidden=true;if(location.hash==='#seviyye'){levelPage();return}const m=location.hash.match(/^#t(\d+)$/);if(m&&TP(+m[1]))topic(+m[1]);else home();playPraise()}
 function go(){render();scrollTo(0,0)}
 addEventListener('hashchange',()=>{st=null;step=0;lastAuto=null;if(location.hash!=='#seviyye'||!LT||LT.phase!=='intro')LT=null;go()});
 const KOD=sagirdKodu();
