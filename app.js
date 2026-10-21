@@ -101,15 +101,15 @@ function gate(n){
   return dLeft()>0?'new':'tomorrow';
 }
 /* mövzu bitəndə müəllim cədvəlinə yazılır; yeni mövzu göndərilənə qədər telefonda da saxlanır */
-function dRecord(n,stars,total,isNew){
+function dRecord(n,stars,total,isNew,x){
   if(!KOD)return;
-  const e={d:dayStr(),b:BOOK.id,n,s:stars,t:total};
+  const e={d:dayStr(),b:BOOK.id,n,s:stars,t:total,x};
   if(isNew){const a=dLocal();if(!a.some(x=>x.b===e.b&&x.n===e.n)){a.push(e);dSaveLocal(a)}}
   dPost(e,isNew);
 }
 function dPost(e,isNew){
   if(!API_URL)return Promise.resolve();
-  return movzuGonder(KOD,e.n,e.s,e.t,e.d).then(r=>{
+  return movzuGonder(KOD,e.n,e.s,e.t,e.d,e.x).then(r=>{
     if(!r||!r.ok)throw 0;
     if(SAGIRD&&r.daily)SAGIRD.daily=r.daily;
     if(isNew)dSaveLocal(dLocal().filter(x=>!(x.b===e.b&&x.n===e.n)));
@@ -122,6 +122,29 @@ function dResend(){
   if(keep.length!==a.length)dSaveLocal(keep);
   keep.filter(e=>e.b===BOOK.id).reduce((p,e)=>p.then(()=>dPost(e,true)),Promise.resolve());
 }
+/* mövzunun ətraflı nəticəsi: ilk cəhd, ikinci cəhd, cavabı göstərilən, səhv nömrələri, dəftər özünüqiyməti, vaxt */
+function topicStats(){
+  const ps=T.problems,auto=[],note=[];ps.forEach((p,k)=>(p.check||p.web?auto:note).push(k));
+  const first=auto.filter(k=>st.first[k]===true).length;
+  const second=auto.filter(k=>st.first[k]===false&&!st.shown[k]).length;
+  const shown=auto.filter(k=>st.shown[k]).length;
+  const wrong=auto.filter(k=>st.first[k]!==undefined&&st.first[k]!==true||st.shown[k]&&st.first[k]!==true).map(k=>k+1);
+  const self=[note.filter(k=>st.self[k]===true).length,note.filter(k=>st.self[k]===false).length,note.filter(k=>st.self[k]===undefined).length];
+  const done=ps.filter((p,k)=>st.first[k]!==undefined||st.shown[k]||st.self[k]!==undefined).length;
+  tick();
+  return {first,total:auto.length,x:{second,shown,wrong:[...new Set(wrong)],self,min:Math.round(st.act/6000)/10,done,count:ps.length}};
+}
+/* fəal vaxt: hər addımda ən çox 3 dəqiqə sayılır (uşaq telefonu buraxıb gedəndə vaxt şişməsin) */
+function tick(){if(!st||!st.last)return;const now=Date.now();st.act+=Math.min(now-st.last,180000);st.last=now}
+function dStart(n){
+  if(!KOD||!API_URL||!st||st.started)return;st.started=true;
+  movzuGonder(KOD,n,0,autoCount(T),dayStr(),{count:T.problems.length},'start').catch(()=>{});
+}
+function dLeave(){
+  if(!KOD||!API_URL||!st||!st.started||st.logged||typeof st.n!=='number'||!T)return;
+  const r=topicStats();movzuYarimciq(KOD,st.n,r.first,r.total,dayStr(),r.x);
+}
+addEventListener('pagehide',dLeave);
 function todayCard(){
   const nx=nextNew();if(nx==null)return null;
   const left=dLeft();
@@ -223,7 +246,8 @@ function lockedView(n,gt){
 function topic(n){
   const gt=gate(n);if(gt!=='open'&&gt!=='new')return lockedView(n,gt);
   T=TP(n);
-  if(!st||st.n!==n)st={n,ans:{},tries:{},first:{},shown:{},self:{}};
+  if(!st||st.n!==n)st={n,ans:{},tries:{},first:{},shown:{},self:{},act:0,last:Date.now()};
+  tick();
   const total=T.problems.length;
   const lbl=step===0?'Əsas fikir':step<=total?'Tapşırıq '+step+' / '+total:'Nəticə';
   app.append(h('a',{class:'backlink',href:'#'},'← Bütün mövzular'),
@@ -241,7 +265,7 @@ function teacher(text,aud,tag){
 }
 function conceptView(){
   app.append(teacher(T.concept,T.conceptAudio,'Əsas fikir'),h('div',{class:'card task concept pop'},h('div',{class:'paper'},h('img',{src:T.conceptImg,alt:T.concept}))));
-  setBar(null,'Tapşırıqlara başla →',()=>{step=1;go()},'go');
+  setBar(null,'Tapşırıqlara başla →',()=>{step=1;if(!LVM&&typeof st.n==='number')dStart(st.n);go()},'go');
 }
 function problemView(p,k){
   const c=p.check, done=st.first[k]!==undefined||st.shown[k];
@@ -347,9 +371,9 @@ function webView(p,k,task){
 function next(){step++;go()}
 function doneView(n){
   const t=T,auto=autoCount(t),stars=Object.entries(st.first).filter(([k,v])=>v===true).length;
-  if(!st.logged){st.logged=true;const isNew=!!KOD&&gate(n)==='new';
+  if(!st.logged){const isNew=!!KOD&&gate(n)==='new',r=topicStats();st.logged=true;
     P.t[n]={done:true,stars:Math.max(stars,(P.t[n]&&P.t[n].stars)||0)};save();
-    dRecord(n,stars,auto,isNew)}
+    dRecord(n,stars,auto,isNew,r.x)}
   const g=n<BOOK.last?gate(n+1):null,rest=!!KOD&&g!=null&&g!=='open'&&g!=='new';
   if(stars>=auto*0.7)setTimeout(confetti,200);
   app.append(h('div',{class:'card donebox pop'},h('div',{class:'trophy'},stars>=auto*0.7?'🏆':'🌱'),h('h2',{style:'font-size:28px;font-weight:900'},'Mövzu bitdi!'),
@@ -370,7 +394,7 @@ function setBar(k,label,fn,kind,disabled){
 /* ---------- router ---------- */
 function render(){stop();LVM=false;LOCKV=false;app.replaceChildren();bar.hidden=true;if(location.hash==='#seviyye'){levelPage();return}const m=location.hash.match(/^#t(\d+)$/);if(m&&TP(+m[1]))topic(+m[1]);else home();playPraise()}
 function go(){render();scrollTo(0,0)}
-addEventListener('hashchange',()=>{st=null;step=0;lastAuto=null;if(location.hash!=='#seviyye'||!LT||LT.phase!=='intro')LT=null;go()});
+addEventListener('hashchange',()=>{dLeave();st=null;step=0;lastAuto=null;if(location.hash!=='#seviyye'||!LT||LT.phase!=='intro')LT=null;go()});
 const KOD=sagirdKodu();
 let SAGIRD=KOD?{name:sagirdAdiYaddas(KOD),done:false}:null;
 if(KOD&&API_URL)sagirdMelumati(KOD).then(r=>{if(r&&r.ok){

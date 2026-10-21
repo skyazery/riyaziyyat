@@ -23,7 +23,10 @@ const SH_REG = 'Qeydiyyat';
 const SH_DAILY = 'Gündəlik';
 const TZ_LOCAL = 'Asia/Tbilisi'; // 하루가 바뀌는 기준 (학습지 사이트와 같아야 함)
 const DAILY_HEADERS = ['Tarix (날짜)', 'Saat (시각)', 'Kod', 'Ad (이름)', 'Kitab (책)', 'Mövzu (주제)', 'Mövzu adı',
-  'Ulduz (첫 시도 정답)', 'Tapşırıq (채점 문제 수)', 'Növ (새/복습)'];
+  'Ulduz (첫 시도 정답)', 'Tapşırıq (채점 문제 수)', 'Növ (새/복습/시작만)',
+  'İkinci cəhddə düz (2번째 시도 정답)', 'Cavabı göstərildi (정답 봄)', 'Səhv tapşırıqlar (틀린 문제 번호)',
+  'Dəftər düz/səhv/qeydsiz (공책 자기평가)', 'Vaxt, dəq (걸린 시간·분)', 'Həll etdi (푼 문제 수)'];
+const K_NEW = 'Yeni (새 주제)', K_REV = 'Təkrar (복습)', K_START = 'Başladı (끝내지 못함)';
 const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
@@ -222,7 +225,7 @@ function doPost(e) {
   if (body.action === 'register') return saveRegister_(body);
   const bk = book_(body.b);
   if (body.action === 'level') return saveLevel_(body, bk);
-  if (body.action === 'topic') return saveTopic_(body, bk);
+  if (body.action === 'topic' || body.action === 'start' || body.action === 'progress') return saveTopic_(body, bk);
   if (body.action !== 'submit') return json_({ ok: false, error: 'bad' });
   const code = cleanCode_(body.s);
   const lock = LockService.getScriptLock();
@@ -271,7 +274,8 @@ function studentInfo_(code, bk) {
    사이트는 이 기록으로 하루에 열 수 있는 새 주제 수를 계산합니다. */
 function setupDaily_(ss) {
   let dg = ss.getSheetByName(SH_DAILY) || ss.insertSheet(SH_DAILY);
-  if (!dg.getRange(1, 1).getValue()) {
+  // 예전에 만든 탭에는 새 칸 제목이 없으므로 마지막 칸 제목이 없으면 제목 줄을 다시 씁니다
+  if (!dg.getRange(1, DAILY_HEADERS.length).getValue()) {
     dg.getRange(1, 1, 1, DAILY_HEADERS.length).setValues([DAILY_HEADERS]).setFontWeight('bold').setBackground('#E8F1FF');
     dg.setFrozenRows(1);
     dg.getRange('A:B').setNumberFormat('@');
@@ -290,8 +294,9 @@ function dailyRows_(code) {
   const dg = SpreadsheetApp.getActive().getSheetByName(SH_DAILY);
   if (!dg || dg.getLastRow() < 2) return [];
   return dg.getRange(2, 1, dg.getLastRow() - 1, DAILY_HEADERS.length).getValues()
-    .filter(r => String(r[2]) === code)
-    .map(r => ({ d: fmtDay_(r[0]), b: String(r[4]), n: Number(r[5]), isNew: String(r[9]).indexOf('Yeni') === 0 }));
+    .map((r, i) => ({ row: i + 2, code: String(r[2]), d: fmtDay_(r[0]), b: String(r[4]), n: Number(r[5]),
+      kind: String(r[9]), isNew: String(r[9]).indexOf('Yeni') === 0, start: String(r[9]).indexOf('Başladı') === 0 }))
+    .filter(r => r.code === code);
 }
 
 function dailyInfo_(code) {
@@ -306,37 +311,68 @@ function fmtDay_(v) {
   return String(v || '').trim();
 }
 
+function int_(v, lo, hi) { const n = parseInt(v, 10); return isNaN(n) ? lo : Math.max(lo, Math.min(hi, n)); }
+
+function dayOf_(body, now) {
+  // 인터넷이 없어서 늦게 보낸 기록은 실제로 푼 날짜(최근 7일 안)로 저장
+  const today = Utilities.formatDate(now, TZ_LOCAL, 'yyyy-MM-dd');
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(body.d || ''));
+  if (m) {
+    const diff = (Date.parse(today) - Date.parse(m[0])) / 864e5;
+    if (diff >= 0 && diff <= 7) return m[0];
+  }
+  return today;
+}
+
+// 사이트가 보낸 자세한 기록 (2번째 시도 정답, 정답 본 수, 틀린 문제, 공책 자기평가, 시간, 푼 문제 수)
+function extras_(x, total) {
+  x = x && typeof x === 'object' ? x : {};
+  const wrong = (Array.isArray(x.wrong) ? x.wrong : []).map(v => parseInt(v, 10)).filter(v => v >= 1 && v <= 20).slice(0, 20);
+  const self = Array.isArray(x.self) ? x.self : [];
+  const min = Math.max(0, Math.min(180, Number(x.min) || 0));
+  return [int_(x.second, 0, total || 20), int_(x.shown, 0, total || 20), wrong.length ? wrong.join(', ') : '-',
+    int_(self[0], 0, 20) + ' / ' + int_(self[1], 0, 20) + ' / ' + int_(self[2], 0, 20),
+    Math.round(min * 10) / 10, int_(x.done, 0, 20) + ' / ' + int_(x.count, 0, 20)];
+}
+
+/* action: 'start' – 주제 문제를 시작함(「시작만」 줄), 'progress' – 끝내지 않고 나감(그 줄을 고침),
+           'topic' – 주제를 끝냄(같은 날 「시작만」 줄이 있으면 그 줄을 완료 기록으로 바꿈) */
 function saveTopic_(body, bk) {
   const code = cleanCode_(body.s);
   const n = parseInt(body.n, 10);
   const last = bk.first + bk.topics.length - 1;
   if (!(n >= bk.first && n <= last)) return json_({ ok: false, error: 'bad' });
-  const total = Math.max(0, Math.min(20, parseInt(body.total, 10) || 0));
-  const stars = Math.max(0, Math.min(total, parseInt(body.stars, 10) || 0));
+  const act = body.action;
+  const total = int_(body.total, 0, 20);
+  const stars = Math.min(total, int_(body.stars, 0, 20));
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);
   try {
     const found = findStudent_(code, bk);
     if (!found) return json_({ ok: false, error: 'notfound' });
     const dg = setupDaily_(SpreadsheetApp.getActive());
-    const start = levelInfo_(found, bk).start;
-    const before = dailyRows_(code).some(r => r.b === bk.name && r.n === n);
-    const isNew = start != null && n >= start && !before;
     const now = new Date();
-    // 인터넷이 없어서 늦게 보낸 기록은 실제로 푼 날짜(최근 7일 안)로 저장
-    const today = Utilities.formatDate(now, TZ_LOCAL, 'yyyy-MM-dd');
-    let day = today;
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(body.d || ''));
-    if (m) {
-      const diff = (Date.parse(today) - Date.parse(m[0])) / 864e5;
-      if (diff >= 0 && diff <= 7) day = m[0];
+    const day = dayOf_(body, now);
+    const rows = dailyRows_(code);
+    const open = rows.filter(r => r.b === bk.name && r.n === n && r.d === day && r.start).pop();
+    const write = (row, kind, st, tot, ex) => {
+      dg.getRange(row, 1, 1, 2).setNumberFormat('@');
+      dg.getRange(row, 1, 1, DAILY_HEADERS.length).setValues([[
+        day, Utilities.formatDate(now, TZ_LOCAL, 'HH:mm'), code, found.name,
+        bk.name, n, topicName_(bk, n), st, tot, kind].concat(ex)]);
+    };
+    const ex = extras_(body.x, total);
+    if (act === 'start' || act === 'progress') {
+      if (act === 'start' && open) return json_({ ok: true });
+      if (act === 'progress' && !open) return json_({ ok: true });
+      write(open ? open.row : dg.getLastRow() + 1, K_START, stars, total, ex);
+      SpreadsheetApp.flush();
+      return json_({ ok: true });
     }
-    const r0 = dg.getLastRow() + 1;
-    dg.getRange(r0, 1, 1, 2).setNumberFormat('@');
-    dg.getRange(r0, 1, 1, DAILY_HEADERS.length).setValues([[
-      day, Utilities.formatDate(now, TZ_LOCAL, 'HH:mm'), code, found.name,
-      bk.name, n, topicName_(bk, n), stars, total, isNew ? 'Yeni (새 주제)' : 'Təkrar (복습)'
-    ]]);
+    const start = levelInfo_(found, bk).start;
+    const before = rows.some(r => r.b === bk.name && r.n === n && !r.start);
+    const isNew = start != null && n >= start && !before;
+    write(open ? open.row : dg.getLastRow() + 1, isNew ? K_NEW : K_REV, stars, total, ex);
     SpreadsheetApp.flush();
     return json_({ ok: true, isNew: isNew, daily: dailyInfo_(code) });
   } finally {

@@ -60,9 +60,18 @@ async function testiGonder(code, ans, hints) {
 }
 
 /* Mövzu bitəndə: gündəlik qeyd (müəllim cədvəlinin Gündəlik tabına). Cavabda daily – yeni mövzuların siyahısı */
-async function movzuGonder(code, n, stars, total, d) {
+async function movzuGonder(code, n, stars, total, d, x, action) {
   await serverYoxla_(code);
-  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'topic', b: kitab(), s: code, n: n, stars: stars, total: total, d: d }) });
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: action || 'topic', b: kitab(), s: code, n: n, stars: stars, total: total, d: d, x: x }) });
   if (!r.ok) throw new Error('http ' + r.status);
   return r.json();
+}
+
+/* Səhifə bağlananda yarımçıq mövzunun vəziyyəti (cavab gözləmədən göndərilir) */
+function movzuYarimciq(code, n, stars, total, d, x) {
+  try {
+    if (SERVER_KITAB_OK === false) return;
+    const body = JSON.stringify({ action: 'progress', b: kitab(), s: code, n: n, stars: stars, total: total, d: d, x: x });
+    if (!(navigator.sendBeacon && navigator.sendBeacon(API_URL, body))) fetch(API_URL, { method: 'POST', body: body, keepalive: true }).catch(() => {});
+  } catch (e) {}
 }
