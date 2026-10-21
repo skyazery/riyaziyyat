@@ -10,6 +10,8 @@
  *    자동으로 추가되며(코드·개인 링크·왓츠앱 보내기 링크까지), 선생님 텔레그램으로 알림이 갑니다.
  *  - 학생이 주제(10문제)를 끝낼 때마다 Gündəlik 탭에 기록됩니다. 개인 링크로 공부하는 학생은
  *    새 주제가 하루 GUNDELIK_LIMIT개(Ayarlar 탭, 기본 1)씩 열리고, 밀렸으면 하루 그 2배까지 따라잡을 수 있습니다.
+ *  - 메뉴 「주간 리포트 만들기」(일요일 저녁) / 「월간 리포트 만들기」(월말)를 누르면 Hesabatlar 탭에 학생별 줄이 생깁니다.
+ *    선생님 한마디를 적고 「💬 Göndər」를 누르면 부모님께 리포트 링크(hesabat.html)를 왓츠앱으로 보냅니다.
  *
  * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름
  * 개인정보(생년월일, 전화번호)는 이 시트 안에만 있고, 사이트에는 학생 이름만 전달됩니다.
@@ -27,6 +29,10 @@ const DAILY_HEADERS = ['Tarix (날짜)', 'Saat (시각)', 'Kod', 'Ad (이름)', 
   'İkinci cəhddə düz (2번째 시도 정답)', 'Cavabı göstərildi (정답 봄)', 'Səhv tapşırıqlar (틀린 문제 번호)',
   'Dəftər düz/səhv/qeydsiz (공책 자기평가)', 'Vaxt, dəq (걸린 시간·분)', 'Həll etdi (푼 문제 수)'];
 const K_NEW = 'Yeni (새 주제)', K_REV = 'Təkrar (복습)', K_START = 'Başladı (끝내지 못함)';
+const SH_REPORTS = 'Hesabatlar';
+const REPORT_HEADERS = ['Dövr (기간)', 'Növ (종류)', 'Kod', 'Ad (이름)', 'Oxuduğu gün (공부한 날)', 'Yeni mövzu (새 주제)',
+  'Müəllimin qeydi (선생님 한마디 – 직접 입력)', 'Hesabat linki (리포트 링크)', 'WhatsApp (보내기)'];
+const AYLAR = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avqust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr'];
 const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
@@ -88,6 +94,9 @@ function onOpen() {
     .addItem('① 처음 설정 (탭 만들기)', 'setup')
     .addItem('② 새 학생 링크 만들기', 'makeLinks')
     .addSeparator()
+    .addItem('📊 주간 리포트 만들기 (이번 주)', 'makeWeeklyReports')
+    .addItem('📅 월간 리포트 만들기', 'makeMonthlyReports')
+    .addSeparator()
     .addItem('텔레그램: 내 채팅 ID 찾기', 'findTelegramChat')
     .addItem('텔레그램: 시험 메시지 보내기', 'testTelegram')
     .addToUi();
@@ -143,6 +152,7 @@ function setup() {
   }
   setupRegistration_(ss);
   setupDaily_(ss);
+  setupReports_(ss);
   SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.\n\n' +
     '동의서(qeydiyyat.html)로 등록한 학생은 자동으로 추가되고 링크도 자동으로 만들어집니다. Ayarlar 탭 ELAQE_NOMRESI 칸에 연락처를 넣어 주세요.\n\n' +
     '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름.\n' +
@@ -216,6 +226,7 @@ function doGet(e) {
   const p = (e && e.parameter) || {};
   if (p.action === 'student') return json_(studentInfo_(cleanCode_(p.s), book_(p.b)));
   if (p.action === 'info') return json_({ ok: true, name: SERVICE_NAME, phone: setting_('ELAQE_NOMRESI') });
+  if (p.action === 'report') return json_(reportData_(cleanCode_(p.s), String(p.h || '')));
   return json_({ ok: true, app: 'riyaziyyat' });
 }
 
@@ -294,9 +305,14 @@ function dailyRows_(code) {
   const dg = SpreadsheetApp.getActive().getSheetByName(SH_DAILY);
   if (!dg || dg.getLastRow() < 2) return [];
   return dg.getRange(2, 1, dg.getLastRow() - 1, DAILY_HEADERS.length).getValues()
-    .map((r, i) => ({ row: i + 2, code: String(r[2]), d: fmtDay_(r[0]), b: String(r[4]), n: Number(r[5]),
-      kind: String(r[9]), isNew: String(r[9]).indexOf('Yeni') === 0, start: String(r[9]).indexOf('Başladı') === 0 }))
-    .filter(r => r.code === code);
+    .map(dailyRow_).filter(r => r.code === code);
+}
+
+function dailyRow_(r, i) {
+  return { row: i + 2, code: String(r[2]), d: fmtDay_(r[0]), t: String(r[1]), b: String(r[4]), n: Number(r[5]), name: String(r[6]),
+    kind: String(r[9]), isNew: String(r[9]).indexOf('Yeni') === 0, start: String(r[9]).indexOf('Başladı') === 0,
+    stars: Number(r[7]) || 0, total: Number(r[8]) || 0, second: Number(r[10]) || 0, shown: Number(r[11]) || 0,
+    wrong: String(r[12] || ''), min: Number(r[14]) || 0, done: String(r[15] || '') };
 }
 
 function dailyInfo_(code) {
@@ -378,6 +394,134 @@ function saveTopic_(body, bk) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/* ---------------- 주간·월간 리포트 ----------------
+   기간 열쇠: 주간 'w-YYYY-MM-DD'(그 주 월요일), 월간 'm-YYYY-MM'.
+   hesabat.html?s=코드&h=열쇠 가 action=report 로 이 학생의 기록 전체를 받아 화면에서 계산합니다. */
+function setupReports_(ss) {
+  let rp = ss.getSheetByName(SH_REPORTS) || ss.insertSheet(SH_REPORTS);
+  if (!rp.getRange(1, 1).getValue()) {
+    rp.getRange(1, 1, 1, REPORT_HEADERS.length).setValues([REPORT_HEADERS]).setFontWeight('bold').setBackground('#EFE9FF');
+    rp.setFrozenRows(1);
+    rp.getRange('A:A').setNumberFormat('@');
+    rp.setColumnWidth(7, 360);
+    rp.getRange('G:G').setWrap(true);
+  }
+  return rp;
+}
+
+function ymd_(dt) { return dt.toISOString().slice(0, 10); }
+function addDays_(day, k) { const d = new Date(day + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + k); return ymd_(d); }
+
+// 열쇠 → { kind, key, from, to, label }
+function period_(h) {
+  let m = /^w-(\d{4}-\d{2}-\d{2})$/.exec(h);
+  if (m) {
+    const from = m[1], to = addDays_(from, 6);
+    const f = from.split('-'), t = to.split('-');
+    const label = f[1] === t[1] ? (+f[2]) + '–' + (+t[2]) + ' ' + AYLAR[+t[1] - 1]
+      : (+f[2]) + ' ' + AYLAR[+f[1] - 1] + ' – ' + (+t[2]) + ' ' + AYLAR[+t[1] - 1];
+    return { kind: 'w', key: h, from: from, to: to, label: label };
+  }
+  m = /^m-(\d{4})-(\d{2})$/.exec(h);
+  if (m) {
+    const y = +m[1], mo = +m[2];
+    const last = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+    return { kind: 'm', key: h, from: m[1] + '-' + m[2] + '-01', to: m[1] + '-' + m[2] + '-' + String(last).padStart(2, '0'),
+      label: AYLAR[mo - 1] + ' ' + y };
+  }
+  return null;
+}
+
+function todayLocal_() { return Utilities.formatDate(new Date(), TZ_LOCAL, 'yyyy-MM-dd'); }
+function thisWeekKey_() {
+  const t = todayLocal_(), dow = new Date(t + 'T00:00:00Z').getUTCDay(); // 0=bazar(일)
+  return 'w-' + addDays_(t, -((dow + 6) % 7));
+}
+// 25일 이후에 누르면 이번 달, 그 전에 누르면 지난달
+function monthKey_() {
+  const t = todayLocal_(), y = +t.slice(0, 4), mo = +t.slice(5, 7), d = +t.slice(8, 10);
+  if (d >= 25) return 'm-' + t.slice(0, 7);
+  const p = new Date(Date.UTC(y, mo - 2, 1));
+  return 'm-' + p.toISOString().slice(0, 7);
+}
+
+function reportNote_(key, code) {
+  const rp = SpreadsheetApp.getActive().getSheetByName(SH_REPORTS);
+  if (!rp || rp.getLastRow() < 2) return '';
+  const rows = rp.getRange(2, 1, rp.getLastRow() - 1, 7).getValues();
+  for (let i = rows.length - 1; i >= 0; i--) if (String(rows[i][0]) === key && String(rows[i][2]) === code) return String(rows[i][6] || '').trim();
+  return '';
+}
+
+function reportData_(code, h) {
+  if (!code) return { ok: false, error: 'notfound' };
+  const per = period_(h) || period_(thisWeekKey_());
+  const f = findStudent_(code, BOOKS['1-1']);
+  if (!f) return { ok: false, error: 'notfound' };
+  const st = sheet_(SH_STUDENTS);
+  const grade = String(st.getRange(f.row, C.GRADE).getValue() || '').trim();
+  const levels = {};
+  Object.keys(BOOKS).forEach(id => {
+    const L = levelInfo_(findStudent_(code, BOOKS[id]), BOOKS[id]);
+    levels[id] = { start: L.start, date: L.date };
+  });
+  const rows = dailyRows_(code).map(r => [r.d, r.t, r.b, r.n, r.name, r.start ? 's' : r.isNew ? 'n' : 'r',
+    r.stars, r.total, r.second, r.shown, r.wrong, r.min, r.done]);
+  return { ok: true, name: f.name, grade: grade, period: per, today: todayLocal_(), levels: levels, rows: rows,
+    note: reportNote_(per.key, code), limit: dailyLimit_(), phone: setting_('ELAQE_NOMRESI') };
+}
+
+function makeWeeklyReports() { makeReports_(thisWeekKey_()); }
+function makeMonthlyReports() { makeReports_(monthKey_()); }
+
+function makeReports_(key) {
+  const ui = SpreadsheetApp.getUi();
+  const ss = SpreadsheetApp.getActive();
+  const per = period_(key);
+  const st = sheet_(SH_STUDENTS);
+  const rp = setupReports_(ss);
+  const dg = setupDaily_(ss);
+  const site = (setting_('SAYT_LINKI') || 'https://skyazery.github.io/riyaziyyat/').replace(/\/?$/, '/');
+  const last = st.getLastRow();
+  if (last < 2) { ui.alert('학생이 없어요.'); return; }
+  const studs = st.getRange(2, 1, last - 1, C.CODE).getValues()
+    .map(r => ({ name: String(r[C.NAME - 1]).trim(), phone: r[C.PHONE - 1], code: String(r[C.CODE - 1]).trim() }))
+    .filter(x => x.name && x.code);
+  const all = dg.getLastRow() >= 2 ? dg.getRange(2, 1, dg.getLastRow() - 1, DAILY_HEADERS.length).getValues().map(dailyRow_) : [];
+  const existing = {};
+  if (rp.getLastRow() >= 2) rp.getRange(2, 1, rp.getLastRow() - 1, 3).getValues()
+    .forEach((r, i) => { if (String(r[0]) === key) existing[String(r[2])] = i + 2; });
+  let made = 0;
+  studs.forEach(x => {
+    const mine = all.filter(r => r.code === x.code && r.d >= per.from && r.d <= per.to);
+    const days = new Set(mine.map(r => r.d)).size;
+    const news = mine.filter(r => r.isNew).length;
+    const link = site + 'hesabat.html?s=' + x.code + '&h=' + key;
+    const first = x.name.split(' ')[0];
+    let msg;
+    if (per.kind === 'w') {
+      msg = days ? 'Salam! ' + first + ' üçün bu həftənin (' + per.label + ') riyaziyyat hesabatı hazırdır: ' + days + ' gün oxudu, ' + news + ' yeni mövzu öyrəndi.'
+        : 'Salam! ' + first + ' bu həftə (' + per.label + ') riyaziyyat tapşırıqlarını etməyib. Gəlin, sabahdan yenə hər gün 10 dəqiqə oxuyaq! 🦊';
+    } else {
+      msg = 'Salam! ' + first + ' üçün ' + per.label.split(' ')[0] + ' ayının riyaziyyat hesabatı hazırdır: ' + days + ' gün oxudu, ' + news + ' yeni mövzu öyrəndi.';
+    }
+    msg += '\nƏtraflı hesabat: ' + link;
+    const row = existing[x.code] || Math.max(rp.getLastRow(), 1) + 1;
+    rp.getRange(row, 1).setNumberFormat('@');
+    rp.getRange(row, 1, 1, 6).setValues([[key, per.kind === 'w' ? 'Həftəlik (주간) ' + per.label : 'Aylıq (월간) ' + per.label, x.code, x.name, days, news]]);
+    rp.getRange(row, 8).setValue(link);
+    const phone = waPhone_(x.phone);
+    const cell = rp.getRange(row, 9);
+    if (phone) cell.setRichTextValue(SpreadsheetApp.newRichTextValue().setText('💬 Göndər').setLinkUrl('https://wa.me/' + phone + '?text=' + encodeURIComponent(msg)).build());
+    else cell.setValue('전화번호 확인');
+    if (!existing[x.code]) made++;
+  });
+  rp.activate();
+  ui.alert((per.kind === 'w' ? '주간' : '월간') + ' 리포트 (' + per.label + '): 학생 ' + studs.length + '명' + (made < studs.length ? ' (새 줄 ' + made + '개)' : '') + '\n\n' +
+    'G칸에 선생님 한마디를 적으면 리포트에 바로 나옵니다 (비워 두면 여우 선생님 자동 응원 문장).\n' +
+    'I칸 「💬 Göndər」를 누르면 왓츠앱이 열립니다.');
 }
 
 /* ---------------- 동의서(Qeydiyyat) 저장 ----------------
