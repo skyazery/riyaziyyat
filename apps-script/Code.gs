@@ -96,6 +96,8 @@ function onOpen() {
     .addSeparator()
     .addItem('📊 주간 리포트 만들기 (이번 주)', 'makeWeeklyReports')
     .addItem('📅 월간 리포트 만들기', 'makeMonthlyReports')
+    .addItem('⏰ 리포트 텔레그램 알림 켜기', 'reminderOn')
+    .addItem('🔕 리포트 텔레그램 알림 끄기', 'reminderOff')
     .addSeparator()
     .addItem('텔레그램: 내 채팅 ID 찾기', 'findTelegramChat')
     .addItem('텔레그램: 시험 메시지 보내기', 'testTelegram')
@@ -476,8 +478,7 @@ function reportData_(code, h) {
 function makeWeeklyReports() { makeReports_(thisWeekKey_()); }
 function makeMonthlyReports() { makeReports_(monthKey_()); }
 
-function makeReports_(key) {
-  const ui = SpreadsheetApp.getUi();
+function makeReports_(key, silent) {
   const ss = SpreadsheetApp.getActive();
   const per = period_(key);
   const st = sheet_(SH_STUDENTS);
@@ -485,7 +486,7 @@ function makeReports_(key) {
   const dg = setupDaily_(ss);
   const site = (setting_('SAYT_LINKI') || 'https://skyazery.github.io/riyaziyyat/').replace(/\/?$/, '/');
   const last = st.getLastRow();
-  if (last < 2) { ui.alert('학생이 없어요.'); return; }
+  if (last < 2) { if (!silent) SpreadsheetApp.getUi().alert('학생이 없어요.'); return null; }
   const studs = st.getRange(2, 1, last - 1, C.CODE).getValues()
     .map(r => ({ name: String(r[C.NAME - 1]).trim(), phone: r[C.PHONE - 1], code: String(r[C.CODE - 1]).trim() }))
     .filter(x => x.name && x.code);
@@ -494,10 +495,12 @@ function makeReports_(key) {
   if (rp.getLastRow() >= 2) rp.getRange(2, 1, rp.getLastRow() - 1, 3).getValues()
     .forEach((r, i) => { if (String(r[0]) === key) existing[String(r[2])] = i + 2; });
   let made = 0;
+  const summary = [];
   studs.forEach(x => {
     const mine = all.filter(r => r.code === x.code && r.d >= per.from && r.d <= per.to);
     const days = new Set(mine.map(r => r.d)).size;
     const news = mine.filter(r => r.isNew).length;
+    summary.push({ name: x.name, days: days, news: news });
     const link = site + 'hesabat.html?s=' + x.code + '&h=' + key;
     const first = x.name.split(' ')[0];
     let msg;
@@ -518,10 +521,68 @@ function makeReports_(key) {
     else cell.setValue('전화번호 확인');
     if (!existing[x.code]) made++;
   });
+  if (silent) return { per: per, list: summary };
   rp.activate();
-  ui.alert((per.kind === 'w' ? '주간' : '월간') + ' 리포트 (' + per.label + '): 학생 ' + studs.length + '명' + (made < studs.length ? ' (새 줄 ' + made + '개)' : '') + '\n\n' +
+  SpreadsheetApp.getUi().alert((per.kind === 'w' ? '주간' : '월간') + ' 리포트 (' + per.label + '): 학생 ' + studs.length + '명' + (made < studs.length ? ' (새 줄 ' + made + '개)' : '') + '\n\n' +
     'G칸에 선생님 한마디를 적으면 리포트에 바로 나옵니다 (비워 두면 여우 선생님 자동 응원 문장).\n' +
     'I칸 「💬 Göndər」를 누르면 왓츠앱이 열립니다.');
+  return { per: per, list: summary };
+}
+
+/* ---------------- 리포트 텔레그램 알림 ----------------
+   일요일 REMIND_HOUR시: 이번 주 리포트 줄을 미리 만들고 선생님 텔레그램으로 알림
+   매일 REMIND_HOUR시에 확인해서 그달 마지막 날이면: 월간 리포트 줄을 만들고 알림 */
+const REMIND_HOUR = 19;
+
+function reminderOn() {
+  const ui = SpreadsheetApp.getUi();
+  if (!setting_('TELEGRAM_BOT_TOKEN') || !setting_('TELEGRAM_CHAT_ID')) {
+    ui.alert('Ayarlar 탭에 텔레그램 봇 토큰과 채팅 ID가 먼저 있어야 해요.'); return;
+  }
+  deleteReminders_();
+  ScriptApp.newTrigger('weeklyReminder').timeBased().onWeekDay(ScriptApp.WeekDay.SUNDAY).atHour(REMIND_HOUR).inTimezone(TZ_LOCAL).create();
+  ScriptApp.newTrigger('monthEndCheck').timeBased().everyDays(1).atHour(REMIND_HOUR).inTimezone(TZ_LOCAL).create();
+  sendTelegram_('⏰ 리포트 알림을 켰어요!\n· 매주 일요일 ' + REMIND_HOUR + '시쯤: 주간 리포트\n· 매달 마지막 날 ' + REMIND_HOUR + '시쯤: 월간 리포트');
+  ui.alert('알림을 켰어요. 매주 일요일과 매달 마지막 날 저녁 ' + REMIND_HOUR + '시쯤 텔레그램으로 알려 드려요. (텔레그램에 확인 메시지를 보냈어요)');
+}
+
+function reminderOff() {
+  const n = deleteReminders_();
+  SpreadsheetApp.getUi().alert(n ? '리포트 알림을 껐어요.' : '켜져 있는 알림이 없어요.');
+}
+
+function deleteReminders_() {
+  let n = 0;
+  ScriptApp.getProjectTriggers().forEach(t => {
+    if (['weeklyReminder', 'monthEndCheck'].indexOf(t.getHandlerFunction()) >= 0) { ScriptApp.deleteTrigger(t); n++; }
+  });
+  return n;
+}
+
+function weeklyReminder() { remind_(thisWeekKey_()); }
+
+function monthEndCheck() {
+  const t = todayLocal_();
+  if (addDays_(t, 1).slice(8, 10) === '01') remind_('m-' + t.slice(0, 7));
+}
+
+function remind_(key) {
+  const r = makeReports_(key, true);
+  const url = SpreadsheetApp.getActive().getUrl();
+  if (!r) { sendTelegram_('📊 리포트 보낼 날이에요. 아직 학생이 없어요.'); return; }
+  const w = r.per.kind === 'w';
+  const did = r.list.filter(x => x.days > 0), not = r.list.filter(x => !x.days);
+  const lines = [
+    (w ? '📊 주간 리포트 보낼 시간이에요! (' : '📅 월간 리포트 보낼 시간이에요! (') + r.per.label + ')',
+    '',
+    '공부한 학생 ' + did.length + ' / ' + r.list.length + '명'
+  ];
+  did.slice().sort((a, b) => b.days - a.days).forEach(x => lines.push('✅ ' + x.name + ' – ' + x.days + '일, 새 주제 ' + x.news + '개'));
+  not.forEach(x => lines.push('⚪ ' + x.name + ' – 이번 ' + (w ? '주' : '달') + ' 안 함'));
+  lines.push('', '① 시트 Hesabatlar 탭을 여세요: ' + url,
+    '② 하고 싶은 말은 G칸에 적고 (안 적어도 돼요)',
+    '③ I칸 「💬 Göndər」를 누르면 부모님께 왓츠앱이 열려요.');
+  sendTelegram_(lines.join('\n'));
 }
 
 /* ---------------- 동의서(Qeydiyyat) 저장 ----------------
