@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>2-ci sinif riyaziyyat · 1-ci hissə</title>
+<meta name="description" content="2-ci sinif üçün şəkilli və səsli riyaziyyat tapşırıqları (1-ci hissə, 20 mövzu).">
+<meta property="og:title" content="2-ci sinif riyaziyyat (1-ci hissə) – şəkilli və səsli tapşırıqlar">
+<meta property="og:description" content="20 mövzu, 200 şəkilli tapşırıq, səsli izah və yoxlama testi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../sagird.js"></script>
+</head>
+<body>
+<div class="wrap" id="app"><p class="muted" style="text-align:center;padding:40px">Yüklənir...</p></div>
+<div class="bar" id="bar" hidden><div class="in" id="barIn"></div></div>
+<canvas class="confetti" id="cf"></canvas>
+<script>
+const BOOK={id:'2-1',praise:'../audio/',first:50,last:69,key:'riyaziyyat-2-1-progress',logo:'📙',
+  title:'2-ci sinif riyaziyyat',sub:'Mövzu 50–69 · şəkilli və səsli tapşırıqlar',part:'1',partName:'1-ci hissə',
+  sections:[['Ədədlərin müqayisəsi. Sıralama',50,51],['Toplama (100-ə qədər)',52,54],['Çıxma (100-ə qədər)',55,57],['Vurma və bölmə',58,62],['Həndəsi fiqurlar',63,66],['Toplama (yeni onluğun yaranması)',67,69]],
+  icons:{50:'⚖️',51:'📶',52:'➕',53:'🔟',54:'🧮',55:'➖',56:'🪵',57:'🍂',58:'🔁',59:'✖️',60:'🍬',61:'➗',62:'🧦',63:'📐',64:'🔷',65:'🧊',66:'🗂️',67:'🥚',68:'🧱',69:'🎲'},
+  /* səviyyə testi: hər bölmədən 2 tapşırıq [mövzu, tapşırığın sırası (0-dan)] */
+  lvq:[[[50,5],[51,6]],[[52,4],[54,2]],[[55,2],[57,2]],[[59,3],[60,2]],[[63,4],[64,0]],[[67,4],[68,2]]],
+  allText:'İstədiyi mövzunu təkrar edə bilər. Hazır olanda yoxlama testini edin.',
+  footer:'Mövzular Azərbaycan Respublikasının «Riyaziyyat 2» dərsliyinin (1-ci hissə) ardıcıllığı ilə hazırlanıb.',
+  other:{id:'1-2',href:'../1-2/',label:'📗 ← 1-ci sinif, 2-ci hissə: Mövzu 29–49',text:'Fiqurlar, 20-yə qədər toplama və çıxma, 100-ə qədər ədədlər, pul, ölçmə, saat'}};
+const KITAB=BOOK.id;
+</script>
+<script src="../app.js"></script>
+</body>
+</html>

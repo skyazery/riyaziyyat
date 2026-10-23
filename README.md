@@ -14,4 +14,11 @@ Gürcüstandakı azərbaycanlı uşaqlar üçün pulsuz riyaziyyat materialı (1
 - `1-2/test.html` – 20 tapşırıqlı yoxlama testi
 - `1-2/muellim.html` – cavablar və qiymətləndirmə bələdçisi
 
-Hər iki hissə eyni kodu işlədir: `app.js`, `app.css`, `sagird.js`. Kitabın ayarları səhifənin içindəki `BOOK` obyektindədir.
+## 2-ci sinif, 1-ci hissə (`2-1/`)
+
+- `2-1/index.html` – 20 mövzu (50–69), 200 şəkilli tapşırıq, səsli izah, səviyyə testi
+- `2-1/test.html` – 20 tapşırıqlı yoxlama testi
+- `2-1/muellim.html` – cavablar və qiymətləndirmə bələdçisi
+- Mənbə: `tools/content21.py`, `tools/draw2.py`, `tools/test21.py`, `tools/build_test21.py`, `tools/build_muellim21.py`, səslər: `tools/tts21.py` (az-AZ-BanuNeural, +17Hz)
+
+Bütün hissələr eyni kodu işlədir: `app.js`, `app.css`, `sagird.js`. Kitabın ayarları səhifənin içindəki `BOOK` obyektindədir.

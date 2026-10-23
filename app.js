@@ -40,7 +40,7 @@ function home(){
       g.append(h('a',{class:'tcard'+(done?' done':pass?' pass':here?' here':''),href:'#t'+n},h('span',{class:'num'},done||pass?'✓':String(n)),h('b',{},ICON[n]+' '+t.title),h('small',{},pr?('⭐ '+(pr.stars||0)+' / '+autoCount(t)):done?'✓ Bitib · təkrar et':pass?'Keçildi · təkrar et':here?(KOD?'👉 Bugünkü mövzu':'👉 Buradan başla'):'Başla →')))}
     app.append(g)});
   app.append(h('p',{class:'sec-title'},'🏆 Sonda'),testCard());
-  if(BOOK.other)app.append(otherCard());
+  OTHERS.forEach(o=>app.append(otherCard(o)));
   app.append(h('footer',{},BOOK.footer));
 }
 function testCard(){
@@ -48,7 +48,10 @@ function testCard(){
   if(SAGIRD&&SAGIRD.done)return h('a',{class:'testcard done',href:'test.html?s='+KOD},h('span',{class:'ic'},'📋'),h('div',{},h('b',{},'Testin nəticəsi'),h('span',{},'Valideyn hesabatına bax')));
   return h('a',{class:'testcard',href:'test.html?s='+KOD},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Bütün mövzulardan sonra · yalnız 1 dəfə · 20 tapşırıq')));
 }
-function otherCard(){const o=BOOK.other;return h('a',{class:'tcard other bk-'+o.id,href:o.href+(KOD?'?s='+KOD:'')},h('b',{},o.label),h('small',{},o.text))}
+/* başqa kitablara keçid: BOOK.other bir obyekt və ya siyahı ola bilər */
+const OTHERS=[].concat(BOOK.other||[]);
+const NEXTBOOK=OTHERS.find(o=>o.next)||null;
+function otherCard(o){return h('a',{class:'tcard other bk-'+o.id,href:o.href+(KOD?'?s='+KOD:'')},h('b',{},o.label),h('small',{},o.text))}
 const autoCount=t=>t.problems.filter(p=>p.check||p.web).length;
 
 /* ---------- səviyyə testi ----------
@@ -218,7 +221,7 @@ function lvResult(){
   app.append(brand(null),h('div',{class:'card lvbox pop'},h('div',{class:'ic'},s>=LV_ALL?'🏆':'🧭'),
     h('h2',{},s>=LV_ALL?'Əla! Bütün bölmələri bilir!':'Səviyyə testi bitdi!'),
     s>=LV_ALL
-      ?h('div',{style:'display:flex;flex-direction:column;gap:10px'},h('p',{style:'margin:0;text-align:center;font-weight:700'},BOOK.allText),BOOK.other&&BOOK.other.next?h('a',{class:'big',href:BOOK.other.href+(KOD?'?s='+KOD:''),style:'text-decoration:none;display:block;text-align:center;box-sizing:border-box'},BOOK.other.label):null)
+      ?h('div',{style:'display:flex;flex-direction:column;gap:10px'},h('p',{style:'margin:0;text-align:center;font-weight:700'},BOOK.allText),NEXTBOOK?h('a',{class:'big',href:NEXTBOOK.href+(KOD?'?s='+KOD:''),style:'text-decoration:none;display:block;text-align:center;box-sizing:border-box'},NEXTBOOK.label):null)
       :h('a',{class:'big',href:'#t'+s,style:'text-decoration:none;display:block;text-align:center;box-sizing:border-box'},'Buradan başla: Mövzu '+s+' →',h('br'),h('span',{style:'font-size:16px;opacity:.9'},ICON[s]+' '+TP(s).title)),
     list,
     h('p',{class:'muted',style:'margin:0'},'Əvvəlki mövzular da açıqdır – təkrar üçün istifadə edə bilərsiniz.'),
@@ -286,7 +289,7 @@ function problemView(p,k){
     const set=v=>{a[active]=v;if(v!==null&&active<a.length-1&&c.mode==='sign')active++;paint();upd()};
     if(!locked){
       if(c.mode==='sign')task.append(h('div',{class:'signs'},['>','<','='].map(sg=>h('button',{onclick(){set(sg)}},sg))));
-      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=a[active]==null?'':String(a[active]);let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>2)v=String(d);set(Number(v))}},String(d))));pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Sil'));task.append(pad)}
+      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=a[active]==null?'':String(a[active]);let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>3||Number(v)>100)v=String(d);set(Number(v))}},String(d))));pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Sil'));task.append(pad)}
     }
     const tries=st.tries[k]||0;
     if(solved)task.append(h('div',{class:'fb ok'},h('span',{},'🌟'),st.first[k]?'Əla! Düzgün cavab!':'Düzgün! Afərin, tapdın!'));

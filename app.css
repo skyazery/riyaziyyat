@@ -70,10 +70,11 @@ footer{font-size:12.5px;color:var(--muted);text-align:center;padding:10px}
 .tcard.other{min-height:0;background:color-mix(in srgb,var(--bkink) 10%,var(--card));border:3px solid var(--bkink)}
 .tcard.other b{color:var(--bkink)}
 
-/* kitab başlığı: 1-ci hissə göy, 2-ci hissə yaşıl */
+/* kitab başlığı: 1-1 göy, 1-2 yaşıl, 2-1 narıncı */
 .hdr.bk{border:0;color:#fff;background:linear-gradient(135deg,var(--bk1),var(--bk2));box-shadow:0 6px 0 var(--bk3),var(--shadow);padding:14px 16px;gap:14px}
 .bk-1-1{--bk1:#2F6FE4;--bk2:#5B9BFF;--bk3:#1F4FB0;--bkink:#2F6FE4}
 .bk-1-2{--bk1:#139067;--bk2:#3CCB8E;--bk3:#0B6A4B;--bkink:#139067}
+.bk-2-1{--bk1:#E8590C;--bk2:#FF922B;--bk3:#B8430A;--bkink:#D9480F}
 .hdr.bk .part{flex:none;width:58px;height:58px;border-radius:18px;background:#fff;color:var(--bkink);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 3px 0 rgba(0,0,0,.18)}
 .hdr.bk .part b{font-size:30px;font-weight:900}
 .hdr.bk .part span{font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}

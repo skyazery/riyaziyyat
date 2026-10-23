@@ -170,10 +170,12 @@ h1,h2{text-wrap:balance}
    hesabat.html?s=KOD&h=w-YYYY-MM-DD (həftə, bazar ertəsi) və ya h=m-YYYY-MM (ay).
    Məlumat: müəllim cədvəli (action=report) – Gündəlik, səviyyə testi, müəllimin qeydi. */
 const BOOKS=[
-  {id:'1-1',first:1,last:28,part:'1-ci hissə',sections:[['Əşyanın əlaməti',1,2],['Ədədlər (10-a qədər)',3,8],['Ədədlərin müqayisəsi',9,12],['Toplama (10-a qədər)',13,18],['Çıxma (10-a qədər)',19,23],['Ədədlər (20-yə qədər)',24,28]],
+  {id:'1-1',first:1,last:28,title:'1-ci sinif riyaziyyat',part:'1-ci hissə',next:'2-ci hissəyə keçmək',sections:[['Əşyanın əlaməti',1,2],['Ədədlər (10-a qədər)',3,8],['Ədədlərin müqayisəsi',9,12],['Toplama (10-a qədər)',13,18],['Çıxma (10-a qədər)',19,23],['Ədədlər (20-yə qədər)',24,28]],
    icons:{1:'🧸',2:'🔺',3:'🔢',4:'0️⃣',5:'🖐️',6:'🐞',7:'🔟',8:'🏁',9:'⚖️',10:'🐊',11:'🐸',12:'📶',13:'🍎',14:'🐟',15:'➕',16:'🦘',17:'🎲',18:'🧮',19:'🍂',20:'➖',21:'⬅️',22:'👨‍👩‍👧',23:'❓',24:'🥚',25:'🚀',26:'🪵',27:'⚖️',28:'🏃'}},
-  {id:'1-2',first:29,last:49,part:'2-ci hissə',sections:[['Həndəsi fiqurlar',29,31],['Toplama (20-yə qədər)',32,34],['Çıxma (20-yə qədər)',35,37],['Ədədlər (100-ə qədər). Pullar',38,41],['Ölçmə',42,47],['Məlumatların təsviri',48,49]],
-   icons:{29:'🔺',30:'🧊',31:'🌗',32:'➕',33:'🔟',34:'🎲',35:'➖',36:'🪜',37:'👨‍👩‍👧',38:'💯',39:'🪵',40:'🪙',41:'🛒',42:'✏️',43:'📏',44:'⚖️',45:'🪣',46:'📅',47:'🕐',48:'📊',49:'📈'}}];
+  {id:'1-2',first:29,last:49,title:'1-ci sinif riyaziyyat',part:'2-ci hissə',next:'2-ci sinfə keçmək',sections:[['Həndəsi fiqurlar',29,31],['Toplama (20-yə qədər)',32,34],['Çıxma (20-yə qədər)',35,37],['Ədədlər (100-ə qədər). Pullar',38,41],['Ölçmə',42,47],['Məlumatların təsviri',48,49]],
+   icons:{29:'🔺',30:'🧊',31:'🌗',32:'➕',33:'🔟',34:'🎲',35:'➖',36:'🪜',37:'👨‍👩‍👧',38:'💯',39:'🪵',40:'🪙',41:'🛒',42:'✏️',43:'📏',44:'⚖️',45:'🪣',46:'📅',47:'🕐',48:'📊',49:'📈'}},
+  {id:'2-1',first:50,last:69,title:'2-ci sinif riyaziyyat',part:'1-ci hissə',next:'2-ci hissəyə keçmək',sections:[['Ədədlərin müqayisəsi. Sıralama',50,51],['Toplama (100-ə qədər)',52,54],['Çıxma (100-ə qədər)',55,57],['Vurma və bölmə',58,62],['Həndəsi fiqurlar',63,66],['Toplama (yeni onluğun yaranması)',67,69]],
+   icons:{50:'⚖️',51:'📶',52:'➕',53:'🔟',54:'🧮',55:'➖',56:'🪵',57:'🍂',58:'🔁',59:'✖️',60:'🍬',61:'➗',62:'🧦',63:'📐',64:'🔷',65:'🧊',66:'🗂️',67:'🥚',68:'🧱',69:'🎲'}}];
 const AY=['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
 const DN=['B.e','Ç.a','Ç','C.a','C','Ş','B'];
 const app=document.getElementById('app');
@@ -225,7 +227,9 @@ function doneSet(until){const s=new Set();ROWS.forEach(r=>{if(r.k!=='s'&&r.d<=un
 /* növbəti yeni mövzu (until tarixinin sonunda) */
 function nextTopic(until){
   const ds=doneSet(until);
-  for(const b of BOOKS){const L=lvStart(b);if(b.id==='1-1'&&L==null)return null;for(let n=Math.max(b.first,L??b.first);n<=b.last;n++)if(!ds.has(n))return n}
+  /* şagird səviyyə testini ilk etdiyi kitabdan başlayır (məs. 2-ci sinif şagirdi 2-1-dən) */
+  const fb=BOOKS.findIndex(b=>lvStart(b)!=null);if(fb<0)return null;
+  for(const b of BOOKS.slice(fb)){const L=lvStart(b);for(let n=Math.max(b.first,L??b.first);n<=b.last;n++)if(!ds.has(n))return n}
   return 'all';
 }
 function longestStreak(p){let best=0,cur=0;for(let d=p.from;d<=p.to&&d<=R.today;d=addD(d,1)){if(ROWS.some(r=>r.d===d)){cur++;best=Math.max(best,cur)}else cur=0}return best}
@@ -242,8 +246,8 @@ function header(kind,label){
     h('div',{class:'brand'},h('b',{},'Riyaziyyat Dostu'),h('span',{},kind==='w'?'Həftəlik hesabat':'Aylıq hesabat')),h('span',{class:'month'},label));
 }
 function hero(S,kind){
-  const nx=nextTopic(R.period.to),b=typeof nx==='number'?bookOf(nx):BOOKS[1];
-  const line=[R.grade,'1-ci sinif riyaziyyat, '+b.part].filter(Boolean).join(' · ');
+  const nx=nextTopic(R.period.to),b=typeof nx==='number'?bookOf(nx):BOOKS[BOOKS.length-1];
+  const line=[R.grade,b.title+', '+b.part].filter(Boolean).join(' · ');
   let n=starsOf(S.acc);if(S.days&&S.days<(kind==='w'?3:10))n=Math.max(1,n-1);
   const word=!S.days?'Bu '+(kind==='w'?'həftə':'ay')+' tapşırıq edilməyib':n>=5?'Əla '+(kind==='w'?'həftə!':'ay!'):n===4?'Çox yaxşı '+(kind==='w'?'həftə!':'ay!'):n===3?'Yaxşı '+(kind==='w'?'həftə!':'ay!'):n===2?'Pis deyil!':'Davam edək!';
   return h('section',{class:'card hero'},kind==='m'&&n>=4?h('div',{class:'medal','aria-hidden':'true'},'🏅'):null,
@@ -281,7 +285,7 @@ function goalText(until,kind){
   const per=kind==='w'?7:20,lim=R.limit||1,b=bookOf(nx),end=Math.min(b.last,nx+per*lim-1);
   const half=ROWS.some(r=>r.k==='s'&&r.n===nx&&!ROWS.some(q=>q.k!=='s'&&q.n===nx));
   let t=half?'Yarımçıq qalan mövzunu (Mövzu '+nx+') bitirmək'+(end>nx?', sonra Mövzu '+(nx+1)+'–'+end:'')+'.':end>nx?'Mövzu '+nx+'–'+end+'.':'Mövzu '+nx+'.';
-  if(end===b.last&&b.id==='1-1')t+=' Sonra 2-ci hissəyə keçmək.';
+  if(end===b.last&&b.next)t+=' Sonra '+b.next+'.';
   return t;
 }
 
@@ -319,6 +323,8 @@ const TIPS={
   'Çıxma':['🍎','Süfrədə: «5 alma var, 2-ni yedik. Neçə qaldı?»'],
   'Toplama':['🥄','Süfrədə: «2 qaşıq və 3 qaşıq – cəmi neçə qaşıq?»'],
   'Ədəd':['🪜','Pilləkənləri birlikdə sayın: irəli və geri.'],
+  'Vurma':['🍽️','Süfrədə meyvələri boşqablara bərabər paylayın: «Hər boşqaba neçə düşür?»'],
+  'Həndəsi':['📦','Evdə qutunun üzlərini, tillərini və təpələrini birlikdə sayın. Kitabın küncündə düz bucaq tapın.'],
   'Ölçmə':['📏','Evdə əşyaları ölçün: «Hansı uzundur? Hansı ağırdır?»'],
   'Pul':['🪙','Mağazada: «Bu neçə qəpikdir? Qalıq nə qədər olar?»']};
 function monthly(){
@@ -345,7 +351,7 @@ function monthly(){
     const lbl=x=>x==null?'Səviyyə testi':x==='all'?'Hamısı bitdi':'Mövzu '+x;
     app.append(h('section',{class:'card'},h('div',{class:'sec-h'},h('h2',{},'Harada idi, indi haradadır')),
       h('div',{class:'move'},h('div',{class:'pill'},'Ayın əvvəli',h('small',{},lbl(a))),h('span',{class:'arrow','aria-hidden':'true'},'→'),h('div',{class:'pill now'},'İndi',h('small',{style:'color:inherit'},lbl(z)))),
-      h('div',{class:'path'},track,h('div',{class:'ends'},h('span',{},'Mövzu '+cur.first),h('span',{},'Mövzu '+cur.last+(cur.id==='1-1'?' → 2-ci hissə':'')))),
+      h('div',{class:'path'},track,h('div',{class:'ends'},h('span',{},'Mövzu '+cur.first),h('span',{},'Mövzu '+cur.last+(cur.id==='1-1'?' → 2-ci hissə':cur.id==='1-2'?' → 2-ci sinif':'')))),
       legend([['background:var(--level)','Səviyyə testinə görə bilir'],['background:var(--good)','Öyrəndi'],['background:var(--primary)','Növbəti']])));
   }
   // bölmələr
