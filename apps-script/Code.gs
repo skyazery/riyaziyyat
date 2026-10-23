@@ -10,6 +10,8 @@
  *    자동으로 추가되며(코드·개인 링크·왓츠앱 보내기 링크까지), 선생님 텔레그램으로 알림이 갑니다.
  *  - 학생이 주제(10문제)를 끝낼 때마다 Gündəlik 탭에 기록됩니다. 개인 링크로 공부하는 학생은
  *    새 주제가 하루 GUNDELIK_LIMIT개(Ayarlar 탭, 기본 1)씩 열리고, 밀렸으면 하루 그 2배까지 따라잡을 수 있습니다.
+ *  - 📋 현황판: 학생마다 상태(잘하고 있음/살펴보기/연락 필요)·최근 7일·진도·정답률. 매시간 자동으로 새로 고침.
+ *  - 🔍 학생 보기: 이름을 고르면 그 학생 정보와 최근 기록이 나옴.
  *  - 메뉴 「주간 리포트 만들기」(일요일 저녁) / 「월간 리포트 만들기」(월말)를 누르면 Hesabatlar 탭에 학생별 줄이 생깁니다.
  *    선생님 한마디를 적고 「💬 Göndər」를 누르면 부모님께 리포트 링크(hesabat.html)를 왓츠앱으로 보냅니다.
  *
@@ -93,6 +95,8 @@ function onOpen() {
   SpreadsheetApp.getUi().createMenu('📐 학생 관리')
     .addItem('① 처음 설정 (탭 만들기)', 'setup')
     .addItem('② 새 학생 링크 만들기', 'makeLinks')
+    .addItem('📋 현황판 새로 고침', 'refreshPanelNow')
+    .addItem('🎨 시트 보기 좋게 정리 (처음 한 번)', 'tidySheets')
     .addSeparator()
     .addItem('📊 주간 리포트 만들기 (이번 주)', 'makeWeeklyReports')
     .addItem('📅 월간 리포트 만들기', 'makeMonthlyReports')
@@ -882,4 +886,299 @@ function fmtBirth_(v) {
 
 function json_(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}
+
+
+/* ================= 📋 현황판 · 🔍 학생 보기 · 탭 정리 =================
+   보기 전용 탭입니다. 데이터(Şagirdlər, Gündəlik …)는 바꾸지 않고 읽기만 합니다. */
+const SH_PANEL = '📋 현황판';
+const SH_DETAIL = '🔍 학생 보기';
+const ALL_TOPICS = 49;
+const COL = { brand: '#5145E6', brandSoft: '#ECEAFF', sun: '#FFF4D6', sunInk: '#9A5B00', ok: '#1E8E3E', okSoft: '#E6F4EA',
+  warn: '#B06000', warnSoft: '#FEF7E0', bad: '#C5221F', badSoft: '#FCE8E6', grey: '#BDC1C6', muted: '#5F6368', edit: '#FFF8C5' };
+const STATUS = { bad: ['연락 필요', COL.bad, COL.badSoft], warn: ['살펴보기', COL.warn, COL.warnSoft], ok: ['잘하고 있음', COL.ok, COL.okSoft] };
+
+function bookByTopic_(n) { return n >= BOOKS['1-2'].first ? BOOKS['1-2'] : BOOKS['1-1']; }
+
+// 학생 한 명의 요약 (현황판·학생 보기가 같이 씀)
+function studentSummary_(stu, rows, today) {
+  const comp = rows.filter(r => !r.start);
+  const levels = {};
+  Object.keys(BOOKS).forEach(id => {
+    const bk = BOOKS[id], c = bk.col;
+    const start = parseInt(stu.raw[c.LV_START - 1], 10);
+    levels[id] = { start: start >= bk.first && start <= bk.lvAll ? start : null, date: fmtBirth_(stu.raw[c.LV_DATE - 1]), test: String(stu.raw[c.STATUS - 1]).trim() === DONE, testDate: fmtBirth_(stu.raw[c.DATE - 1]) };
+  });
+  const known = new Set(comp.map(r => r.n));
+  Object.keys(BOOKS).forEach(id => { const L = levels[id].start; if (L != null) for (let n = BOOKS[id].first; n < Math.min(L, BOOKS[id].lvAll); n++) known.add(n); });
+  let next = null;
+  if (levels['1-1'].start != null) {
+    outer: for (const id of Object.keys(BOOKS)) {
+      const bk = BOOKS[id], from = Math.max(bk.first, levels[id].start != null ? levels[id].start : bk.first);
+      for (let n = from; n < bk.lvAll; n++) if (!known.has(n)) { next = n; break outer; }
+    }
+    if (next == null) next = 'all';
+  }
+  const days7 = []; for (let k = 6; k >= 0; k--) days7.push(addDays_(today, -k));
+  const week = days7.map(d => { const rs = rows.filter(r => r.d === d); return rs.some(r => !r.start) ? 1 : rs.length ? 0.5 : 0; });
+  const w = rows.filter(r => r.d >= days7[0] && r.d <= today), wc = w.filter(r => !r.start);
+  const tt = wc.reduce((a, r) => a + r.total, 0), ss = wc.reduce((a, r) => a + r.stars, 0);
+  const wdays = new Set(w.map(r => r.d)).size;
+  // 레벨 테스트 본 날도 「공부한 날」로 봅니다
+  const lvDays = Object.keys(levels).map(id => levels[id].date).filter(Boolean).map(d => d.split('.').reverse().join('-'));
+  const actDays = rows.map(r => r.d).concat(lvDays);
+  const last = actDays.length ? actDays.reduce((m, d) => (d > m ? d : m), actDays[0]) : null;
+  const ago = last ? Math.round((Date.parse(today) - Date.parse(last)) / 864e5) : null;
+  const acc = tt ? Math.round(ss / tt * 100) : null;
+  const allT = comp.reduce((a, r) => a + r.total, 0), allS = comp.reduce((a, r) => a + r.stars, 0);
+  let status, why;
+  if (levels['1-1'].start == null) { status = 'bad'; why = '레벨 테스트 전'; }
+  else if (ago == null || ago >= 3) { status = 'bad'; why = ago == null ? '아직 시작 안 함' : ago + '일째 쉼'; }
+  else if (ago === 2 || (acc != null && acc < 70)) { status = 'warn'; why = ago === 2 ? '2일째 쉼' : '정답률 낮음'; }
+  else { status = 'ok'; why = ''; }
+  return { levels, known: known.size, done: new Set(comp.map(r => r.n)).size, reviews: comp.filter(r => r.kind.indexOf('Təkrar') === 0).length,
+    next, week, wdays, newWeek: w.filter(r => r.isNew).length, acc, accAll: allT ? Math.round(allS / allT * 100) : null,
+    min: wdays ? Math.round(w.reduce((a, r) => a + r.min, 0) / wdays) : null, last, ago, status, why };
+}
+
+function nextLabel_(next) {
+  if (next == null) return '레벨 테스트 전';
+  if (next === 'all') return '모든 주제 끝 → 최종 테스트';
+  return 'Mövzu ' + next + '. ' + topicName_(bookByTopic_(next), next);
+}
+function agoLabel_(ago) { return ago == null ? '—' : ago === 0 ? '오늘' : ago === 1 ? '어제' : ago + '일 전'; }
+
+function readStudents_() {
+  const st = sheet_(SH_STUDENTS), last = st.getLastRow();
+  if (last < 2) return [];
+  const w = Math.max(C.PARENT, NCOL);
+  return st.getRange(2, 1, last - 1, w).getValues().map((r, i) => ({
+    row: i + 2, raw: r, name: String(r[C.NAME - 1]).trim(), birth: fmtBirth_(r[C.BIRTH - 1]), phone: String(r[C.PHONE - 1] || '').trim(),
+    code: String(r[C.CODE - 1]).trim(), link: String(r[C.LINK - 1] || '').trim(), grade: String(r[C.GRADE - 1] || '').trim(), parent: String(r[C.PARENT - 1] || '').trim()
+  })).filter(x => x.name);
+}
+function readDaily_() {
+  const dg = SpreadsheetApp.getActive().getSheetByName(SH_DAILY);
+  if (!dg || dg.getLastRow() < 2) return [];
+  return dg.getRange(2, 1, dg.getLastRow() - 1, DAILY_HEADERS.length).getValues().map(dailyRow_).filter(r => r.code);
+}
+function link_(text, url) { return SpreadsheetApp.newRichTextValue().setText(text).setLinkUrl(url).build(); }
+
+function refreshPanelNow() { refreshPanel(); SpreadsheetApp.getActive().getSheetByName(SH_PANEL).activate(); }
+
+function refreshPanel() {
+  const ss = SpreadsheetApp.getActive();
+  const today = todayLocal_();
+  const studs = readStudents_(), daily = readDaily_();
+  const list = studs.map(x => ({ x, s: studentSummary_(x, daily.filter(r => r.code === x.code), today) }));
+  const order = { bad: 0, warn: 1, ok: 2 };
+  list.sort((a, b) => order[a.s.status] - order[b.s.status] || a.x.name.localeCompare(b.x.name));
+  let sh = ss.getSheetByName(SH_PANEL);
+  if (!sh) { sh = ss.insertSheet(SH_PANEL, 0); }
+  sh.getRange(1, 1, sh.getMaxRows(), sh.getMaxColumns()).breakApart();
+  sh.clear();
+  const NC = 12, widths = [96, 170, 84, 110, 140, 132, 80, 250, 150, 92, 84, 76];
+  widths.forEach((w, i) => sh.setColumnWidth(i + 1, w));
+  sh.setHiddenGridlines(true);
+  // 제목
+  const now = Utilities.formatDate(new Date(), TZ_LOCAL, 'yyyy-MM-dd HH:mm');
+  sh.getRange(1, 1, 1, NC).merge().setValue('📋 학생 현황판 · Riyaziyyat Dostu').setFontSize(18).setFontWeight('bold').setBackground(COL.sun).setFontColor('#1F2433').setVerticalAlignment('middle');
+  sh.getRange(2, 1, 1, NC).merge().setValue(now + ' 기준 · 매시간 자동으로 새로 고쳐져요 · 바로 새로 고치려면 메뉴 「📐 학생 관리 → 📋 현황판 새로 고침」')
+    .setFontColor(COL.sunInk).setBackground(COL.sun).setFontSize(10);
+  sh.setRowHeight(1, 40);
+  // 숫자 카드
+  const kp = [
+    [studs.length, '전체 학생', null],
+    [list.filter(o => o.s.ago === 0).length, '오늘 공부한 학생', 'ok'],
+    [list.filter(o => o.s.wdays > 0).length, '최근 7일 공부한 학생', null],
+    [list.filter(o => o.s.status === 'bad').length, '연락이 필요한 학생', 'bad'],
+    [list.reduce((a, o) => a + o.s.newWeek, 0), '최근 7일 새 주제 합계', null],
+    [list.filter(o => o.s.acc != null).length ? Math.round(list.filter(o => o.s.acc != null).reduce((a, o) => a + o.s.acc, 0) / list.filter(o => o.s.acc != null).length) + '%' : '—', '최근 7일 평균 정답률', null]];
+  kp.forEach((k, i) => {
+    const c = i * 2 + 1, bg = k[2] === 'ok' ? COL.okSoft : k[2] === 'bad' ? COL.badSoft : '#F8F9FA', fg = k[2] === 'ok' ? COL.ok : k[2] === 'bad' ? COL.bad : '#202124';
+    sh.getRange(4, c, 1, 2).merge().setValue(k[0]).setFontSize(22).setFontWeight('bold').setFontColor(fg).setBackground(bg).setHorizontalAlignment('left');
+    sh.getRange(5, c, 1, 2).merge().setValue(k[1]).setFontSize(10).setFontColor(COL.muted).setBackground(bg);
+  });
+  sh.setRowHeight(4, 38);
+  // 표
+  const H = ['상태', '이름', '학년', '부모님', '왓츠앱', '최근 7일 (6일 전→오늘)', '마지막 공부', '지금 주제', '진도 (49주제)', '최근 7일 정답률', '하루 평균', '개인 링크'];
+  const hr = 7;
+  sh.getRange(hr, 1, 1, NC).setValues([H]).setBackground(COL.brand).setFontColor('#FFFFFF').setFontWeight('bold').setFontSize(10).setWrap(true).setVerticalAlignment('middle');
+  sh.setRowHeight(hr, 34);
+  sh.setFrozenRows(hr);
+  if (!list.length) { sh.getRange(hr + 1, 1, 1, NC).merge().setValue('아직 학생이 없어요. 동의서로 등록하면 여기에 나와요.').setFontColor(COL.muted); return; }
+  const vals = list.map(o => [STATUS[o.s.status][0] + (o.s.why ? '\n' + o.s.why : ''), o.x.name, o.x.grade || '—', o.x.parent || '—', '', '',
+    agoLabel_(o.s.ago), nextLabel_(o.s.next), '', o.s.acc == null ? '—' : o.s.acc / 100, o.s.min == null ? '—' : o.s.min + '분', '']);
+  const body = sh.getRange(hr + 1, 1, list.length, NC);
+  body.setValues(vals).setVerticalAlignment('middle').setFontSize(10);
+  sh.getRange(hr + 1, 10, list.length, 1).setNumberFormat('0%').setHorizontalAlignment('right');
+  sh.getRange(hr + 1, 11, list.length, 1).setHorizontalAlignment('right');
+  sh.getRange(hr + 1, 1, list.length, 1).setWrap(true).setFontWeight('bold').setHorizontalAlignment('center');
+  sh.getRange(hr + 1, 2, list.length, 1).setFontWeight('bold');
+  list.forEach((o, i) => {
+    const r = hr + 1 + i, stc = STATUS[o.s.status];
+    sh.setRowHeight(r, 34);
+    sh.getRange(r, 1).setBackground(stc[2]).setFontColor(stc[1]);
+    if (i % 2) sh.getRange(r, 2, 1, NC - 1).setBackground('#F8F9FA');
+    // 왓츠앱
+    const ph = waPhone_(o.x.phone);
+    if (ph) sh.getRange(r, 5).setRichTextValue(link_('💬 ' + ph.slice(3, 6) + ' ' + ph.slice(6, 8) + ' ' + ph.slice(8, 10) + ' ' + ph.slice(10), 'https://wa.me/' + ph));
+    else sh.getRange(r, 5).setValue('전화번호 확인').setFontColor(COL.bad);
+    // 최근 7일 점
+    const txt = o.s.week.map(v => (v === 1 ? '●' : v ? '◐' : '○')).join(' ');
+    let rt = SpreadsheetApp.newRichTextValue().setText(txt);
+    o.s.week.forEach((v, k) => {
+      const color = v === 1 ? COL.ok : v ? '#E37400' : COL.grey;
+      rt = rt.setTextStyle(k * 2, k * 2 + 1, SpreadsheetApp.newTextStyle().setForegroundColor(color).setFontSize(13).build());
+    });
+    sh.getRange(r, 6).setRichTextValue(rt.build());
+    if (o.s.ago == null || o.s.ago >= 3) sh.getRange(r, 7).setFontColor(COL.bad).setFontWeight('bold');
+    else if (o.s.ago === 2) sh.getRange(r, 7).setFontColor(COL.warn).setFontWeight('bold');
+    // 진도 막대
+    sh.getRange(r, 9).setFormula('=SPARKLINE(' + o.s.known + ',{"charttype","bar";"max",' + ALL_TOPICS + ';"color1","' + COL.brand + '"})');
+    sh.getRange(r, 9).setNote(o.s.known + ' / ' + ALL_TOPICS + ' 주제 (레벨 테스트로 아는 주제 포함)');
+    if (o.s.acc != null && o.s.acc < 70) sh.getRange(r, 10).setFontColor(COL.warn).setFontWeight('bold');
+    if (o.x.link) sh.getRange(r, 12).setRichTextValue(link_('열기', o.x.link));
+  });
+  // 안내
+  const lg = hr + list.length + 2;
+  sh.getRange(lg, 1, 1, NC).merge().setValue('● 주제를 끝낸 날   ◐ 시작만 한 날   ○ 안 한 날   ·   연락 필요: 3일 이상 쉼 또는 레벨 테스트 전   ·   살펴보기: 2일째 쉼 또는 최근 정답률 70% 미만')
+    .setFontColor(COL.muted).setFontSize(9);
+  // 학생 보기 드롭다운도 최신으로
+  try { updateDetailList_(); renderDetail_(); } catch (e) {}
+}
+
+/* ---------- 🔍 학생 보기 ---------- */
+function setupDetail_() {
+  const ss = SpreadsheetApp.getActive();
+  let sh = ss.getSheetByName(SH_DETAIL);
+  if (!sh) sh = ss.insertSheet(SH_DETAIL, 1);
+  sh.setHiddenGridlines(true);
+  [110, 220, 24, 86, 250, 90, 70, 60, 60, 110, 60].forEach((w, i) => sh.setColumnWidth(i + 1, w));
+  sh.getRange(1, 1, 1, 11).merge().setValue('🔍 학생 보기 – 이름을 고르면 기록이 바로 나와요').setFontSize(16).setFontWeight('bold').setBackground(COL.sun).setFontColor('#1F2433');
+  sh.setRowHeight(1, 36);
+  sh.getRange(3, 1).setValue('학생 선택 ▸').setFontWeight('bold').setHorizontalAlignment('right');
+  sh.getRange(3, 2).setBackground(COL.brandSoft).setFontColor(COL.brand).setFontWeight('bold').setFontSize(12)
+    .setBorder(true, true, true, true, false, false, COL.brand, SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+  updateDetailList_();
+  return sh;
+}
+function updateDetailList_() {
+  const sh = SpreadsheetApp.getActive().getSheetByName(SH_DETAIL);
+  if (!sh) return;
+  const names = readStudents_().map(x => x.name).sort((a, b) => a.localeCompare(b));
+  const cell = sh.getRange(3, 2);
+  if (!names.length) { cell.clearDataValidations(); return; }
+  cell.setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(names, true).setAllowInvalid(false).build());
+  if (!cell.getValue() || names.indexOf(String(cell.getValue())) < 0) cell.setValue(names[0]);
+}
+// 드롭다운을 바꾸면 자동 실행 (간단 트리거)
+function onEdit(e) {
+  try {
+    if (e && e.range && e.range.getSheet().getName() === SH_DETAIL && e.range.getRow() === 3 && e.range.getColumn() === 2) renderDetail_();
+  } catch (err) {}
+}
+function renderDetail_() {
+  const sh = SpreadsheetApp.getActive().getSheetByName(SH_DETAIL);
+  if (!sh) return;
+  const name = String(sh.getRange(3, 2).getValue()).trim();
+  const area = sh.getRange(5, 1, Math.max(sh.getMaxRows() - 4, 1), 11);
+  area.clear(); area.breakApart();
+  const x = readStudents_().find(s => s.name === name);
+  if (!x) { sh.getRange(5, 1).setValue('학생을 골라 주세요.').setFontColor(COL.muted); return; }
+  const today = todayLocal_();
+  const rows = readDaily_().filter(r => r.code === x.code);
+  const s = studentSummary_(x, rows, today);
+  const stc = STATUS[s.status];
+  const reg = (function () {
+    const rg = SpreadsheetApp.getActive().getSheetByName(SH_REG);
+    if (!rg || rg.getLastRow() < 2) return '';
+    const v = rg.getRange(2, 1, rg.getLastRow() - 1, 12).getValues().filter(r => String(r[11]) === x.code);
+    return v.length ? String(v[0][0]).slice(0, 10) : '';
+  })();
+  const L1 = s.levels['1-1'], L2 = s.levels['1-2'];
+  const info = [
+    ['상태', stc[0] + (s.why ? ' (' + s.why + ')' : '')],
+    ['학년', x.grade || '—'], ['생년월일', x.birth || '—'], ['부모님', x.parent || '—'], ['왓츠앱', ''],
+    ['등록일', reg || '—'], ['코드', x.code || '—'],
+    ['레벨 테스트', L1.start == null ? '아직' : (L1.date || '') + ' → ' + (L1.start >= BOOKS['1-1'].lvAll ? '1권 전부 통과' : 'Mövzu ' + L1.start + '부터')],
+    ['지금 주제', nextLabel_(s.next)],
+    ['진도', s.known + ' / ' + ALL_TOPICS + ' 주제 (직접 끝낸 주제 ' + s.done + '개, 복습 ' + s.reviews + '번)'],
+    ['마지막 공부', agoLabel_(s.ago) + (s.last ? ' (' + s.last + ')' : '')],
+    ['최근 7일', s.wdays + '일 공부 · 정답률 ' + (s.acc == null ? '—' : s.acc + '%') + ' · 하루 평균 ' + (s.min == null ? '—' : s.min + '분')],
+    ['전체 정답률', s.accAll == null ? '—' : s.accAll + '%'],
+    ['최종 테스트', (L1.test ? '1권 완료 (' + L1.testDate + ')' : '1권 아직') + ' · ' + (L2.test ? '2권 완료 (' + L2.testDate + ')' : '2권 아직')]];
+  sh.getRange(5, 1, 1, 2).merge().setValue('학생 정보').setFontWeight('bold').setBackground(COL.sun).setFontColor(COL.sunInk);
+  sh.getRange(6, 1, info.length, 2).setValues(info).setVerticalAlignment('middle').setWrap(true).setFontSize(10)
+    .setBorder(true, true, true, true, true, true, '#E2E3E3', SpreadsheetApp.BorderStyle.SOLID);
+  sh.getRange(6, 1, info.length, 1).setFontColor(COL.muted);
+  sh.getRange(6, 2).setFontColor(stc[1]).setBackground(stc[2]).setFontWeight('bold');
+  const ph = waPhone_(x.phone);
+  if (ph) sh.getRange(10, 2).setRichTextValue(link_('💬 ' + ph.slice(3, 6) + ' ' + ph.slice(6, 8) + ' ' + ph.slice(8, 10) + ' ' + ph.slice(10), 'https://wa.me/' + ph));
+  if (x.link) sh.getRange(5 + info.length + 2, 1, 1, 2).merge().setRichTextValue(link_('🔗 이 학생의 학습지 열기', x.link));
+  // 최근 기록 (최신 30줄)
+  const H = ['날짜', '주제', '종류', '첫 시도', '2번째', '정답 봄', '틀린 문제', '시간'];
+  sh.getRange(5, 4, 1, H.length).setValues([H]).setBackground(COL.brand).setFontColor('#FFFFFF').setFontWeight('bold').setFontSize(10);
+  const recent = rows.slice().sort((a, b) => (b.d + b.t).localeCompare(a.d + a.t)).slice(0, 30);
+  if (!recent.length) { sh.getRange(6, 4, 1, H.length).merge().setValue('아직 공부 기록이 없어요.').setFontColor(COL.muted); return; }
+  const vals = recent.map(r => [r.d.slice(5).replace('-', '.') + ' ' + r.t, 'Mövzu ' + r.n + '. ' + r.name,
+    r.start ? '시작만 (' + (r.done || '-').replace(/\s/g, '') + ')' : r.isNew ? '새 주제' : '복습',
+    r.start ? '—' : r.stars + '/' + r.total, r.start ? '—' : r.second, r.start ? '—' : r.shown, r.wrong || '-', r.min ? r.min + '분' : '—']);
+  sh.getRange(6, 4, vals.length, H.length).setValues(vals).setFontSize(10).setVerticalAlignment('middle')
+    .setBorder(true, true, true, true, true, true, '#E2E3E3', SpreadsheetApp.BorderStyle.SOLID);
+  recent.forEach((r, i) => {
+    const c = sh.getRange(6 + i, 6);
+    if (r.isNew) c.setBackground(COL.okSoft).setFontColor(COL.ok).setFontWeight('bold');
+    else if (r.start) c.setBackground(COL.warnSoft).setFontColor(COL.warn);
+    if (!r.start && r.total && r.stars / r.total < 0.7) sh.getRange(6 + i, 7).setFontColor(COL.warn).setFontWeight('bold');
+  });
+}
+
+/* ---------- 🎨 탭 정리 (처음 한 번) ---------- */
+function tidySheets() {
+  const ss = SpreadsheetApp.getActive();
+  setupDaily_(ss); setupReports_(ss); setupRegistration_(ss);
+  setupDetail_();
+  refreshPanel();
+  const order = [
+    [SH_PANEL, '#5145E6'], [SH_DETAIL, '#E8790C'], [SH_STUDENTS, '#F6A623'], [SH_REPORTS, '#8E6CEF'], [SH_DAILY, '#3BA6F5'],
+    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'],
+    [SH_SETTINGS, '#5F6368']];
+  let pos = 1;
+  order.forEach(([name, color]) => {
+    const sh = ss.getSheetByName(name);
+    if (!sh) return;
+    sh.setTabColor(color);
+    ss.setActiveSheet(sh); ss.moveActiveSheet(pos++);
+    if (name === SH_PANEL || name === SH_DETAIL || name === SH_SETTINGS) return;
+    // 제목 줄 고정 · 줄무늬 · 필터
+    sh.setFrozenRows(1);
+    const lastCol = Math.max(sh.getLastColumn(), 1);
+    try { if (!sh.getBandings().length) sh.getRange(1, 1, sh.getMaxRows(), lastCol).applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY, true, false); } catch (e) {}
+    try { if (!sh.getFilter()) sh.getRange(1, 1, sh.getMaxRows(), lastCol).createFilter(); } catch (e) {}
+    sh.getRange(1, 1, 1, lastCol).setWrap(true).setVerticalAlignment('middle').setFontWeight('bold');
+    sh.setRowHeight(1, 42);
+  });
+  // 원장님이 직접 고치는 칸은 노란색 + 설명
+  const st = ss.getSheetByName(SH_STUDENTS);
+  if (st) {
+    Object.keys(BOOKS).forEach(id => {
+      const c = BOOKS[id].col;
+      [c.LV_START, c.LV_RETRY].forEach(col => {
+        st.getRange(2, col, Math.max(st.getMaxRows() - 1, 1), 1).setBackground(COL.edit);
+        st.getRange(1, col).setNote(col === c.LV_START ? '✏️ 직접 고칠 수 있어요: 숫자를 바꾸면 그 주제부터 시작, 비우면 레벨 테스트를 다시 봐요.' : '✏️ 체크하면 레벨 테스트를 한 번 더 볼 수 있어요.');
+      });
+    });
+    st.setColumnWidth(C.NAME, 170); st.setColumnWidth(C.LINK, 220);
+  }
+  const rp = ss.getSheetByName(SH_REPORTS);
+  if (rp) { rp.getRange(2, 7, Math.max(rp.getMaxRows() - 1, 1), 1).setBackground(COL.edit); rp.getRange(1, 7).setNote('✏️ 선생님 한마디를 여기에 적으면 리포트에 바로 나와요.'); }
+  const se = ss.getSheetByName(SH_SETTINGS);
+  if (se) se.getRange(1, 2, Math.max(se.getLastRow(), 1), 1).setBackground(COL.edit);
+  // 매시간 자동 새로 고침
+  if (!ScriptApp.getProjectTriggers().some(t => t.getHandlerFunction() === 'refreshPanel')) {
+    ScriptApp.newTrigger('refreshPanel').timeBased().everyHours(1).create();
+  }
+  ss.getSheetByName(SH_PANEL).activate();
+  SpreadsheetApp.getUi().alert('정리 완료! 🎨\n\n· 📋 현황판: 학생별 상태 (매시간 자동 새로 고침)\n· 🔍 학생 보기: B3칸에서 이름을 고르세요\n· 노란 칸 = 원장님이 직접 고쳐도 되는 칸\n· 각 탭 제목 줄의 ▼ 필터로 원하는 학생만 볼 수 있어요');
 }
