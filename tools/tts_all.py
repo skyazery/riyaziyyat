@@ -97,6 +97,8 @@ async def main():
         for i, item in enumerate(data['items']):
             a = item.get('audio') or ''
             if a.startswith('data:'):
+                if item.get('aid') == aid(item['ins']):
+                    continue  # səs bu mətnə uyğundur – yenidən yaratmağa ehtiyac yoxdur
                 out = os.path.join(tmp, 'test_%s_%d.mp3' % (b.replace('.', 'b11'), i))
                 jobs.append(synth(sem, item['ins'], out))
                 tests.append((f, i, out))
@@ -123,6 +125,7 @@ async def main():
         for i, v in lst:
             if v.endswith('.mp3'):
                 data['items'][i]['audio'] = 'data:audio/mpeg;base64,' + base64.b64encode(open(v, 'rb').read()).decode()
+                data['items'][i]['aid'] = aid(data['items'][i]['ins'])  # hansı mətnin səsi olduğunu yadda saxla
             else:
                 data['items'][i]['audio'] = v
                 test_ids.setdefault(os.path.dirname(f), set()).add(v)
