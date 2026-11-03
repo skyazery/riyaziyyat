@@ -91,3 +91,63 @@ footer{font-size:12.5px;color:var(--muted);text-align:center;padding:10px}
 .lvcard.today{background:linear-gradient(135deg,#2F9E5B,#45C27A);box-shadow:0 6px 0 #1F7A43}
 .lvcard.rest{background:var(--card);color:inherit;border:2px solid var(--edge);box-shadow:var(--shadow)}
 .lvcard.rest span{color:var(--muted)}
+
+/* ---- dizayn yeniləməsi (2026-11) ---- */
+/* kitab başlığında irəliləyiş dairəsi */
+.hdr.bk .ring{position:relative;flex:none;width:60px;height:60px}
+.hdr.bk .ring svg{width:60px;height:60px;transform:rotate(-90deg)}
+.hdr.bk .ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:15px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
+/* bugünkü mövzu */
+.today2{display:flex;flex-direction:column;gap:10px;border:3px solid #F0A020;background:#FFF8E1;border-radius:24px;padding:14px;box-shadow:0 5px 0 #F3C55B}
+.today2 .lbl{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-weight:900;font-size:13px;color:var(--chip-ink);letter-spacing:.06em;text-transform:uppercase}
+.today2 .week{display:flex;gap:5px;letter-spacing:0;text-transform:none}
+.today2 .week i{width:24px;height:24px;border-radius:50%;background:var(--edge-soft);display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:900;color:#A88F45}
+.today2 .week i.on{background:var(--good);color:#fff}
+.today2 .week i.now{box-shadow:0 0 0 3px #F0A020}
+.today2 .row{display:flex;gap:12px;align-items:center}
+.today2 .ticon{width:58px;height:58px;border-radius:18px;background:#fff;border:2px solid var(--edge);display:grid;place-items:center;font-size:32px;flex:none}
+.today2 .mz{font-weight:800;font-size:13px;color:var(--muted)}
+.today2 h2{font-size:21px;font-weight:900}
+.today2 .go{display:block;text-align:center;text-decoration:none;border-radius:18px;padding:14px;font-weight:900;font-size:19px;background:var(--good);color:#fff;box-shadow:0 4px 0 #1F7A44}
+/* mövzu kartlarının vəziyyəti */
+.tcard{position:relative}
+.tcard.done{background:#F2FBF5;border-color:#A8E0BC}
+.tcard.done .num{background:var(--good);color:#fff}
+.tcard.done small{color:var(--good)}
+.tcard .stars3{position:absolute;top:10px;right:10px;font-size:13px;letter-spacing:-1px}
+.tcard.here{border:3px solid #F0A020;background:#FFFBEF;box-shadow:0 0 0 4px #FFE9B3,var(--shadow)}
+.tcard.here .num{background:#F0A020;color:#fff}
+.tcard.here small{color:var(--chip-ink)}
+.tcard.lock{opacity:1;background:#F7F5EF;border:2px dashed #D9D3BE}
+.tcard.lock b,.tcard.lock small{color:#9C9887}
+.tcard.lock .num{background:#ECE9DE;color:#9C9887}
+/* tapşırıqda müəllim kartı bir sətirdə: şəkil və rəqəmlər bir ekrana sığsın */
+.teach.mini{flex-direction:row;align-items:center;text-align:left;gap:12px;padding:10px 12px;border-radius:22px}
+.teach.mini::after{display:none}
+.teach.mini .fox{width:50px;height:50px;font-size:27px;border-radius:15px;border-width:3px;box-shadow:0 3px 0 #E8A015;flex:none}
+.teach.mini h2{flex:1;font-size:clamp(17px,4.6vw,21px);line-height:1.22}
+.teach.mini .vbtn{flex:none;width:52px;height:52px;min-height:0;padding:0;font-size:24px;border-radius:16px;display:grid;place-items:center}
+/* şəkil yüklənənə qədər yumşaq yer tutucu */
+.paper{min-height:90px;align-items:center}
+.paper img{opacity:0;transition:opacity .25s}
+.paper img.ok{opacity:1}
+.paper:has(img:not(.ok)){background:linear-gradient(90deg,var(--paper) 0%,#FFF6DD 50%,var(--paper) 100%);background-size:200% 100%;animation:shim 1.2s linear infinite}
+@keyframes shim{to{background-position:-200% 0}}
+/* düz cavab: təbrik */
+.fb.cele{flex-direction:row;align-items:center;gap:14px;padding:14px 16px;border:3px solid #8BD3A6;animation:cheer .45s cubic-bezier(.2,1.4,.4,1)}
+.fb.cele .em{font-size:40px;line-height:1;background:none}
+.fb.cele b{display:block;font-size:22px;color:#1F7A44}
+.fb.cele .plus{display:inline-block;margin-top:4px;background:#fff;border:2px solid #F3C55B;border-radius:999px;padding:2px 10px;font-size:14px;color:var(--chip-ink)}
+@keyframes cheer{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.fb.cele,.paper:has(img:not(.ok)){animation:none}}
+/* qaranlıq rejim */
+@media (prefers-color-scheme:dark){
+  .today2{background:#2A2412;border-color:#B07A12;box-shadow:0 5px 0 #6B4B0C}
+  .today2 .ticon{background:var(--card)}
+  .tcard.done{background:#1C2A21;border-color:#2F6B45}
+  .tcard.here{background:#2A2412;box-shadow:0 0 0 4px #4A3A10}
+  .tcard.lock{background:var(--card);border-color:var(--edge)}
+  .fb.cele{border-color:#2F6B45}
+  .fb.cele b{color:var(--good)}
+  .fb.cele .plus{background:var(--card)}
+}

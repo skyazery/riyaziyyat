@@ -37,49 +37,49 @@ def it(area, skill, ins, hint, disp, img=None, options=None, answer=None, tokens
 
 
 # A. Ədədlər: müqayisə və sıralama (100-ə qədər)
-it('A', 'Ədədlərin müqayisəsi', 'Ən böyük ədədi seç.', 'Əvvəlcə onluqlara bax: hansında onluq çoxdur?', '85',
+it('A', 'Ədədlərin müqayisəsi', 'Ən böyük ədədi seçin.', 'Əvvəlcə onluqlara baxın: hansında onluq çoxdur?', '85',
    options=[chip(v, 64, WHITE, INK, GREY) for v in ('58', '85', '80', '55')], answer=1)
-it('A', 'Ədədlərin müqayisəsi', 'Boş xanaya uyğun ədədi yaz.', '47-dən böyük, 49-dan kiçik ədəd.', '48',
+it('A', 'Ədədlərin müqayisəsi', 'Boş xanaya uyğun ədədi yazın.', '47-dən böyük, 49-dan kiçik ədəd.', '48',
    tokens=[47, '<', N, '<', 49], answer=[48])
-it('A', 'Sıralama', 'Beş-beş geri say. Sıranı davam etdir.', 'Hər dəfə 5 çıx: 70, 65, 60...', '55, 50',
+it('A', 'Sıralama', 'Beş-beş geri sayın. Sıranı davam etdirin.', 'Hər dəfə 5 çıxın: 70, 65, 60...', '55, 50',
    tokens=[70, 65, 60, N, N], answer=[55, 50])
-it('A', 'Onluq və təklik', 'Ədədi yaz.', 'Dəstələri on-on, sonra tək çöpləri say.', '63',
+it('A', 'Onluq və təklik', 'Ədədi yazın.', 'Dəstələri on-on, sonra tək çöpləri sayın.', '63',
    img=tens_ones(6, 3, 90), tokens=[N], answer=[63])
 # B. Toplama (100-ə qədər)
-it('B', 'İkirəqəmli + birrəqəmli', 'Cəmi tap.', 'Təkliyi təkliyə əlavə et: 2 + 6. Onluqlar dəyişmir.', '48',
+it('B', 'İkirəqəmli + birrəqəmli', 'Cəmi tapın.', 'Təkliyi təkliyə əlavə edin: 2 + 6. Onluqlar dəyişmir.', '48',
    tokens=[42, '+', 6, '=', N], answer=[48])
-it('B', 'Onluqların toplanması', 'Cəmi tap.', '3 onluq + 5 onluq = ? onluq.', '80',
+it('B', 'Onluqların toplanması', 'Cəmi tapın.', '3 onluq + 5 onluq = ? onluq.', '80',
    img=numline_step(0, 100, 10, 54, start=30, hops=5), tokens=[30, '+', 50, '=', N], answer=[80])
-it('B', 'Yeni onluğun yaranması', 'Əvvəlcə 40-a tamamla, sonra topla.', '38 + 2 = 40. Sonra 3 də əlavə et.', '43',
+it('B', 'Yeni onluğun yaranması', 'Əvvəlcə 40-a tamamlayın, sonra toplayın.', '38 + 2 = 40. Sonra 3 də əlavə edin.', '43',
    tokens=[38, '+', 5, '=', N], answer=[43])
-it('B', 'İkirəqəmli ədədlərin toplanması', 'Cəmi tap.', 'Təkliklər: 7 + 6 = 13. Onluqlar: 40 + 30 = 70. Sonra 70 + 13.', '83',
+it('B', 'İkirəqəmli ədədlərin toplanması', 'Cəmi tapın.', 'Təkliklər: 7 + 6 = 13. Onluqlar: 40 + 30 = 70. Sonra 70 + 13.', '83',
    tokens=[47, '+', 36, '=', N], answer=[83])
 # C. Çıxma (100-ə qədər)
-it('C', 'İkirəqəmli − birrəqəmli', 'Fərqi tap.', 'Təklikdən təklik çıx: 7 − 4.', '63',
+it('C', 'İkirəqəmli − birrəqəmli', 'Fərqi tapın.', 'Təklikdən təklik çıxın: 7 − 4.', '63',
    tokens=[67, '−', 4, '=', N], answer=[63])
-it('C', 'Onluqların çıxılması', 'Fərqi tap.', '9 onluq − 3 onluq = ? onluq.', '60',
+it('C', 'Onluqların çıxılması', 'Fərqi tapın.', '9 onluq − 3 onluq = ? onluq.', '60',
    img=bundles_crossed(9, 3, 60, 5), tokens=[90, '−', 30, '=', N], answer=[60])
-it('C', 'İkirəqəmli ədədlərin fərqi', 'Fərqi tap.', 'Təkliklər: 6 − 3. Onluqlar: 80 − 40.', '43',
+it('C', 'İkirəqəmli ədədlərin fərqi', 'Fərqi tapın.', 'Təkliklər: 6 − 3. Onluqlar: 80 − 40.', '43',
    tokens=[86, '−', 43, '=', N], answer=[43])
 it('C', 'Məsələ', 'Ağacda 48 alma var idi. 15 almanı dərdilər. Neçə alma qaldı?', '48 − 15 = ?', '33',
    img=em('🍎', 90), tokens=[48, '−', 15, '=', N], answer=[33])
 # D. Vurma və bölmə
-it('D', 'Təkrar toplama', 'Təkrar toplamanı vurma ilə yaz.', 'Neçə dəfə 4 toplanıb? Say.', '3',
+it('D', 'Təkrar toplama', 'Təkrar toplamanı vurma ilə yazın.', 'Neçə dəfə 4 toplanıb? Sayın.', '3',
    img=groups('🍓', (4, 4, 4), 44), tokens=[4, '+', 4, '+', 4, '=', 4, '·', N], answer=[3])
-it('D', 'Vurma', 'Hasili tap.', 'Hər əldə 5 barmaq var. Beş-beş say.', '10',
+it('D', 'Vurma', 'Hasili tapın.', 'Hər əldə 5 barmaq var. Beş-beş sayın.', '10',
    img=hstack([em('🖐️', 90), em('🖐️', 90)], 24), tokens=[5, '·', 2, '=', N], answer=[10])
-it('D', 'Bölmə', '12 konfeti 3 boşqaba bərabər payla. Hər boşqaba neçə düşər?', 'Konfetləri bir-bir boşqablara qoy.', '4',
+it('D', 'Bölmə', '12 konfeti 3 boşqaba bərabər paylayın. Hər boşqaba neçə düşər?', 'Konfetləri bir-bir boşqablara qoy.', '4',
    img=plates('🍬', (4, 4, 4), 40), tokens=[12, ':', 3, '=', N], answer=[4])
-it('D', 'Tək və cüt ədədlər', 'Cüt ədədi seç.', 'Cüt ədədin sonu 0, 2, 4, 6 və ya 8 olur.', '36',
+it('D', 'Tək və cüt ədədlər', 'Cüt ədədi seçin.', 'Cüt ədədin sonu 0, 2, 4, 6 və ya 8 olur.', '36',
    options=[chip(v, 64, WHITE, INK, GREY) for v in ('15', '23', '36', '41')], answer=2)
 # E. Həndəsi fiqurlar
-it('E', 'Bucaq', 'Düz bucağı seç.', 'Düz bucaq kvadratın küncü kimidir.', 'düz bucaq',
+it('E', 'Bucaq', 'Düz bucağı seçin.', 'Düz bucaq kvadratın küncü kimidir.', 'düz bucaq',
    options=[angle_img(45, 130), angle_img(90, 130), angle_img(130, 130)], answer=1)
-it('E', 'Çoxbucaqlı', 'Fiqurun neçə bucağı var?', 'Təpələri bir-bir say.', '5',
+it('E', 'Çoxbucaqlı', 'Fiqurun neçə bucağı var?', 'Təpələri bir-bir sayın.', '5',
    img=poly(5, 160, (102, 187, 106)), tokens=[N], answer=[5])
-it('E', 'Üz, til və təpə', 'Kubun neçə təpəsi var?', 'Qırmızı nöqtələri say. Arxada gizlənən nöqtəni də unutma.', '8',
+it('E', 'Üz, til və təpə', 'Kubun neçə təpəsi var?', 'Qırmızı nöqtələri sayın. Arxada gizlənən nöqtəni də unutma.', '8',
    img=cube_marked(160), tokens=[N], answer=[8])
-it('E', 'Qruplaşdırma', 'Artıq olan fiquru seç.', 'Fiqurların formasına bax.', 'dairə',
+it('E', 'Qruplaşdırma', 'Artıq olan fiquru seçin.', 'Fiqurların formasına baxın.', 'dairə',
    options=[shape('square', 90, (66, 165, 245)), shape('square', 90, (239, 83, 80)), shape('circle', 90, (66, 165, 245)), shape('square', 90, (255, 213, 79))], answer=2)
 
 AREAS = [

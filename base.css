@@ -120,7 +120,8 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(-
 .field input{font:inherit;font-size:22px;font-weight:800;padding:14px 16px;border-radius:18px;border:2px solid var(--edge);background:var(--card);color:var(--ink);width:100%;box-sizing:border-box}
 .areas{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;width:100%}
 .areas div{background:var(--bg2);border:1px solid var(--edge);border-radius:14px;padding:8px 10px;font-weight:800;font-size:13.5px;text-align:left}
-.big{width:100%;border:0;border-radius:20px;padding:16px;font-weight:900;font-size:20px;background:var(--primary);color:var(--primary-ink);box-shadow:0 5px 0 color-mix(in srgb,var(--primary) 70%,#000)}
+.big{box-sizing:border-box;width:100%;border:0;border-radius:20px;padding:16px;font-weight:900;font-size:20px;background:var(--primary);color:var(--primary-ink);box-shadow:0 5px 0 color-mix(in srgb,var(--primary) 70%,#000)}
+a.big{display:block;text-align:center;text-decoration:none}
 .note{font-size:13px;color:var(--muted)}
 /* report */
 .rhead{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
