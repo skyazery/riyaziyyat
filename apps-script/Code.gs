@@ -164,10 +164,12 @@ function setup() {
   }
   // 동의서 화면에 보일 연락처 (예전 시트에는 없으면 맨 아래에 추가)
   if (!hasSetting_('ELAQE_NOMRESI')) {
+    SETTINGS_ = null;
     se.appendRow(['ELAQE_NOMRESI', '', '동의서에 보일 왓츠앱 번호 (예: +995 555 12 34 56)']);
     se.getRange(se.getLastRow(), 1).setFontWeight('bold');
   }
   if (!hasSetting_('GUNDELIK_LIMIT')) {
+    SETTINGS_ = null;
     se.appendRow(['GUNDELIK_LIMIT', 1, '하루에 열리는 새 주제 수 (0 = 제한 없음). 밀린 학생은 하루 이 수의 2배까지 따라잡기']);
     se.getRange(se.getLastRow(), 1).setFontWeight('bold');
   }
@@ -261,13 +263,13 @@ function doPost(e) {
   if (body.action !== 'submit') return json_({ ok: false, error: 'bad' });
   const code = cleanCode_(body.s);
   const lock = LockService.getScriptLock();
-  lock.waitLock(20000);
+  if (!lock.tryLock(20000)) return json_({ ok: false, error: 'busy' }); // 너무 붐비면 사이트가 나중에 다시 보냄
   try {
     const found = findStudent_(code, bk);
     if (!found) return json_({ ok: false, error: 'notfound' });
     if (found.status === DONE) {
       // 이미 시험을 봤으면 새 답안은 저장하지 않고 처음 결과를 돌려줍니다
-      return json_(Object.assign({ already: true }, studentInfo_(code, bk)));
+      return json_(Object.assign({ already: true }, studentInfo_(code, bk, true)));
     }
     const ans = sanitizeAns_(body.ans, bk.key);
     const hints = (Array.isArray(body.hints) ? body.hints : []).map(Number).filter(n => n >= 0 && n < bk.key.length);
@@ -293,10 +295,10 @@ function doPost(e) {
   }
 }
 
-function studentInfo_(code, bk) {
+function studentInfo_(code, bk, locked) {
   const f = findStudent_(code, bk);
   if (!f) return { ok: false, error: 'notfound' };
-  const out = { ok: true, b: bk.name, name: f.name, done: f.status === DONE, level: levelInfo_(f, bk), daily: dailyInfo_(code) };
+  const out = { ok: true, b: bk.name, name: f.name, done: f.status === DONE, level: levelInfo_(f, bk), daily: dailyInfo_(code, locked) };
   if (out.done) out.result = lastResult_(code, bk);
   return out;
 }
@@ -336,11 +338,84 @@ function dailyRow_(r, i) {
     wrong: String(r[12] || ''), min: Number(r[14]) || 0, done: String(r[15] || '') };
 }
 
-function dailyInfo_(code) {
-  const rows = dailyRows_(code);
+function dailyInfo_(code, locked) {
+  const dg = SpreadsheetApp.getActive().getSheetByName(SH_DAILY);
+  return dailyInfoFrom_(dg ? dailyLite_(code, dg, locked).rows.map(liteObj_) : []);
+}
+
+function dailyInfoFrom_(rows) {
   return { limit: dailyLimit_(), today: Utilities.formatDate(new Date(), TZ_LOCAL, 'yyyy-MM-dd'),
     news: rows.filter(r => r.isNew).map(r => [r.d, r.b, r.n]),
     days: Array.from(new Set(rows.map(r => r.d))).length };
+}
+
+/* ---------- Gündəlik 빠른 읽기 (캐시) ----------
+   학습지 사이트가 열릴 때마다, 주제를 끝낼 때마다 이 학생의 기록이 필요합니다.
+   예전에는 매번 Gündəlik 탭 전체를 읽어서 기록이 쌓일수록 느려졌습니다.
+   이제는 학생별로 꼭 필요한 것(줄 번호, 날짜, 책, 주제, 종류)만 캐시에 넣어 두고 씁니다.
+   · 캐시는 최대 6시간 유지되고, 사라지면 탭을 한 번 다시 읽어서 채웁니다.
+   · 선생님이 탭에서 줄을 지우거나 칸을 고치면 캐시를 버리고 다시 읽습니다 (줄 수 비교 + onEdit).
+   · 기존 줄을 고쳐 쓰기 전에는 그 줄이 맞는지 한 번 더 확인합니다 (정렬해도 안전).
+   · 탭의 데이터 자체는 예전과 똑같이 저장됩니다. */
+const DC_META = 'dg:meta', DC_TTL = 21600;
+function dcache_() { try { return CacheService.getScriptCache(); } catch (e) { return null; } }
+// 캐시에 넣는 짧은 형태: [줄 번호, 날짜, 책, 주제, 종류(0 복습 · 1 새 주제 · 2 시작만)]
+function liteOf_(r, row) {
+  const k = String(r[9]);
+  return [row, fmtDay_(r[0]), String(r[4]), Number(r[5]), k.indexOf('Yeni') === 0 ? 1 : k.indexOf('Başladı') === 0 ? 2 : 0];
+}
+function liteObj_(a) { return { row: a[0], d: a[1], b: a[2], n: a[3], isNew: a[4] === 1, start: a[4] === 2 }; }
+
+function dailyCacheClear_() { const c = dcache_(); if (c) try { c.remove(DC_META); } catch (e) {} }
+
+// 이 학생의 짧은 기록. locked = 이미 잠금을 잡고 있음 (쓰기 중)
+function dailyLite_(code, dg, locked) {
+  const cache = dcache_();
+  const last = dg.getLastRow();
+  if (cache) {
+    try {
+      const meta = JSON.parse(cache.get(DC_META) || 'null');
+      if (meta && meta.last === last) {
+        const e = JSON.parse(cache.get('dg:' + code) || 'null');
+        if (e && e.ep === meta.ep) return { rows: e.rows, meta: meta };
+      }
+    } catch (e) {}
+  }
+  // 캐시에 없음: 탭을 한 번 읽고, 잠금을 잡을 수 있으면 모든 학생 것을 캐시에 넣습니다
+  const lock = locked ? null : LockService.getScriptLock();
+  const got = locked || lock.tryLock(5000);
+  try {
+    const n = got && !locked ? dg.getLastRow() : last; // 기다리는 동안 줄이 늘었을 수 있음
+    const all = {};
+    if (n >= 2) dg.getRange(2, 1, n - 1, 10).getValues().forEach((r, i) => {
+      const c = String(r[2]);
+      if (c) (all[c] = all[c] || []).push(liteOf_(r, i + 2));
+    });
+    const mine = all[code] || [];
+    if (!got || !cache) return { rows: mine, meta: null };
+    const meta = { last: n, ep: Date.now() + '-' + Math.floor(Math.random() * 1e6) };
+    try {
+      const put = {};
+      put['dg:' + code] = JSON.stringify({ ep: meta.ep, rows: mine });
+      Object.keys(all).forEach(c => { put['dg:' + c] = JSON.stringify({ ep: meta.ep, rows: all[c] }); });
+      cache.putAll(put, DC_TTL);
+      cache.put(DC_META, JSON.stringify(meta), DC_TTL);
+      return { rows: mine, meta: meta };
+    } catch (e) { return { rows: mine, meta: null }; }
+  } finally {
+    if (lock && got) lock.releaseLock();
+  }
+}
+
+// 쓰기 뒤에 이 학생의 캐시를 고칩니다 (잠금 안에서만 부름)
+function dailyLiteSave_(code, rows, meta, last) {
+  const cache = dcache_();
+  if (!cache || !meta) return;
+  try {
+    meta.last = last;
+    cache.put('dg:' + code, JSON.stringify({ ep: meta.ep, rows: rows }), DC_TTL);
+    cache.put(DC_META, JSON.stringify(meta), DC_TTL);
+  } catch (e) { dailyCacheClear_(); }
 }
 
 function fmtDay_(v) {
@@ -383,35 +458,49 @@ function saveTopic_(body, bk) {
   const total = int_(body.total, 0, 20);
   const stars = Math.min(total, int_(body.stars, 0, 20));
   const lock = LockService.getScriptLock();
-  lock.waitLock(20000);
+  if (!lock.tryLock(20000)) return json_({ ok: false, error: 'busy' }); // 너무 붐비면 사이트가 나중에 다시 보냄
   try {
     const found = findStudent_(code, bk);
     if (!found) return json_({ ok: false, error: 'notfound' });
     const dg = setupDaily_(SpreadsheetApp.getActive());
     const now = new Date();
     const day = dayOf_(body, now);
-    const rows = dailyRows_(code);
-    const open = rows.filter(r => r.b === bk.name && r.n === n && r.d === day && r.start).pop();
-    const write = (row, kind, st, tot, ex) => {
+    let L = dailyLite_(code, dg, true), rows, open;
+    const pickOpen = () => { rows = L.rows.map(liteObj_); open = rows.filter(r => r.b === bk.name && r.n === n && r.d === day && r.start).pop(); };
+    pickOpen();
+    // 고쳐 쓸 줄이 아직 그 「시작만」 줄인지 확인 (선생님이 탭을 정렬했거나 줄을 지웠을 수 있음)
+    if (open) {
+      const r = dg.getRange(open.row, 1, 1, 10).getValues()[0];
+      if (!(String(r[2]) === code && fmtDay_(r[0]) === day && String(r[4]) === bk.name && Number(r[5]) === n && String(r[9]).indexOf('Başladı') === 0)) {
+        dailyCacheClear_();
+        L = dailyLite_(code, dg, true);
+        pickOpen();
+      }
+    }
+    const write = (kind, st, tot, ex) => {
+      const row = open ? open.row : dg.getLastRow() + 1;
       dg.getRange(row, 1, 1, 2).setNumberFormat('@');
       dg.getRange(row, 1, 1, DAILY_HEADERS.length).setValues([[
         day, Utilities.formatDate(now, TZ_LOCAL, 'HH:mm'), code, found.name,
         bk.name, n, topicName_(bk, n), st, tot, kind].concat(ex)]);
+      SpreadsheetApp.flush();
+      const flag = kind === K_NEW ? 1 : kind === K_START ? 2 : 0;
+      const lite = L.rows.filter(a => a[0] !== row).concat([[row, day, bk.name, n, flag]]).sort((a, b) => a[0] - b[0]);
+      dailyLiteSave_(code, lite, L.meta, open ? L.meta && L.meta.last : row);
+      return lite;
     };
     const ex = extras_(body.x, total);
     if (act === 'start' || act === 'progress') {
       if (act === 'start' && open) return json_({ ok: true });
       if (act === 'progress' && !open) return json_({ ok: true });
-      write(open ? open.row : dg.getLastRow() + 1, K_START, stars, total, ex);
-      SpreadsheetApp.flush();
+      write(K_START, stars, total, ex);
       return json_({ ok: true });
     }
     const start = levelInfo_(found, bk).start;
     const before = rows.some(r => r.b === bk.name && r.n === n && !r.start);
     const isNew = start != null && n >= start && !before;
-    write(open ? open.row : dg.getLastRow() + 1, isNew ? K_NEW : K_REV, stars, total, ex);
-    SpreadsheetApp.flush();
-    return json_({ ok: true, isNew: isNew, daily: dailyInfo_(code) });
+    const lite = write(isNew ? K_NEW : K_REV, stars, total, ex);
+    return json_({ ok: true, isNew: isNew, daily: dailyInfoFrom_(lite.map(liteObj_)) });
   } finally {
     lock.releaseLock();
   }
@@ -479,13 +568,13 @@ function reportNote_(key, code) {
 function reportData_(code, h) {
   if (!code) return { ok: false, error: 'notfound' };
   const per = period_(h) || period_(thisWeekKey_());
-  const f = findStudent_(code, BOOKS['1-1']);
+  const hit = findStudentRow_(code); // 학생 줄은 한 번만 읽고 책마다 나눠 씀
+  const f = studentOf_(hit, BOOKS['1-1']);
   if (!f) return { ok: false, error: 'notfound' };
-  const st = sheet_(SH_STUDENTS);
-  const grade = String(st.getRange(f.row, C.GRADE).getValue() || '').trim();
+  const grade = String(hit.raw[C.GRADE - 1] || '').trim();
   const levels = {};
   Object.keys(BOOKS).forEach(id => {
-    const L = levelInfo_(findStudent_(code, BOOKS[id]), BOOKS[id]);
+    const L = levelInfo_(studentOf_(hit, BOOKS[id]), BOOKS[id]);
     levels[id] = { start: L.start, date: L.date };
   });
   const rows = dailyRows_(code).map(r => [r.d, r.t, r.b, r.n, r.name, r.start ? 's' : r.isNew ? 'n' : 'r',
@@ -510,13 +599,14 @@ function makeReports_(key, silent) {
     .map(r => ({ name: String(r[C.NAME - 1]).trim(), phone: r[C.PHONE - 1], code: String(r[C.CODE - 1]).trim() }))
     .filter(x => x.name && x.code);
   const all = dg.getLastRow() >= 2 ? dg.getRange(2, 1, dg.getLastRow() - 1, DAILY_HEADERS.length).getValues().map(dailyRow_) : [];
+  const byCode = groupByCode_(all);
   const existing = {};
   if (rp.getLastRow() >= 2) rp.getRange(2, 1, rp.getLastRow() - 1, 3).getValues()
     .forEach((r, i) => { if (String(r[0]) === key) existing[String(r[2])] = i + 2; });
   let made = 0;
   const summary = [];
   studs.forEach(x => {
-    const mine = all.filter(r => r.code === x.code && r.d >= per.from && r.d <= per.to);
+    const mine = (byCode[x.code] || []).filter(r => r.d >= per.from && r.d <= per.to);
     const days = new Set(mine.map(r => r.d)).size;
     const news = mine.filter(r => r.isNew).length;
     summary.push({ name: x.name, days: days, news: news });
@@ -623,6 +713,9 @@ function setupRegistration_(ss) {
   return rg;
 }
 
+// 공개 양식에서 온 글이 = + - @ 로 시작하면 시트가 수식으로 실행하므로 앞의 기호를 떼어 냅니다
+function noFormula_(s) { return String(s).replace(/^[=+\-@\s]+/, ''); }
+
 function cleanText_(v, max) {
   return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max || 60);
 }
@@ -642,7 +735,7 @@ function cleanBirth_(v) {
 function saveRegister_(body) {
   if (body.hp) return json_({ ok: true }); // 자동 스팸 프로그램이 숨은 칸을 채운 경우: 저장하지 않음
   const nameOk = s => s.length >= 2 && /^[\p{L}][\p{L} '’\-]*$/u.test(s);
-  const ad = cleanText_(body.ad), soyad = cleanText_(body.soyad), parent = cleanText_(body.valideyn, 80);
+  const ad = cleanText_(body.ad), soyad = cleanText_(body.soyad), parent = noFormula_(cleanText_(body.valideyn, 80));
   const birth = cleanBirth_(body.dogum);
   const grade = ['1', '2', '3', '4', '5', '6'].indexOf(String(body.sinif)) >= 0 ? String(body.sinif) : '';
   const gradeName = grade ? grade + ({ '3': '-cü', '4': '-cü', '6': '-cı' }[grade] || '-ci') + ' sinif' : '';
@@ -661,7 +754,7 @@ function saveRegister_(body) {
   const phone = '+995 ' + wa.slice(3, 6) + ' ' + wa.slice(6, 8) + ' ' + wa.slice(8, 10) + ' ' + wa.slice(10, 12);
   const full = ad + ' ' + soyad;
   const lock = LockService.getScriptLock();
-  lock.waitLock(20000);
+  if (!lock.tryLock(20000)) return json_({ ok: false, error: 'busy' }); // 너무 붐비면 사이트가 나중에 다시 보냄
   try {
     const ss = SpreadsheetApp.getActive();
     const rg = setupRegistration_(ss);
@@ -729,7 +822,7 @@ function saveLevel_(body, bk) {
     .map(e => (Array.isArray(e) ? [Number(e[0]) || 0, Number(e[1]) || 0, e[2] ? 1 : 0] : null))
     .filter(e => e && e[0] >= bk.first && e[0] < bk.lvAll);
   const lock = LockService.getScriptLock();
-  lock.waitLock(20000);
+  if (!lock.tryLock(20000)) return json_({ ok: false, error: 'busy' }); // 너무 붐비면 사이트가 나중에 다시 보냄
   try {
     const found = findStudent_(code, bk);
     if (!found) return json_({ ok: false, error: 'notfound' });
@@ -772,22 +865,28 @@ function levelSteps_(log, bk) {
   return Object.keys(res).map(Number).sort((a, b) => a - b).map(i => (i + 1) + (res[i] ? '✓' : '✗')).join(' ') || '-';
 }
 
-function findStudent_(code, bk) {
+/* 학생 찾기: 코드 칸(D)만 읽어서 줄을 찾고, 그 한 줄만 읽습니다.
+   (재응시 체크박스가 시트 끝까지 있어서 전체를 읽으면 1000줄 × 23칸을 매번 읽게 됩니다) */
+function findStudentRow_(code) {
   if (!code) return null;
   const st = sheet_(SH_STUDENTS);
   const last = st.getLastRow();
   if (last < 2) return null;
-  const rows = st.getRange(2, 1, last - 1, NCOL).getValues();
-  const c = bk.col;
-  for (let i = 0; i < rows.length; i++) {
-    if (String(rows[i][C.CODE - 1]).trim().toUpperCase() === code) {
-      const r = rows[i];
-      return { row: i + 2, name: String(r[C.NAME - 1]).trim(), birth: r[C.BIRTH - 1], status: String(r[c.STATUS - 1]).trim(),
-        lvStart: r[c.LV_START - 1], lvDate: r[c.LV_DATE - 1], lvRetry: r[c.LV_RETRY - 1] };
-    }
+  const codes = st.getRange(2, C.CODE, last - 1, 1).getValues();
+  for (let i = 0; i < codes.length; i++) {
+    if (String(codes[i][0]).trim().toUpperCase() === code) return { row: i + 2, raw: st.getRange(i + 2, 1, 1, NCOL).getValues()[0] };
   }
   return null;
 }
+
+function studentOf_(hit, bk) {
+  if (!hit) return null;
+  const r = hit.raw, c = bk.col;
+  return { row: hit.row, name: String(r[C.NAME - 1]).trim(), birth: r[C.BIRTH - 1], status: String(r[c.STATUS - 1]).trim(),
+    lvStart: r[c.LV_START - 1], lvDate: r[c.LV_DATE - 1], lvRetry: r[c.LV_RETRY - 1] };
+}
+
+function findStudent_(code, bk) { return studentOf_(findStudentRow_(code), bk); }
 
 function lastResult_(code, bk) {
   const rs = SpreadsheetApp.getActive().getSheetByName(bk.results);
@@ -875,18 +974,23 @@ function sheet_(name) {
   return s;
 }
 
-function setting_(key) {
+// Ayarlar 탭은 한 번 실행할 때 한 번만 읽습니다 (setup 이 줄을 추가하면 다시 읽음)
+let SETTINGS_ = null;
+function settingsRows_() {
+  if (SETTINGS_) return SETTINGS_;
   const s = SpreadsheetApp.getActive().getSheetByName(SH_SETTINGS);
-  if (!s) return '';
-  const rows = s.getRange(1, 1, Math.max(1, s.getLastRow()), 2).getValues();
-  for (const r of rows) if (String(r[0]).trim() === key) return String(r[1]).trim();
+  if (!s) return [];
+  SETTINGS_ = s.getRange(1, 1, Math.max(1, s.getLastRow()), 2).getValues();
+  return SETTINGS_;
+}
+
+function setting_(key) {
+  for (const r of settingsRows_()) if (String(r[0]).trim() === key) return String(r[1]).trim();
   return '';
 }
 
 function hasSetting_(key) {
-  const s = SpreadsheetApp.getActive().getSheetByName(SH_SETTINGS);
-  if (!s) return false;
-  return s.getRange(1, 1, Math.max(1, s.getLastRow()), 1).getValues().some(r => String(r[0]).trim() === key);
+  return settingsRows_().some(r => String(r[0]).trim() === key);
 }
 
 function cleanCode_(s) {
@@ -908,7 +1012,7 @@ function json_(o) {
    보기 전용 탭입니다. 데이터(Şagirdlər, Gündəlik …)는 바꾸지 않고 읽기만 합니다. */
 const SH_PANEL = '📋 현황판';
 const SH_DETAIL = '🔍 학생 보기';
-const ALL_TOPICS = 69;
+const ALL_TOPICS = Object.keys(BOOKS).reduce((a, id) => a + BOOKS[id].topics.length, 0); // 지금 69 (책을 추가하면 자동으로 늘어남)
 const COL = { brand: '#5145E6', brandSoft: '#ECEAFF', sun: '#FFF4D6', sunInk: '#9A5B00', ok: '#1E8E3E', okSoft: '#E6F4EA',
   warn: '#B06000', warnSoft: '#FEF7E0', bad: '#C5221F', badSoft: '#FCE8E6', grey: '#BDC1C6', muted: '#5F6368', edit: '#FFF8C5' };
 const STATUS = { bad: ['연락 필요', COL.bad, COL.badSoft], warn: ['살펴보기', COL.warn, COL.warnSoft], ok: ['잘하고 있음', COL.ok, COL.okSoft] };
@@ -974,6 +1078,8 @@ function readStudents_() {
     code: String(r[C.CODE - 1]).trim(), link: String(r[C.LINK - 1] || '').trim(), grade: String(r[C.GRADE - 1] || '').trim(), parent: String(r[C.PARENT - 1] || '').trim()
   })).filter(x => x.name);
 }
+function groupByCode_(rows) { const m = {}; rows.forEach(r => { (m[r.code] = m[r.code] || []).push(r); }); return m; }
+
 function readDaily_() {
   const dg = SpreadsheetApp.getActive().getSheetByName(SH_DAILY);
   if (!dg || dg.getLastRow() < 2) return [];
@@ -986,14 +1092,15 @@ function refreshPanelNow() { refreshPanel(); SpreadsheetApp.getActive().getSheet
 function refreshPanel() {
   const ss = SpreadsheetApp.getActive();
   const today = todayLocal_();
-  const studs = readStudents_(), daily = readDaily_();
-  const list = studs.map(x => ({ x, s: studentSummary_(x, daily.filter(r => r.code === x.code), today) }));
+  const studs = readStudents_(), byCode = groupByCode_(readDaily_());
+  const list = studs.map(x => ({ x, s: studentSummary_(x, byCode[x.code] || [], today) }));
   const order = { bad: 0, warn: 1, ok: 2 };
   list.sort((a, b) => order[a.s.status] - order[b.s.status] || a.x.name.localeCompare(b.x.name));
   let sh = ss.getSheetByName(SH_PANEL);
   if (!sh) { sh = ss.insertSheet(SH_PANEL, 0); }
   sh.getRange(1, 1, sh.getMaxRows(), sh.getMaxColumns()).breakApart();
   sh.clear();
+  try { sh.clearNotes(); } catch (e) {} // 학생 수가 줄었을 때 예전 메모가 남지 않게
   const NC = 12, widths = [96, 170, 84, 110, 140, 132, 80, 250, 150, 92, 84, 76];
   widths.forEach((w, i) => sh.setColumnWidth(i + 1, w));
   sh.setHiddenGridlines(true);
@@ -1018,7 +1125,7 @@ function refreshPanel() {
   });
   sh.setRowHeight(4, 38);
   // 표
-  const H = ['상태', '이름', '학년', '부모님', '왓츠앱', '최근 7일 (6일 전→오늘)', '마지막 공부', '지금 주제', '진도 (49주제)', '최근 7일 정답률', '하루 평균', '개인 링크'];
+  const H = ['상태', '이름', '학년', '부모님', '왓츠앱', '최근 7일 (6일 전→오늘)', '마지막 공부', '지금 주제', '진도 (' + ALL_TOPICS + '주제)', '최근 7일 정답률', '하루 평균', '개인 링크'];
   const hr = 7;
   sh.getRange(hr, 1, 1, NC).setValues([H]).setBackground(COL.brand).setFontColor('#FFFFFF').setFontWeight('bold').setFontSize(10).setWrap(true).setVerticalAlignment('middle');
   sh.setRowHeight(hr, 34);
@@ -1032,15 +1139,18 @@ function refreshPanel() {
   sh.getRange(hr + 1, 11, list.length, 1).setHorizontalAlignment('right');
   sh.getRange(hr + 1, 1, list.length, 1).setWrap(true).setFontWeight('bold').setHorizontalAlignment('center');
   sh.getRange(hr + 1, 2, list.length, 1).setFontWeight('bold');
+  // 줄마다 따로 칠하지 않고 한 번에 씁니다 (학생이 많아도 빠름)
+  const NO = SpreadsheetApp.newRichTextValue().setText('').build();
+  const bg = [], fc = [], fw = [], rich = [], links = [], forms = [], notes = [];
   list.forEach((o, i) => {
-    const r = hr + 1 + i, stc = STATUS[o.s.status];
-    sh.setRowHeight(r, 34);
-    sh.getRange(r, 1).setBackground(stc[2]).setFontColor(stc[1]);
-    if (i % 2) sh.getRange(r, 2, 1, NC - 1).setBackground('#F8F9FA');
+    const stc = STATUS[o.s.status], zebra = i % 2 ? '#F8F9FA' : null;
+    const b = [stc[2]], f = [stc[1]], w = ['bold', 'bold'];
+    for (let k = 1; k < NC; k++) { b.push(zebra); f.push('#000000'); if (k > 1) w.push('normal'); }
     // 왓츠앱
     const ph = waPhone_(o.x.phone);
-    if (ph) sh.getRange(r, 5).setRichTextValue(link_('💬 ' + ph.slice(3, 6) + ' ' + ph.slice(6, 8) + ' ' + ph.slice(8, 10) + ' ' + ph.slice(10), 'https://wa.me/' + ph));
-    else sh.getRange(r, 5).setValue('전화번호 확인').setFontColor(COL.bad);
+    const wa = ph ? link_('💬 ' + ph.slice(3, 6) + ' ' + ph.slice(6, 8) + ' ' + ph.slice(8, 10) + ' ' + ph.slice(10), 'https://wa.me/' + ph)
+      : SpreadsheetApp.newRichTextValue().setText('전화번호 확인').build();
+    if (!ph) f[4] = COL.bad;
     // 최근 7일 점
     const txt = o.s.week.map(v => (v === 1 ? '●' : v ? '◐' : '○')).join(' ');
     let rt = SpreadsheetApp.newRichTextValue().setText(txt);
@@ -1048,15 +1158,22 @@ function refreshPanel() {
       const color = v === 1 ? COL.ok : v ? '#E37400' : COL.grey;
       rt = rt.setTextStyle(k * 2, k * 2 + 1, SpreadsheetApp.newTextStyle().setForegroundColor(color).setFontSize(13).build());
     });
-    sh.getRange(r, 6).setRichTextValue(rt.build());
-    if (o.s.ago == null || o.s.ago >= 3) sh.getRange(r, 7).setFontColor(COL.bad).setFontWeight('bold');
-    else if (o.s.ago === 2) sh.getRange(r, 7).setFontColor(COL.warn).setFontWeight('bold');
+    rich.push([wa, rt.build()]);
+    if (o.s.ago == null || o.s.ago >= 3) { f[6] = COL.bad; w[6] = 'bold'; }
+    else if (o.s.ago === 2) { f[6] = COL.warn; w[6] = 'bold'; }
     // 진도 막대
-    sh.getRange(r, 9).setFormula('=SPARKLINE(' + o.s.known + ',{"charttype","bar";"max",' + ALL_TOPICS + ';"color1","' + COL.brand + '"})');
-    sh.getRange(r, 9).setNote(o.s.known + ' / ' + ALL_TOPICS + ' 주제 (레벨 테스트로 아는 주제 포함)');
-    if (o.s.acc != null && o.s.acc < 70) sh.getRange(r, 10).setFontColor(COL.warn).setFontWeight('bold');
-    if (o.x.link) sh.getRange(r, 12).setRichTextValue(link_('열기', o.x.link));
+    forms.push(['=SPARKLINE(' + o.s.known + ',{"charttype","bar";"max",' + ALL_TOPICS + ';"color1","' + COL.brand + '"})']);
+    notes.push([o.s.known + ' / ' + ALL_TOPICS + ' 주제 (레벨 테스트로 아는 주제 포함)']);
+    if (o.s.acc != null && o.s.acc < 70) { f[9] = COL.warn; w[9] = 'bold'; }
+    links.push([o.x.link ? link_('열기', o.x.link) : NO]);
+    bg.push(b); fc.push(f); fw.push(w);
   });
+  const n = list.length;
+  sh.setRowHeights(hr + 1, n, 34);
+  body.setBackgrounds(bg).setFontColors(fc).setFontWeights(fw);
+  sh.getRange(hr + 1, 5, n, 2).setRichTextValues(rich);
+  sh.getRange(hr + 1, 9, n, 1).setFormulas(forms).setNotes(notes);
+  sh.getRange(hr + 1, 12, n, 1).setRichTextValues(links);
   // 안내
   const lg = hr + list.length + 2;
   sh.getRange(lg, 1, 1, NC).merge().setValue('● 주제를 끝낸 날   ◐ 시작만 한 날   ○ 안 한 날   ·   연락 필요: 3일 이상 쉼 또는 레벨 테스트 전   ·   살펴보기: 2일째 쉼 또는 최근 정답률 70% 미만')
@@ -1092,6 +1209,8 @@ function updateDetailList_() {
 // 드롭다운을 바꾸면 자동 실행 (간단 트리거)
 function onEdit(e) {
   try {
+    // 선생님이 Gündəlik 탭을 직접 고치면 빠른 읽기 캐시를 버립니다
+    if (e && e.range && e.range.getSheet().getName() === SH_DAILY) { dailyCacheClear_(); return; }
     if (e && e.range && e.range.getSheet().getName() === SH_DETAIL && e.range.getRow() === 3 && e.range.getColumn() === 2) renderDetail_();
   } catch (err) {}
 }
