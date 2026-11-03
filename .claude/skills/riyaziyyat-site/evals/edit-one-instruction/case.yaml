@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: edit-one-instruction
+expected_outcome: |
+  Only problem 2 of topic 4 in book 1-1 gets the new instruction. Its audio is regenerated so the
+  spoken text matches (new md5 id in voice.json, mp3 present and listed in audio.json); problems 3–4
+  that share the old sentence keep their audio. The site checker passes, the change is committed on a
+  branch other than main, nothing is pushed, and the user gets a short Korean summary.
