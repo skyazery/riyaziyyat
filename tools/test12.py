@@ -35,49 +35,49 @@ def it(area, skill, ins, hint, disp, img=None, options=None, answer=None, tokens
 
 
 # A. Həndəsi fiqurlar
-it('A', 'Fiqurlar', 'Kvadratı seç.', 'Kvadratın 4 tərəfi var və hamısı bərabərdir.', 'kvadrat',
+it('A', 'Fiqurlar', 'Kvadratı seçin.', 'Kvadratın 4 tərəfi var və hamısı bərabərdir.', 'kvadrat',
    options=[shape('circle', 100, ORANGE), shape('rect', 90, ORANGE), shape('square', 100, ORANGE), shape('triangle', 100, ORANGE)], answer=2)
-it('A', 'Fəza fiqurları', 'Kürəni seç.', 'Kürə top kimi yumrudur.', 'kürə',
+it('A', 'Fəza fiqurları', 'Kürəni seçin.', 'Kürə top kimi yumrudur.', 'kürə',
    options=[solid('cube', 100, (66, 165, 245)), solid('cone', 100, (66, 165, 245)), solid('sphere', 100, (66, 165, 245))], answer=2)
-it('A', 'Tam, yarı', 'Hansı fiqur 2 bərabər hissəyə bölünüb? Seç.', 'Hər iki hissə eyni böyüklükdə olmalıdır.', '2-ci fiqur',
+it('A', 'Tam, yarı', 'Hansı fiqur 2 bərabər hissəyə bölünüb? Seçin.', 'Hər iki hissə eyni böyüklükdə olmalıdır.', '2-ci fiqur',
    options=[shape('circle', 100, (102, 187, 106), split=0.3), shape('square', 100, (102, 187, 106), split=0.5), shape('triangle', 100, (102, 187, 106), split='tri_bad')], answer=1)
-it('A', 'Yarı', '10 almanın yarısı neçədir?', '10 almanı iki bərabər qrupa böl.', '5',
+it('A', 'Yarı', '10 almanın yarısı neçədir?', '10 almanı iki bərabər qrupa bölün.', '5',
    img=frame(row('🍎', 10, 64, 8, 5), 14), tokens=[N], answer=[5])
 # B. Toplama
-it('B', 'Toplama', 'Cəmi tap.', '13-dən 4 addım irəli say: 14, 15, 16, 17.', '17',
+it('B', 'Toplama', 'Cəmi tapın.', '13-dən 4 addım irəli sayın: 14, 15, 16, 17.', '17',
    img=numline(10, 20, 56, start=13), tokens=[13, '+', 4, '=', N], answer=[17])
-it('B', '10-a tamamlamaqla toplama', 'Əvvəlcə 10-a tamamla, sonra topla.', '8 + 2 = 10. Qalan 3-ü də əlavə et.', '13',
+it('B', '10-a tamamlamaqla toplama', 'Əvvəlcə 10-a tamamlayın, sonra toplayın.', '8 + 2 = 10. Qalan 3-ü də əlavə edin.', '13',
    img=hstack([dots_frame(8, 2), dots_frame(0, 3)], 24), tokens=[8, '+', 5, '=', N], answer=[13])
-it('B', '10-a tamamlamaqla toplama', 'Cəmi tap.', '9 + 1 = 10. Sonra 6 da əlavə et.', '16',
+it('B', '10-a tamamlamaqla toplama', 'Cəmi tapın.', '9 + 1 = 10. Sonra 6 da əlavə edin.', '16',
    tokens=[9, '+', 7, '=', N], answer=[16])
-it('B', 'Üç ədədin cəmi', 'Əvvəlcə 10 düzəlt, sonra topla.', '6 + 4 = 10. Sonra 10 + 5.', '15',
+it('B', 'Üç ədədin cəmi', 'Əvvəlcə 10 düzəldin, sonra toplayın.', '6 + 4 = 10. Sonra 10 + 5.', '15',
    tokens=[6, '+', 5, '+', 4, '=', N], answer=[15])
 # C. Çıxma
-it('C', 'Çıxma', 'Fərqi tap.', '17-dən 5 addım geri say.', '12',
+it('C', 'Çıxma', 'Fərqi tapın.', '17-dən 5 addım geri sayın.', '12',
    img=numline(10, 20, 56, start=17), tokens=[17, '−', 5, '=', N], answer=[12])
-it('C', '10-a qədər azaltmaqla çıxma', 'Əvvəlcə 10-a qədər azalt, sonra çıx.', '14 − 4 = 10. Sonra 10 − 2.', '8',
+it('C', '10-a qədər azaltmaqla çıxma', 'Əvvəlcə 10-a qədər azaldın, sonra çıxın.', '14 − 4 = 10. Sonra 10 − 2.', '8',
    img=hstack([dots_frame(10, cross=2), dots_frame(4, cross=4)], 24), tokens=[14, '−', 6, '=', N], answer=[8])
-it('C', 'Toplama və çıxmanın əlaqəsi', 'Toplamaya bax və çıxmanı tamamla.', '8 + 7 = 15. Deməli, 15 − 7 = 8.', '8',
+it('C', 'Toplama və çıxmanın əlaqəsi', 'Toplamaya baxın və çıxmanı tamamlayın.', '8 + 7 = 15. Deməli, 15 − 7 = 8.', '8',
    img=expr(['8', '+', '7', '=', '15'], 60), tokens=[15, '−', 7, '=', N], answer=[8])
-it('C', 'Məchulun tapılması', 'Məchul toplananı tap.', '9-a neçə əlavə etsək, 16 olar?', '7',
+it('C', 'Məchulun tapılması', 'Məchul toplananı tapın.', '9-a neçə əlavə etsək, 16 olar?', '7',
    tokens=[9, '+', N, '=', 16], answer=[7])
 # D. 100-ə qədər ədədlər və pullar
-it('D', '100-ə qədər sayma', 'Beş-beş say. Boş xanalara yaz.', 'Hər dəfə 5 əlavə et: 5, 10, 15...', '15, 25',
+it('D', '100-ə qədər sayma', 'Beş-beş sayın. Boş xanalara yazın.', 'Hər dəfə 5 əlavə edin: 5, 10, 15...', '15, 25',
    tokens=[5, 10, N, 20, N], answer=[15, 25])
-it('D', 'Onluq və təklik', 'Neçə onluq və neçə təklik var? Yaz.', 'Bir dəstədə 10 çöp var. Dəstələri, sonra tək çöpləri say.', '3 onluq, 6 təklik',
+it('D', 'Onluq və təklik', 'Neçə onluq və neçə təklik var? Yazın.', 'Bir dəstədə 10 çöp var. Dəstələri, sonra tək çöpləri sayın.', '3 onluq, 6 təklik',
    img=tens_ones(3, 6, 110), tokens=[N, 'onluq', N, 'təklik'], answer=[3, 6])
-it('D', 'Qəpik', 'Sikkələri topla. Cəmi neçə qəpikdir?', 'Əvvəlcə 20 və 10-u topla, sonra 5-i əlavə et.', '35 qəpik',
+it('D', 'Qəpik', 'Sikkələri toplayın. Cəmi neçə qəpikdir?', 'Əvvəlcə 20 və 10-u toplayın, sonra 5-i əlavə edin.', '35 qəpik',
    img=hstack([coin(20), coin(10), coin(5)], 14), tokens=[N, 'qəp'], answer=[35])
 it('D', 'Alış-veriş', 'Şokolad 6 qəpikdir. 10 qəpik verdin. Neçə qəpik qaytarılar?', '10 − 6 = ?', '4 qəpik',
    img=hstack([priced('🍫', '6 qəp'), coin(10, 100)], 30), tokens=[10, '−', 6, '=', N], answer=[4])
 # E. Ölçmə, vaxt, məlumat
-it('E', 'Uzun, qısa', 'Uzun karandaşı seç.', 'Karandaşların uclarını müqayisə et.', '2-ci karandaş',
+it('E', 'Uzun, qısa', 'Uzun karandaşı seçin.', 'Karandaşların uclarını müqayisə edin.', '2-ci karandaş',
    options=[pencil(4, 40, (102, 187, 106)), pencil(7, 40, (66, 165, 245)), pencil(5, 40, (239, 83, 80))], answer=1)
-it('E', 'Santimetr', 'Xətkeşlə ölç. Zolaq neçə santimetrdir?', 'Zolaq 0-dan başlayır. Ucunun altındakı ədədə bax.', '7 sm',
+it('E', 'Santimetr', 'Xətkeşlə ölçün. Zolaq neçə santimetrdir?', 'Zolaq 0-dan başlayır. Ucunun altındakı ədədə baxın.', '7 sm',
    img=on_ruler(strip(7, 56, RED), 10, 56), tokens=[N, 'sm'], answer=[7])
-it('E', 'Saat', 'Saat neçədir?', 'Qısa qırmızı əqrəbə bax.', 'saat 4',
+it('E', 'Saat', 'Saat neçədir?', 'Qısa qırmızı əqrəbə baxın.', 'saat 4',
    img=clock(4, 220), tokens=[N], answer=[4])
-it('E', 'Piktoqram', 'Piktoqrama bax. Neçə alma var?', 'Alma sırasındakı şəkilləri say.', '5',
+it('E', 'Piktoqram', 'Piktoqrama baxın. Neçə alma var?', 'Alma sırasındakı şəkilləri sayın.', '5',
    img=table([[em('🍎', 60), row('🍎', 5, 52, 6)], [em('🍐', 60), row('🍐', 3, 52, 6)]], 80), tokens=[N], answer=[5])
 
 AREAS = [

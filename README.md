@@ -22,3 +22,8 @@ Gürcüstandakı azərbaycanlı uşaqlar üçün pulsuz riyaziyyat materialı (1
 - Mənbə: `tools/content21.py`, `tools/draw2.py`, `tools/test21.py`, `tools/build_test21.py`, `tools/build_muellim21.py`, səslər: `tools/tts21.py` (az-AZ-BanuNeural, +17Hz)
 
 Bütün hissələr eyni kodu işlədir: `app.js`, `app.css`, `sagird.js`. Kitabın ayarları səhifənin içindəki `BOOK` obyektindədir.
+
+## Mətnlər və səslər
+
+- Bütün tapşırıq mətnləri hörmətli formadadır (yazın, sayın, toxunun …). Yeni mətn əlavə edəndə `python3 tools/formal.py --apply` çevirir.
+- Səslər: `python3 tools/tts_all.py` – çatışmayan səsləri yaradır (az-AZ-BanuNeural, +17Hz), `data/audio.json`-u yeniləyir, köhnə faylları silir. `--praise` tərif səslərini də yenidən yaradır. Lazım olan paketlər: `pip install edge-tts imageio-ffmpeg`.

@@ -263,12 +263,12 @@ function bigStats(S,kind,total){
 function foxMsg(S,P,kind){
   const nm=first(),secs=sectionStats(S.rs).filter(o=>o.acc!=null&&o.acc<70&&o.total>=5);
   let m;
-  if(!S.days)m=nm+', səni gözləyirik! Hər gün 10 dəqiqə – və riyaziyyat asan olacaq.';
-  else if(P.days&&S.days>P.days&&S.acc!=null&&P.acc!=null&&S.acc>P.acc)m='Afərin, '+nm+'! Bu '+(kind==='w'?'həftə':'ay')+' əvvəlkindən çox oxudun və daha çox düz cavab verdin.';
-  else if(P.days&&S.days>P.days)m='Afərin, '+nm+'! Bu '+(kind==='w'?'həftə':'ay')+' əvvəlkindən çox oxudun.';
+  if(!S.days)m=nm+', sizi gözləyirik! Hər gün 10 dəqiqə – və riyaziyyat asan olacaq.';
+  else if(P.days&&S.days>P.days&&S.acc!=null&&P.acc!=null&&S.acc>P.acc)m='Afərin, '+nm+'! Bu '+(kind==='w'?'həftə':'ay')+' əvvəlkindən çox oxudunuz və daha çox düz cavab verdiniz.';
+  else if(P.days&&S.days>P.days)m='Afərin, '+nm+'! Bu '+(kind==='w'?'həftə':'ay')+' əvvəlkindən çox oxudunuz.';
   else if(S.acc!=null&&S.acc>=85)m='Əla, '+nm+'! Cavablarının çoxu ilk cəhddə düz idi.';
-  else m='Yaxşı çalışdın, '+nm+'! Hər gün bir mövzu – və hər şey alınacaq.';
-  if(secs.length){const w=secs[0].s[0];m+=' '+w+' bir az çətindir – '+(/Toplama|Çıxma/.test(w)?'tələsmə, barmaqla say!':'gəl, bir də təkrar edək!')}
+  else m='Yaxşı çalışdınız, '+nm+'! Hər gün bir mövzu – və hər şey alınacaq.';
+  if(secs.length){const w=secs[0].s[0];m+=' '+w+' bir az çətindir – '+(/Toplama|Çıxma/.test(w)?'tələsməyin, barmaqla sayın!':'gəlin, bir də təkrar edək!')}
   return m;
 }
 function teacherCard(tag,text){

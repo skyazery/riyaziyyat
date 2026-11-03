@@ -10,7 +10,7 @@ function h(tag,attrs={},...kids){const e=document.createElement(tag);for(const[k
 
 /* sound */
 let player=null,foxEl=null,vEl=null;
-function talking(on){if(foxEl)foxEl.classList.toggle('talk',on);if(vEl){vEl.classList.toggle('stop',on);vEl.textContent=on?'⏸ Dayandır':'🔊 Dinlə'}}
+function talking(on){if(foxEl)foxEl.classList.toggle('talk',on);if(vEl){vEl.classList.toggle('stop',on);vEl.textContent=vEl.dataset.mini?(on?'⏸':'🔊'):(on?'⏸ Dayandırın':'🔊 Dinləyin');if(vEl.dataset.mini)vEl.setAttribute('aria-label',on?'Dayandırın':'Dinləyin')}}
 function audioUrl(id){return AUD[id]?'audio/'+id+'.mp3':null}
 function play(id){const u=audioUrl(id);if(!u)return;try{stop();player=new Audio(u);player.onended=player.onpause=()=>talking(false);talking(true);const p=player.play();if(p&&p.catch)p.catch(()=>talking(false))}catch(e){}}
 /* tərif səsi: cavab yoxlananda (səhifə yenidən çəkiləndən sonra) oxunur */
@@ -21,23 +21,31 @@ function stop(){try{if(player){player.onpause=null;player.pause()}}catch(e){}tal
 let ac=null;function chime(ok){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;(ok?[523,659,784]:[392,330]).forEach((f,k)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+k*.12);g.gain.exponentialRampToValueAtTime(.18,t+k*.12+.02);g.gain.exponentialRampToValueAtTime(.0001,t+k*.12+.3);o.connect(g).connect(ac.destination);o.start(t+k*.12);o.stop(t+k*.12+.32)})}catch(e){}}
 function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.getElementById('cf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#F6C343','#5145E6','#38C172','#E35D7F','#3BA6F5'];const Q=Array.from({length:60},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.45,vx:(Math.random()-.5)*9,vy:-Math.random()*11-4,s:6+Math.random()*6,c:cols[Math.random()*5|0],r:Math.random()*6}));let n=0;(function f(){x.clearRect(0,0,c.width,c.height);Q.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++n<70)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
 
-function brand(stars){return h('div',{class:'card hdr bk bk-'+BOOK.id},h('div',{class:'part','aria-hidden':'true'},h('b',{},BOOK.part),h('span',{},'hissə')),h('div',{class:'brand'},h('b',{},BOOK.title),h('i',{},BOOK.partName),h('span',{},BOOK.sub)),stars!=null?h('span',{class:'pill star'},'⭐ '+stars):null)}
+function ring(done,total){const r=15,c=2*Math.PI*r,ns='http://www.w3.org/2000/svg',sv=document.createElementNS(ns,'svg');sv.setAttribute('viewBox','0 0 36 36');sv.setAttribute('aria-hidden','true');
+  [['rgba(255,255,255,.3)',0],['#fff',c*(1-done/total)]].forEach(([col,off],i)=>{const e=document.createElementNS(ns,'circle');e.setAttribute('cx',18);e.setAttribute('cy',18);e.setAttribute('r',r);e.setAttribute('fill','none');e.setAttribute('stroke',col);e.setAttribute('stroke-width',5);if(i){e.setAttribute('stroke-linecap','round');e.setAttribute('stroke-dasharray',c.toFixed(1));e.setAttribute('stroke-dashoffset',off.toFixed(1))}sv.append(e)});
+  return h('div',{class:'ring','role':'img','aria-label':done+' / '+total+' mövzu bitib'},sv,h('b',{},done+'/'+total))}
+function brand(stars,prog){return h('div',{class:'card hdr bk bk-'+BOOK.id},prog?ring(prog[0],prog[1]):h('div',{class:'part','aria-hidden':'true'},h('b',{},BOOK.part),h('span',{},'hissə')),h('div',{class:'brand'},h('b',{},BOOK.title),h('i',{},BOOK.partName),h('span',{},BOOK.sub)),stars!=null?h('span',{class:'pill star'},'⭐ '+stars):null)}
 const totalStars=()=>Object.values(P.t).reduce((s,v)=>s+(v.stars||0),0);
 
 /* ---------- home ---------- */
 function home(){
-  app.append(brand(totalStars()));
+  let doneN=0;for(let n=BOOK.first;n<=BOOK.last;n++)if(isDone(n))doneN++;
+  app.append(brand(totalStars(),[doneN,BOOK.last-BOOK.first+1]));
   if(SAGIRD&&SAGIRD.name)app.append(h('div',{class:'card hello'},'👋 Salam, '+SAGIRD.name+'!'));
   app.append(levelCard());
-  const s=lvStart();
+  const s=lvStart(),nx=nextNew();
   SECTIONS.forEach(([name,a,b],si)=>{
     app.append(h('p',{class:'sec-title'},(si+1)+'. '+name));
     const g=h('div',{class:'topics'});
     for(let n=a;n<=b;n++){const t=TP(n),pr=P.t[n],done=isDone(n),gt=gate(n);
-      const pass=!done&&s!=null&&n<s, here=!done&&(KOD?gt==='new':s===n);
+      const pass=!done&&s!=null&&n<s, here=!done&&(KOD?gt==='new':n===nx);
       if(gt==='tomorrow'||gt==='later'||gt==='level'){
         g.append(h('div',{class:'tcard lock'+(gt==='tomorrow'?' soon':''),'aria-disabled':'true'},h('span',{class:'num'},'🔒'),h('b',{},ICON[n]+' '+t.title),h('small',{},gt==='tomorrow'?'🌙 Sabah açılacaq':gt==='level'?'🧭 Əvvəl səviyyə testi':'Bağlıdır')));continue}
-      g.append(h('a',{class:'tcard'+(done?' done':pass?' pass':here?' here':''),href:'#t'+n},h('span',{class:'num'},done||pass?'✓':String(n)),h('b',{},ICON[n]+' '+t.title),h('small',{},pr?('⭐ '+(pr.stars||0)+' / '+autoCount(t)):done?'✓ Bitib · təkrar et':pass?'Keçildi · təkrar et':here?(KOD?'👉 Bugünkü mövzu':'👉 Buradan başla'):'Başla →')))}
+      const au=autoCount(t),sc=pr&&au?Math.max(pr.stars?1:0,Math.round((pr.stars||0)/au*3)):0;
+      g.append(h('a',{class:'tcard'+(done?' done':pass?' pass':here?' here':''),href:'#t'+n},
+        done&&pr?h('span',{class:'stars3','aria-label':(pr.stars||0)+' / '+au+' ulduz'},'⭐'.repeat(sc)):null,
+        h('span',{class:'num'},done||pass?'✓':String(n)),h('b',{},ICON[n]+' '+t.title),
+        h('small',{},done?'Bitdi · təkrar edin':pass?'Keçildi · təkrar edin':here?(KOD?'👉 Bu gün':'👉 Buradan başlayın'):'Başlayın →')))}
     app.append(g)});
   app.append(h('p',{class:'sec-title'},'🏆 Sonda'),testCard());
   OTHERS.forEach(o=>app.append(otherCard(o)));
@@ -45,7 +53,7 @@ function home(){
 }
 function testCard(){
   if(!KOD)return h('div',{class:'testcard lock'},h('span',{class:'ic'},'🔒'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Test yalnız müəllimin göndərdiyi şəxsi linklə açılır.')));
-  if(SAGIRD&&SAGIRD.done)return h('a',{class:'testcard done',href:'test.html?s='+KOD},h('span',{class:'ic'},'📋'),h('div',{},h('b',{},'Testin nəticəsi'),h('span',{},'Valideyn hesabatına bax')));
+  if(SAGIRD&&SAGIRD.done)return h('a',{class:'testcard done',href:'test.html?s='+KOD},h('span',{class:'ic'},'📋'),h('div',{},h('b',{},'Testin nəticəsi'),h('span',{},'Valideyn hesabatına baxın')));
   return h('a',{class:'testcard',href:'test.html?s='+KOD},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Bütün mövzulardan sonra · yalnız 1 dəfə · 20 tapşırıq')));
 }
 /* başqa kitablara keçid: BOOK.other bir obyekt və ya siyahı ola bilər */
@@ -150,19 +158,25 @@ function dLeave(){
 addEventListener('pagehide',dLeave);
 function todayCard(){
   const nx=nextNew();if(nx==null)return null;
-  const left=dLeft();
-  if(left<=0)return h('div',{class:'lvcard rest'},h('span',{class:'ic'},'🌙'),h('div',{},h('b',{},'Bugünlük bitdi! Afərin!'),h('span',{},'Sabah yeni mövzu açılacaq. İstəsən, keçdiyin mövzuları təkrar et.')));
-  return h('a',{class:'lvcard today',href:'#t'+nx},h('span',{class:'ic'},'🎯'),h('div',{},h('b',{},'Bugünkü mövzu: Mövzu '+nx),h('span',{},ICON[nx]+' '+TP(nx).title+(left>1&&left!==Infinity?' · bu gün '+left+' mövzu aça bilərsən':''))));
+  const left=KOD?dLeft():Infinity;
+  if(left<=0)return h('div',{class:'lvcard rest'},h('span',{class:'ic'},'🌙'),h('div',{},h('b',{},'Bugünlük bitdi! Afərin!'),h('span',{},'Sabah yeni mövzu açılacaq. İstəsəniz, keçdiyiniz mövzuları təkrar edin.')));
+  const t=dayStr(),dow=(new Date(t+'T00:00:00Z').getUTCDay()+6)%7,days=new Set(dNews().map(x=>x.d));
+  const wk=['B.e','Ç.a','Ç','C.a','C','Ş','B'].map((nm,i)=>{const d=new Date(Date.parse(t)+(i-dow)*864e5).toISOString().slice(0,10);return h('i',{class:(days.has(d)?'on':'')+(i===dow?' now':''),title:nm},nm[0])});
+  const cnt=wk.filter(e=>e.classList.contains('on')).length;
+  return h('div',{class:'today2'},
+    h('div',{class:'lbl'},h('span',{},KOD?'Bugünkü mövzu':'Növbəti mövzu'),KOD?h('span',{class:'week','aria-label':'Bu həftə '+cnt+' gün'},wk):null),
+    h('div',{class:'row'},h('div',{class:'ticon','aria-hidden':'true'},ICON[nx]),h('div',{},h('div',{class:'mz'},'Mövzu '+nx+(left>1&&left!==Infinity?' · bu gün '+left+' mövzu aça bilərsiniz':'')),h('h2',{},TP(nx).title))),
+    h('a',{class:'go',href:'#t'+nx},'Başlayın ➜'));
 }
 const today=()=>{const d=new Date();return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear()};
 function levelCard(){
   const s=lvStart();
-  if(s==null)return h('a',{class:'lvcard',href:'#seviyye'},h('span',{class:'ic'},'🧭'),h('div',{},h('b',{},'Səviyyə testi – əvvəlcə bunu et'),h('span',{},'Haradan başlamalı olduğunu tapır · 2–12 sual')));
-  const again=lvCanRetake()?h('button',{class:'lvagain',onclick(){LT={phase:'intro'};if(location.hash==='#seviyye')go();else location.hash='#seviyye'}},'🔄 Səviyyə testini yenidən et'):null;
-  if(KOD&&s<LV_ALL&&nextNew()!=null)return h('div',{},todayCard(),again);
+  if(s==null)return h('a',{class:'lvcard',href:'#seviyye'},h('span',{class:'ic'},'🧭'),h('div',{},h('b',{},'Səviyyə testi – əvvəlcə bunu edin'),h('span',{},'Haradan başlamalı olduğunu tapır · 2–12 sual')));
+  const again=lvCanRetake()?h('button',{class:'lvagain',onclick(){LT={phase:'intro'};if(location.hash==='#seviyye')go();else location.hash='#seviyye'}},'🔄 Səviyyə testini yenidən edin'):null;
+  if(s<LV_ALL&&nextNew()!=null)return h('div',{},todayCard(),again);
   const card=s>=LV_ALL
-    ?h('a',{class:'lvcard done',href:'#seviyye'},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Səviyyə: bütün mövzular keçildi'),h('span',{},'Mövzuları təkrar et, sonra yoxlama testini et')))
-    :h('a',{class:'lvcard done',href:'#t'+s},h('span',{class:'ic'},'🧭'),h('div',{},h('b',{},'Buradan başla: Mövzu '+s),h('span',{},ICON[s]+' '+TP(s).title+' · səviyyə testinə görə')));
+    ?h('a',{class:'lvcard done',href:'#seviyye'},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Səviyyə: bütün mövzular keçildi'),h('span',{},'Mövzuları təkrar edin, sonra yoxlama testini edin')))
+    :h('a',{class:'lvcard done',href:'#t'+s},h('span',{class:'ic'},'🧭'),h('div',{},h('b',{},'Buradan başlayın: Mövzu '+s),h('span',{},ICON[s]+' '+TP(s).title+' · səviyyə testinə görə')));
   return h('div',{},card,again);
 }
 function levelPage(){
@@ -176,7 +190,7 @@ function lvIntro(){
       h('p',{style:'margin:0;text-align:center;font-weight:700'},'Bu qısa test uşağın hansı mövzudan başlamalı olduğunu göstərir.'),
       h('ul',{},h('li',{},'Hər bölmədən 2 sual, ən çox 12 sual (5–10 dəqiqə).'),h('li',{},'Suallar səslidir – valideyn uşağın yanında olsun.'),h('li',{},'Cavabın düz və ya səhv olduğu göstərilmir, sakitcə növbəti suala keçir.'),h('li',{},'Uşaq bilmədiyi sual gələndə test özü bitir – bu normaldır.'),KOD?h('li',{},'Nəticə müəllimə göndərilir.'):null),
       prev!=null?h('p',{class:'muted',style:'margin:0;text-align:center'},'Əvvəlki nəticə: '+(prev>=LV_ALL?'bütün mövzular':'Mövzu '+prev)):null,
-      h('button',{class:'big',onclick(){LT={phase:'q',i:0,j:0,n:0,log:[]};st=null;go()}},'Başla →'),
+      h('button',{class:'big',onclick(){LT={phase:'q',i:0,j:0,n:0,log:[]};st=null;go()}},'Başlayın →'),
       h('a',{class:'backlink',href:'#',style:'align-self:center'},'İndi yox')));
 }
 function lvQuestion(){
@@ -222,7 +236,7 @@ function lvResult(){
     h('h2',{},s>=LV_ALL?'Əla! Bütün bölmələri bilir!':'Səviyyə testi bitdi!'),
     s>=LV_ALL
       ?h('div',{style:'display:flex;flex-direction:column;gap:10px'},h('p',{style:'margin:0;text-align:center;font-weight:700'},BOOK.allText),NEXTBOOK?h('a',{class:'big',href:NEXTBOOK.href+(KOD?'?s='+KOD:''),style:'text-decoration:none;display:block;text-align:center;box-sizing:border-box'},NEXTBOOK.label):null)
-      :h('a',{class:'big',href:'#t'+s,style:'text-decoration:none;display:block;text-align:center;box-sizing:border-box'},'Buradan başla: Mövzu '+s+' →',h('br'),h('span',{style:'font-size:16px;opacity:.9'},ICON[s]+' '+TP(s).title)),
+      :h('a',{class:'big',href:'#t'+s,style:'text-decoration:none;display:block;text-align:center;box-sizing:border-box'},'Buradan başlayın: Mövzu '+s+' →',h('br'),h('span',{style:'font-size:16px;opacity:.9'},ICON[s]+' '+TP(s).title)),
     list,
     h('p',{class:'muted',style:'margin:0'},'Əvvəlki mövzular da açıqdır – təkrar üçün istifadə edə bilərsiniz.'),
     status?h('p',{style:'margin:0;font-weight:800'},status):null,
@@ -242,7 +256,7 @@ function lockedView(n,gt){
   const t=TP(n);LOCKV=true;
   app.append(h('a',{class:'backlink',href:'#'},'← Bütün mövzular'),brand(null),
     h('div',{class:'card donebox pop'},h('div',{class:'trophy'},gt==='level'?'🧭':'🔒'),h('h2',{style:'font-size:24px;font-weight:900'},'Mövzu '+n+'. '+t.title),
-      h('p',{style:'font-weight:800'},gt==='level'?'Əvvəlcə səviyyə testini et – haradan başlamalı olduğunu tapaq.':gt==='tomorrow'?'Bu mövzu sabah açılacaq. Bu gün çox yaxşı çalışdın!':'Bu mövzu hələ bağlıdır. Mövzular hər gün bir-bir açılır.'),
+      h('p',{style:'font-weight:800'},gt==='level'?'Əvvəlcə səviyyə testini edin – haradan başlamalı olduğunu tapaq.':gt==='tomorrow'?'Bu mövzu sabah açılacaq. Bu gün çox yaxşı çalışdınız!':'Bu mövzu hələ bağlıdır. Mövzular hər gün bir-bir açılır.'),
       gt==='level'?h('a',{class:'big',href:'#seviyye',style:'text-decoration:none;display:block'},'🧭 Səviyyə testi →'):null,
       h('a',{class:'backlink',href:'#'},'← Bütün mövzular')));
 }
@@ -258,55 +272,58 @@ function topic(n){
   if(step===0)conceptView(); else if(step<=total)problemView(T.problems[step-1],step-1); else doneView(n);
 }
 let lastAuto=null;
-function teacher(text,aud,tag){
+function teacher(text,aud,tag,mini){
   foxEl=h('div',{class:'fox','aria-hidden':'true'},'🦊');
-  vEl=audioUrl(aud)?h('button',{class:'vbtn',onclick(){player&&!player.paused?stop():play(aud)}},'🔊 Dinlə'):null;
+  vEl=audioUrl(aud)?h('button',{class:'vbtn','data-mini':mini?'1':null,'aria-label':mini?'Dinləyin':null,onclick(){player&&!player.paused?stop():play(aud)}},mini?'🔊':'🔊 Dinləyin'):null;
   const auto=audioUrl(aud)?h('button',{class:'auto'+(P.sound?'':' off'),onclick(){P.sound=!P.sound;save();auto.className='auto'+(P.sound?'':' off');auto.lastChild.textContent=P.sound?'Avtomatik səs: açıq':'Avtomatik səs: bağlı';if(!P.sound)stop()}},h('i'),P.sound?'Avtomatik səs: açıq':'Avtomatik səs: bağlı'):null;
   const akey=location.hash+'|'+step+'|'+aud;
   if(P.sound&&audioUrl(aud)&&akey!==lastAuto){lastAuto=akey;setTimeout(()=>play(aud),300)}
+  if(mini)return h('div',{class:'card teach mini'},foxEl,h('h2',{},text),vEl);
   return h('div',{class:'card teach'},foxEl,h('div',{class:'tag'},h('b',{},'Müəllim oxuyur'),h('span',{},tag)),h('h2',{},text),(vEl||auto)?h('div',{class:'voice'},vEl,auto):null);
 }
+function pic(src,alt){const i=h('img',{src,alt:alt||'',onload(){i.classList.add('ok')},onerror(){i.classList.add('ok')}});if(i.complete)i.classList.add('ok');return i}
 function conceptView(){
-  app.append(teacher(T.concept,T.conceptAudio,'Əsas fikir'),h('div',{class:'card task concept pop'},h('div',{class:'paper'},h('img',{src:T.conceptImg,alt:T.concept}))));
-  setBar(null,'Tapşırıqlara başla →',()=>{step=1;if(!LVM&&typeof st.n==='number')dStart(st.n);go()},'go');
+  app.append(teacher(T.concept,T.conceptAudio,'Əsas fikir'),h('div',{class:'card task concept pop'},h('div',{class:'paper'},pic(T.conceptImg,T.concept))));
+  setBar(null,'Tapşırıqlara başlayın →',()=>{step=1;if(!LVM&&typeof st.n==='number')dStart(st.n);go()},'go');
 }
 function problemView(p,k){
   const c=p.check, done=st.first[k]!==undefined||st.shown[k];
-  app.append(teacher(p.ins,p.audio,'Tapşırıq '+(k+1)));
+  app.append(teacher(p.ins,p.audio,'Tapşırıq '+(k+1),true));
   const w=p.web,src=w?w.stem:p.img;
-  const task=h('div',{class:'card task pop'},src?h('div',{class:'paper'},h('img',{src,alt:''})):null);
+  const task=h('div',{class:'card task pop'},src?h('div',{class:'paper'},pic(src)):null);
   app.append(task);
   if(w){webView(p,k,task);return}
   if(c){
     let a=st.ans[k]||(st.ans[k]=c.slots.map(()=>null)); let active=Math.max(0,a.indexOf(null));
+    let fresh=!!(st.tries[k]&&a.every(v=>v!==null)); // təzə başla: növbəti rəqəm köhnəni əvəz edir
     const solved=st.first[k]!==undefined&&a.every((v,j)=>String(v)===String(c.slots[j]));
     const locked=solved||st.shown[k];
-    const eq=h('div',{class:'eq'});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;paint()}});return s});
+    const eq=h('div',{class:'eq'});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;fresh=true;paint()}});return s});
     if(c.mode==='sign')c.pairs.forEach(([x,y],j)=>{if(j)eq.append(h('span',{class:'br'}));eq.append(h('span',{class:'fixed'},x),slots[j],h('span',{class:'fixed'},y))});
     else slots.forEach(s=>eq.append(s));
     const paint=()=>slots.forEach((s,j)=>{s.textContent=a[j]??'';let cl='slot';if(a[j]!==null)cl+=' filled';if(!locked&&j===active)cl+=' active';if(locked)cl+=String(a[j])===String(c.slots[j])?' right':' wrong';s.className=cl});
-    task.append(h('p',{class:'paperhint'},c.slots.length>1?'Cavabları soldan sağa yaz:':'Cavabı yaz:'),eq);
-    const set=v=>{a[active]=v;if(v!==null&&active<a.length-1&&c.mode==='sign')active++;paint();upd()};
+    task.append(h('p',{class:'paperhint'},c.slots.length>1?'Cavabları soldan sağa yazın:':'Cavabı yazın:'),eq);
+    const set=v=>{if(v===null)fresh=false;a[active]=v;if(v!==null&&active<a.length-1&&c.mode==='sign')active++;paint();upd()};
     if(!locked){
       if(c.mode==='sign')task.append(h('div',{class:'signs'},['>','<','='].map(sg=>h('button',{onclick(){set(sg)}},sg))));
-      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=a[active]==null?'':String(a[active]);let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>3||Number(v)>100)v=String(d);set(Number(v))}},String(d))));pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Sil'));task.append(pad)}
+      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=fresh||a[active]==null?'':String(a[active]);fresh=false;let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>3||Number(v)>100)v=String(d);set(Number(v))}},String(d))));pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Silin'));task.append(pad)}
     }
     const tries=st.tries[k]||0;
-    if(solved)task.append(h('div',{class:'fb ok'},h('span',{},'🌟'),st.first[k]?'Əla! Düzgün cavab!':'Düzgün! Afərin, tapdın!'));
+    if(solved)(task).append(cheer(st.first[k]));
     else if(st.shown[k])task.append(h('div',{class:'fb no'},h('span',{},'💡'),'Düzgün cavab: '+p.ans));
-    else if(tries)task.append(h('div',{class:'fb no'},h('span',{},'💪'),'Yenə cəhd et! Səhv xananı düzəlt.'));
+    else if(tries)task.append(h('div',{class:'fb no'},h('span',{},'💪'),'Yenə cəhd edin! Səhv xananı düzəldin.'));
     paint();
     function upd(){
       if(locked){setBar(k,'Növbəti →',next,'go');return}
       const full=a.every(v=>v!==null);
-      setBar(k,'Cavabı yoxla ✓',()=>{const ok=a.every((v,j)=>String(v)===String(c.slots[j]));if(LVM)return lvAnswer(ok);st.tries[k]=(st.tries[k]||0)+1;
+      setBar(k,'Cavabı yoxlayın ✓',()=>{const ok=a.every((v,j)=>String(v)===String(c.slots[j]));if(LVM)return lvAnswer(ok);st.tries[k]=(st.tries[k]||0)+1;
         if(ok){if(st.first[k]===undefined)st.first[k]=st.tries[k]===1;chime(true);confetti();praise(true)}else{chime(false);praise(st.tries[k]<2?false:null);if(st.tries[k]>=2)st.shown[k]=true;if(st.first[k]===undefined&&st.tries[k]>=2)st.first[k]=false}
         render()},'main',!full);
     }
     upd();
   }else{
     const r=h('div',{class:'reveal'});
-    if(!st.shown[k]){r.append(h('p',{class:'paperhint'},p.icon==='circle'?'Düzgün şəkli barmağınla göstər və ya dəftərdə dairəyə al.':p.icon==='connect'?'Dəftərdə xətlə birləşdir.':p.icon==='draw'?'Dəftərdə çək.':'Dəftərdə yaz.'),h('button',{class:'sec',onclick(){st.shown[k]=true;render()}},'👀 Cavabı göstər'))}
+    if(!st.shown[k]){r.append(h('p',{class:'paperhint'},p.icon==='circle'?'Düzgün şəkli barmağınızla göstərin və ya dəftərdə dairəyə alın.':p.icon==='connect'?'Dəftərdə xətlə birləşdirin.':p.icon==='draw'?'Dəftərdə çəkin.':'Dəftərdə yazın.'),h('button',{class:'sec',onclick(){st.shown[k]=true;render()}},'👀 Cavabı göstərin'))}
     else{r.append(h('div',{class:'answer'},'✅ '+p.ans),h('div',{class:'self'},h('button',{class:st.self[k]===true?'on':'',onclick(){st.self[k]=true;render()}},'😊 Düz tapdım'),h('button',{class:st.self[k]===false?'on':'',onclick(){st.self[k]=false;render()}},'🤔 Səhv etdim')))}
     task.append(r);
     setBar(k,'Növbəti →',next,'go');
@@ -328,7 +345,7 @@ function webView(p,k,task){
   const optEl=(o,j,cls,fn)=>h('button',{class:'opt'+cls,disabled:locked,onclick:fn},o.img?h('img',{src:o.img,alt:''}):o.t);
   let hint;
   if(m==='choice'||m==='multi'||m==='order'){
-    hint=m==='choice'?'Düzgün cavaba toxun:':m==='multi'?'Uyğun olanların hamısına toxun:':(w.hint||'Heyvanlara sıra ilə toxun: 1-ci, 2-ci, 3-cü yer.');
+    hint=m==='choice'?'Düzgün cavaba toxunun:':m==='multi'?'Uyğun olanların hamısına toxunun:':(w.hint||'Heyvanlara sıra ilə toxunun: 1-ci, 2-ci, 3-cü yer.');
     const box=h('div',{class:'opts'+(w.opts.length<=3?' few':'')});
     w.opts.forEach((o,j)=>{
       let cls='';const pos=m==='order'?a.indexOf(j):-1;
@@ -346,7 +363,7 @@ function webView(p,k,task){
       box.append(b)});
     area.append(h('p',{class:'paperhint'},hint),box);
   }else if(m==='match'){
-    hint='Hər qrupu say və onun ədədinə toxun:';
+    hint='Hər qrupu sayın və onun ədədinə toxunun:';
     const rows=h('div',{class:'mrows'});
     w.left.forEach((L,i)=>{const nums=h('div',{class:'nums'});
       w.right.forEach((t,j)=>{let cls='';if(a[i]===j)cls+=' sel';if(locked){if(w.ans[i]===j)cls+=' right';else if(a[i]===j)cls+=' wrong'}
@@ -354,24 +371,27 @@ function webView(p,k,task){
       rows.append(h('div',{class:'mrow'},h('div',{class:'lft'},h('img',{src:L.img,alt:''})),nums))});
     area.append(h('p',{class:'paperhint'},hint),rows);
   }else if(m==='dots'){
-    hint='Dairələrə toxun və rənglə:';
+    hint='Dairələrə toxunun və rəngləyin:';
     const fr=h('div',{class:'dframe'});
     a.forEach((on,j)=>fr.append(h('button',{class:'dcell'+(on?' on':''),disabled:locked,'aria-label':'dairə',onclick(){const b=[...a];b[j]=!b[j];set(b)}})));
     area.append(h('p',{class:'paperhint'},hint),fr,h('div',{class:'dcount'},'🔵 '+a.filter(Boolean).length));
   }
-  if(m==='order'&&!locked&&a.length)area.append(h('button',{class:'sec',onclick(){set([])}},'⌫ Yenidən başla'));
-  if(solved)area.append(h('div',{class:'fb ok'},h('span',{},'🌟'),st.first[k]?'Əla! Düzgün cavab!':'Düzgün! Afərin, tapdın!'));
+  if(m==='order'&&!locked&&a.length)area.append(h('button',{class:'sec',onclick(){set([])}},'⌫ Yenidən başlayın'));
+  if(solved)(area).append(cheer(st.first[k]));
   else if(shown)area.append(h('div',{class:'fb no'},h('span',{},'💡'),'Düzgün cavab: '+p.ans));
-  else if(st.tries[k])area.append(h('div',{class:'fb no'},h('span',{},'💪'),'Yenə cəhd et!'));
+  else if(st.tries[k])area.append(h('div',{class:'fb no'},h('span',{},'💪'),'Yenə cəhd edin!'));
   if(locked){setBar(k,'Növbəti →',next,'go');return}
   const ready=m==='choice'?a!==null:m==='multi'?a.length>0:m==='order'?a.length===w.opts.length:m==='match'?a.every(v=>v!==null):a.some(Boolean);
-  setBar(k,'Cavabı yoxla ✓',()=>{const ok=isOk();if(LVM)return lvAnswer(ok);st.tries[k]=(st.tries[k]||0)+1;
+  setBar(k,'Cavabı yoxlayın ✓',()=>{const ok=isOk();if(LVM)return lvAnswer(ok);st.tries[k]=(st.tries[k]||0)+1;
     if(ok){if(st.first[k]===undefined)st.first[k]=st.tries[k]===1;chime(true);confetti();praise(true)}
     else{chime(false);praise(st.tries[k]<2?false:null);if(st.tries[k]>=2){st.shown[k]=true;if(st.first[k]===undefined)st.first[k]=false}}
     render()},'main',!ready);
 }
 }
 function next(){step++;go()}
+function cheer(first){return h('div',{class:'fb ok cele'},h('span',{class:'em','aria-hidden':'true'},'🎉'),h('div',{},h('b',{},first?'Əla! Düzdür!':'Düzgün! Afərin, tapdınız!'),first?h('span',{class:'plus'},'⭐ +1 ulduz'):null))}
+/* cavabdan sonra rəy (təbrik/yenə cəhd) ekranın altında qalmasın */
+function showFb(){const f=app.querySelector('.fb');if(f)requestAnimationFrame(()=>{const r=f.getBoundingClientRect(),lim=innerHeight-(bar.hidden?0:bar.offsetHeight)-12;if(r.bottom>lim)scrollBy({top:r.bottom-lim,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})})}
 function doneView(n){
   const t=T,auto=autoCount(t),stars=Object.entries(st.first).filter(([k,v])=>v===true).length;
   if(!st.logged){const isNew=!!KOD&&gate(n)==='new',r=topicStats();st.logged=true;
@@ -381,21 +401,21 @@ function doneView(n){
   if(stars>=auto*0.7)setTimeout(confetti,200);
   app.append(h('div',{class:'card donebox pop'},h('div',{class:'trophy'},stars>=auto*0.7?'🏆':'🌱'),h('h2',{style:'font-size:28px;font-weight:900'},'Mövzu bitdi!'),
     h('p',{},'İlk cəhddə düzgün: ⭐ '+stars+' / '+auto),
-    h('p',{class:'muted'},stars>=auto*0.7?'Əla iş! Növbəti mövzuya keçə bilərsən.':'Yaxşı çalışdın! Bu mövzunu bir də təkrar etmək faydalı olar.'),
-    rest?h('div',{class:'lvcard rest',style:'width:100%;box-sizing:border-box;text-align:left'},h('span',{class:'ic'},'🌙'),h('div',{},h('b',{},'Bugünlük bitdi! Afərin!'),h('span',{},'Sabah yeni mövzu açılacaq. İstəsən, keçdiyin mövzuları təkrar et.')))
+    h('p',{class:'muted'},stars>=auto*0.7?'Əla iş! Növbəti mövzuya keçə bilərsiniz.':'Yaxşı çalışdınız! Bu mövzunu bir də təkrar etmək faydalı olar.'),
+    rest?h('div',{class:'lvcard rest',style:'width:100%;box-sizing:border-box;text-align:left'},h('span',{class:'ic'},'🌙'),h('div',{},h('b',{},'Bugünlük bitdi! Afərin!'),h('span',{},'Sabah yeni mövzu açılacaq. İstəsəniz, keçdiyiniz mövzuları təkrar edin.')))
       :n<BOOK.last?h('a',{class:'big',href:'#t'+(n+1),style:'text-decoration:none;display:block'},'Növbəti mövzu →'):null,
-    h('button',{class:'sec',onclick(){st=null;step=0;lastAuto=null;go()}},'🔄 Mövzunu təkrarla'),
+    h('button',{class:'sec',onclick(){st=null;step=0;lastAuto=null;go()}},'🔄 Mövzunu təkrarlayın'),
     h('a',{class:'backlink',href:'#'},'← Bütün mövzular')));
 }
 function setBar(k,label,fn,kind,disabled){
-  if(LVM){barIn.replaceChildren(h('span',{class:'qn'},'Sual '+(k+1)),h('button',{class:'bbtn main',disabled:!!disabled,onclick:fn},'Cavab ver →'));bar.hidden=false;return}
+  if(LVM){barIn.replaceChildren(h('span',{class:'qn'},'Sual '+(k+1)),h('button',{class:'bbtn main',disabled:!!disabled,onclick:fn},'Cavab verin →'));bar.hidden=false;return}
   const back=h('button',{class:'bbtn back','aria-label':'Geri',disabled:step===0,onclick(){step--;go()}},'←');
   const main=h('button',{class:'bbtn main'+(kind==='go'?' go':''),disabled:!!disabled,onclick:fn},label);
   barIn.replaceChildren(back,h('span',{class:'qn'},k==null?'0 / '+T.problems.length:(k+1)+' / '+T.problems.length),main);bar.hidden=false;
 }
 
 /* ---------- router ---------- */
-function render(){stop();LVM=false;LOCKV=false;app.replaceChildren();bar.hidden=true;if(location.hash==='#seviyye'){levelPage();return}const m=location.hash.match(/^#t(\d+)$/);if(m&&TP(+m[1]))topic(+m[1]);else home();playPraise()}
+function render(){stop();LVM=false;LOCKV=false;app.replaceChildren();bar.hidden=true;if(location.hash==='#seviyye'){levelPage();return}const m=location.hash.match(/^#t(\d+)$/);if(m&&TP(+m[1]))topic(+m[1]);else home();playPraise();showFb()}
 function go(){render();scrollTo(0,0)}
 addEventListener('hashchange',()=>{dLeave();st=null;step=0;lastAuto=null;if(location.hash!=='#seviyye'||!LT||LT.phase!=='intro')LT=null;go()});
 const KOD=sagirdKodu();
