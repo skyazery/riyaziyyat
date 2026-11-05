@@ -15,13 +15,13 @@ VERBS = {
     'al': 'alın', 'ayır': 'ayırın', 'azalt': 'azaldın', 'bax': 'baxın', 'başla': 'başlayın',
     'birləşdir': 'birləşdirin', 'böl': 'bölün', 'dəyiş': 'dəyişin', 'doldur': 'doldurun',
     'düzəlt': 'düzəldin', 'düz': 'düzün', 'et': 'edin', 'etdir': 'etdirin', 'get': 'gedin',
-    'hesabla': 'hesablayın', 'payla': 'paylayın', 'qrupla': 'qruplayın', 'say': 'sayın',
+    'hesabla': 'hesablayın', 'payla': 'paylayın', 'qrupla': 'qruplayın', 'qoy': 'qoyun', 'say': 'sayın',
     'seç': 'seçin', 'tamamla': 'tamamlayın', 'tap': 'tapın', 'topla': 'toplayın',
     'toxun': 'toxunun', 'tullan': 'tullanın', 'yaz': 'yazın', 'yığ': 'yığın', 'çıx': 'çıxın', 'çək': 'çəkin',
     'ölç': 'ölçün',
 }
 # başqa 2-ci şəxs formaları (hər yerdə)
-OTHER = {'çıxdın': 'çıxdınız', 'versən': 'versəniz'}
+OTHER = {'çıxdın': 'çıxdınız', 'versən': 'versəniz', 'unutma': 'unutmayın', 'tələsmə': 'tələsməyin'}
 # bu sözlər vergüldən əvvəl sifət ola bilər («Bucaqlar: düz, iti, kor»)
 NO_COMMA = {'düz'}
 

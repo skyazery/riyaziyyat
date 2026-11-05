@@ -15,7 +15,7 @@
  *  - 메뉴 「주간 리포트 만들기」(일요일 저녁) / 「월간 리포트 만들기」(월말)를 누르면 Hesabatlar 탭에 학생별 줄이 생깁니다.
  *    선생님 한마디를 적고 「💬 Göndər」를 누르면 부모님께 리포트 링크(hesabat.html)를 왓츠앱으로 보냅니다.
  *
- * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름 · S~W 2-1권
+ * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름 · S~W 2-1권 · X~AB 2-2권
  * 개인정보(생년월일, 전화번호)는 이 시트 안에만 있고, 사이트에는 학생 이름만 전달됩니다.
  */
 
@@ -39,7 +39,7 @@ const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
 const C = { NAME: 1, BIRTH: 2, PHONE: 3, CODE: 4, LINK: 5, WA: 6, GRADE: 17, PARENT: 18 };
-const NCOL = 23; // A~F 학생 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 · S~W 2-1권
+const NCOL = 28; // A~F 학생 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 · S~W 2-1권 · X~AB 2-2권
 const REG_HEADERS = ['Tarix (제출 시각)', 'Şagirdin adı (이름)', 'Soyadı (성)', 'Doğum tarixi (생년월일)', 'Sinif (학년)',
   'Valideyn (부모 이름)', 'Telefon (전화)', 'Valideyn təsdiqi (보호자 확인)', 'Razılıq 1 (정보 이용)', 'Razılıq 2 (결과 저장·발송)',
   'Razılıq 3 – reklam (홍보, 선택)', 'Kod (코드)', 'Qeyd (메모)'];
@@ -99,6 +99,21 @@ const BOOKS = {
     lvAll: 70,
     lvSections: [[50, 51], [52, 54], [55, 57], [58, 62], [63, 66], [67, 69]],
     topics: ["Ədədlərin müqayisəsi", "Sıralama", "İkirəqəmli ədədlə birrəqəmli ədədin toplanması", "Onluqların toplanması", "İkirəqəmli ədədlərin toplanması", "İkirəqəmli ədədlə birrəqəmli ədədin fərqi", "Onluqların çıxılması", "İkirəqəmli ədədlərin fərqi", "Təkrar toplama", "Vurma", "Bərabər paylama. Bölmə", "Təkrar çıxma", "Tək və cüt ədədlər", "Xətt, bucaq", "Çoxbucaqlı", "Üz, til və təpə", "Qruplaşdırma", "İkirəqəmli ədədlə birrəqəmli ədədin toplanması", "İkirəqəmli ədədlərin toplanması", "Üç toplananlı ifadələr"]
+  },
+  '2-2': {
+    name: '2-2', color: '#E5DBFF',
+    col: { STATUS: 24, DATE: 25, LV_START: 26, LV_DATE: 27, LV_RETRY: 28 },
+    results: 'Nəticələr 2-2', level: 'Səviyyə 2-2', first: 70,
+    key: [
+      { a: 'A', ans: [28] }, { a: 'A', ans: [25] }, { a: 'A', ans: [36] }, { a: 'A', ans: [30] },
+      { a: 'B', ans: [12] }, { a: 'B', ans: [35] }, { a: 'B', ans: [5] }, { a: 'B', ans: [6] },
+      { a: 'C', ans: [324] }, { a: 'C', ans: [300, 310] }, { a: 'C', ans: [85] }, { a: 'C', ans: [43] },
+      { a: 'D', ans: [8] }, { a: 'D', ans: [400] }, { a: 'D', ans: [6] }, { a: 'D', ans: [4] },
+      { a: 'E', ans: [7] }, { a: 'E', k: 'choice', ans: 0 }, { a: 'E', k: 'choice', ans: 1 }, { a: 'E', ans: [9] }
+    ],
+    lvAll: 92,
+    lvSections: [[70, 74], [75, 80], [81, 84], [85, 89], [90, 91]],
+    topics: ["İkirəqəmli ədədlə birrəqəmli ədədin fərqi", "İkirəqəmli ədədlərin fərqi", "Toplama və çıxmanın əlaqəsi", "Mötərizəli ifadələr", "İkiaddımlı məsələlər", "Vurma", "2-yə və 3-ə vurma", "4-ə və 5-ə vurma", "Vurma cədvəli", "Bölmə", "Vurma və bölmənin əlaqəsi", "500-ə qədər sayma", "Yüzlük, onluq və təklik", "Pullar", "Alış-veriş", "Uzunluq", "Kütlə", "Tutum", "Təkrarlanan hadisələr", "Saat", "Cədvəl, piktoqram, diaqram", "Məlumatları necə toplamalı?"]
   }
 };
 
@@ -178,8 +193,8 @@ function setup() {
   setupReports_(ss);
   SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.\n\n' +
     '동의서(qeydiyyat.html)로 등록한 학생은 자동으로 추가되고 링크도 자동으로 만들어집니다. Ayarlar 탭 ELAQE_NOMRESI 칸에 연락처를 넣어 주세요.\n\n' +
-    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름, S~W = 2-1권.\n' +
-    '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49, 2-1권 50~69), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
+    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름, S~W = 2-1권, X~AB = 2-2권.\n' +
+    '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49, 2-1권 50~69, 2-2권 70~91), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
 }
 
 /* ---------------- 학생 링크 만들기 ---------------- */
@@ -1017,7 +1032,7 @@ const COL = { brand: '#5145E6', brandSoft: '#ECEAFF', sun: '#FFF4D6', sunInk: '#
   warn: '#B06000', warnSoft: '#FEF7E0', bad: '#C5221F', badSoft: '#FCE8E6', grey: '#BDC1C6', muted: '#5F6368', edit: '#FFF8C5' };
 const STATUS = { bad: ['연락 필요', COL.bad, COL.badSoft], warn: ['살펴보기', COL.warn, COL.warnSoft], ok: ['잘하고 있음', COL.ok, COL.okSoft] };
 
-function bookByTopic_(n) { return n >= BOOKS['2-1'].first ? BOOKS['2-1'] : n >= BOOKS['1-2'].first ? BOOKS['1-2'] : BOOKS['1-1']; }
+function bookByTopic_(n) { return n >= BOOKS['2-2'].first ? BOOKS['2-2'] : n >= BOOKS['2-1'].first ? BOOKS['2-1'] : n >= BOOKS['1-2'].first ? BOOKS['1-2'] : BOOKS['1-1']; }
 
 // 학생 한 명의 요약 (현황판·학생 보기가 같이 씀)
 function studentSummary_(stu, rows, today) {
@@ -1277,7 +1292,7 @@ function tidySheets() {
   refreshPanel();
   const order = [
     [SH_PANEL, '#5145E6'], [SH_DETAIL, '#E8790C'], [SH_STUDENTS, '#F6A623'], [SH_REPORTS, '#8E6CEF'], [SH_DAILY, '#3BA6F5'],
-    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['2-1'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'], [BOOKS['2-1'].results, '#9AA0A6'],
+    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['2-1'].level, '#9AA0A6'], [BOOKS['2-2'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'], [BOOKS['2-1'].results, '#9AA0A6'], [BOOKS['2-2'].results, '#9AA0A6'],
     [SH_SETTINGS, '#5F6368']];
   let pos = 1;
   order.forEach(([name, color]) => {

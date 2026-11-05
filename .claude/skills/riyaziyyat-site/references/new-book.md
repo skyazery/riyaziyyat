@@ -8,7 +8,11 @@ topic numbers (continue after the last book: 2-1 ends at 69, so 2-2 starts at 70
 
 1. **Generator:** copy `tools/content21.py` to `tools/contentNN.py`. Reuse `draw.py`/`draw2.py`
    primitives (`expr2`, `tens_ones`, `numline`, `chip`, `em`, `label`, …) and the `Topic` helpers
-   `num`, `choice`, `sign`. Write every instruction in the formal register from the start. Each topic
+   `num`, `choice`, `sign`. On macOS there is no cairo/DejaVu: `draw.py` then uses
+   `~/riyaziyyat-assets/fonts` (DejaVu) and Noto PNGs in `~/riyaziyyat-assets/emoji` (downloaded once
+   from googlefonts/noto-emoji `2D/png/512`; ask the owner before the first download). DejaVu has no
+   emoji glyphs, so never put emoji inside `txt()` — use `em()`. `tools/content22.py` (2-2) is the
+   newest example and has helpers for hundreds blocks, multiplication tables, money and charts. Write every instruction in the formal register from the start. Each topic
    needs exactly 10 problems (the script prints `COUNT` otherwise) and a concept sentence + picture.
    Mix screen-checkable problems (`num`, `choice`) with notebook ones. Run:
    `python3 tools/contentNN.py ~/riyaziyyat/N-M` → `img/`, `data/topics.json`, `data/voice.json`.

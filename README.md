@@ -23,6 +23,14 @@ Gürcüstandakı azərbaycanlı uşaqlar üçün pulsuz riyaziyyat materialı (1
 
 Bütün hissələr eyni kodu işlədir: `app.js`, `app.css`, `sagird.js`. Kitabın ayarları səhifənin içindəki `BOOK` obyektindədir.
 
+## 2-ci sinif, 2-ci hissə (`2-2/`)
+
+- `2-2/index.html` – 22 mövzu (70–91), 220 şəkilli tapşırıq, səsli izah, səviyyə testi
+- `2-2/test.html` – 20 tapşırıqlı yoxlama testi
+- `2-2/muellim.html` – cavablar və qiymətləndirmə bələdçisi
+- Mənbə: `tools/content22.py`, `tools/test22.py`, `tools/build_test22.py`, `tools/build_muellim22.py`
+- macOS-da şəkillər üçün DejaVu şrifti və Noto emoji PNG-ləri `~/riyaziyyat-assets/` qovluğundadır (`draw.py` özü tapır, çatmayan emojini bir dəfə endirir)
+
 ## Mətnlər və səslər
 
 - Bütün tapşırıq mətnləri hörmətli formadadır (yazın, sayın, toxunun …). Yeni mətn əlavə edəndə `python3 tools/formal.py --apply` çevirir.
