@@ -9,7 +9,7 @@ import asyncio, base64, hashlib, json, os, re, shutil, subprocess, sys, tempfile
 import edge_tts
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BOOKS = ['.', '1-2', '2-1']
+BOOKS = ['.', '1-2', '2-1', '2-2']
 VOICE, PITCH, RATE = 'az-AZ-BanuNeural', '+17Hz', '+0%'
 GREET = os.path.join(ROOT, 'tools', 'greet.mp3')  # salamlama (1-2, mövzu 29 girişinin ilk 3.95 s)
 GREET_OLD = os.path.join(ROOT, '1-2', 'audio', '4fb7a9b7b8.mp3')
@@ -91,6 +91,8 @@ async def main():
     tests = []
     for b in BOOKS:
         f = os.path.join(ROOT, b, 'test.html')
+        if not os.path.exists(f):
+            continue
         s = open(f, encoding='utf8').read()
         m = re.search(r'const DATA = (\{.*?\});\n', s, re.S)
         data = json.loads(m.group(1))

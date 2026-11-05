@@ -3,11 +3,20 @@ white paper, DejaVu Sans Bold numbers, blue operators, dark rounded answer boxes
 import io, math, os
 from functools import lru_cache
 from PIL import Image, ImageDraw, ImageFont
-import cairosvg
+try:
+    import cairosvg
+except Exception:  # macOS-da cairo yoxdur: hazır Noto PNG şəkillərindən istifadə edirik
+    cairosvg = None
 
 EMOJI_DIR = os.environ.get('NOTO_SVG', 'noto-emoji/2D/svg')  # git clone https://github.com/googlefonts/noto-emoji
-FONT_B = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-FONT_R = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+# cairosvg olmayanda: Noto PNG (512 px) bu qovluqda saxlanılır, yoxdursa GitHub-dan bir dəfə endirilir
+EMOJI_PNG_DIR = os.environ.get('NOTO_PNG', os.path.expanduser('~/riyaziyyat-assets/emoji'))
+EMOJI_PNG_URL = 'https://raw.githubusercontent.com/googlefonts/noto-emoji/main/2D/png/512/'
+_FD = '/usr/share/fonts/truetype/dejavu'
+if not os.path.exists(_FD):
+    _FD = os.environ.get('DEJAVU_DIR', os.path.expanduser('~/riyaziyyat-assets/fonts'))
+FONT_B = os.path.join(_FD, 'DejaVuSans-Bold.ttf')
+FONT_R = os.path.join(_FD, 'DejaVuSans.ttf')
 
 INK = (51, 58, 64)
 BLUE = (30, 136, 229)
@@ -48,6 +57,16 @@ def txt(s, size=60, color=INK, bold=True):
 def _emoji(ch, size):
     cps = [c for c in ch if ord(c) != 0xFE0F]
     name = 'emoji_u' + '_'.join('%04x' % ord(c) for c in cps) + '.svg'
+    if cairosvg is None:
+        pn = os.path.join(EMOJI_PNG_DIR, name[:-4] + '.png')
+        if not os.path.exists(pn):
+            import urllib.request
+            os.makedirs(EMOJI_PNG_DIR, exist_ok=True)
+            try:
+                urllib.request.urlretrieve(EMOJI_PNG_URL + name[:-4] + '.png', pn)
+            except Exception as e:
+                raise FileNotFoundError('emoji %r (%s): %s' % (ch, name, e))
+        return Image.open(pn).convert('RGBA').resize((size, size), Image.LANCZOS)
     p = os.path.join(EMOJI_DIR, name)
     if not os.path.exists(p):
         raise FileNotFoundError('emoji %r (%s)' % (ch, name))
