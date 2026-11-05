@@ -68,7 +68,7 @@ it('D', 'Təkrar toplama', 'Təkrar toplamanı vurma ilə yazın.', 'Neçə dəf
    img=groups('🍓', (4, 4, 4), 44), tokens=[4, '+', 4, '+', 4, '=', 4, '·', N], answer=[3])
 it('D', 'Vurma', 'Hasili tapın.', 'Hər əldə 5 barmaq var. Beş-beş sayın.', '10',
    img=hstack([em('🖐️', 90), em('🖐️', 90)], 24), tokens=[5, '·', 2, '=', N], answer=[10])
-it('D', 'Bölmə', '12 konfeti 3 boşqaba bərabər paylayın. Hər boşqaba neçə düşər?', 'Konfetləri bir-bir boşqablara qoy.', '4',
+it('D', 'Bölmə', '12 konfeti 3 boşqaba bərabər paylayın. Hər boşqaba neçə düşər?', 'Konfetləri bir-bir boşqablara qoyun.', '4',
    img=plates('🍬', (4, 4, 4), 40), tokens=[12, ':', 3, '=', N], answer=[4])
 it('D', 'Tək və cüt ədədlər', 'Cüt ədədi seçin.', 'Cüt ədədin sonu 0, 2, 4, 6 və ya 8 olur.', '36',
    options=[chip(v, 64, WHITE, INK, GREY) for v in ('15', '23', '36', '41')], answer=2)
@@ -77,7 +77,7 @@ it('E', 'Bucaq', 'Düz bucağı seçin.', 'Düz bucaq kvadratın küncü kimidir
    options=[angle_img(45, 130), angle_img(90, 130), angle_img(130, 130)], answer=1)
 it('E', 'Çoxbucaqlı', 'Fiqurun neçə bucağı var?', 'Təpələri bir-bir sayın.', '5',
    img=poly(5, 160, (102, 187, 106)), tokens=[N], answer=[5])
-it('E', 'Üz, til və təpə', 'Kubun neçə təpəsi var?', 'Qırmızı nöqtələri sayın. Arxada gizlənən nöqtəni də unutma.', '8',
+it('E', 'Üz, til və təpə', 'Kubun neçə təpəsi var?', 'Qırmızı nöqtələri sayın. Arxada gizlənən nöqtəni də unutmayın.', '8',
    img=cube_marked(160), tokens=[N], answer=[8])
 it('E', 'Qruplaşdırma', 'Artıq olan fiquru seçin.', 'Fiqurların formasına baxın.', 'dairə',
    options=[shape('square', 90, (66, 165, 245)), shape('square', 90, (239, 83, 80)), shape('circle', 90, (66, 165, 245)), shape('square', 90, (255, 213, 79))], answer=2)

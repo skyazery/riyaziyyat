@@ -67,7 +67,8 @@ for b in books():
                 bad(f'{name}: topic {n}: image missing {p}')
     if formal:
         for s in list(walk(topics)) + list(voice.values()):
-            if not s.startswith(('img/', 'data:')) and formal(s) != s:
+            # tək söz (məs. fəsil adı «Yaz», «Bulka») cavab variantıdır, əmr deyil
+            if not s.startswith(('img/', 'data:')) and re.search(r'[\s.!?:]', s.strip()) and formal(s) != s:
                 bad(f'{name}: informal wording: {s[:80]}  →  {formal(s)[:80]}')
     # test page
     tp = os.path.join(ROOT, b, 'test.html')

@@ -175,7 +175,9 @@ const BOOKS=[
   {id:'1-2',first:29,last:49,title:'1-ci sinif riyaziyyat',part:'2-ci hissə',next:'2-ci sinfə keçmək',sections:[['Həndəsi fiqurlar',29,31],['Toplama (20-yə qədər)',32,34],['Çıxma (20-yə qədər)',35,37],['Ədədlər (100-ə qədər). Pullar',38,41],['Ölçmə',42,47],['Məlumatların təsviri',48,49]],
    icons:{29:'🔺',30:'🧊',31:'🌗',32:'➕',33:'🔟',34:'🎲',35:'➖',36:'🪜',37:'👨‍👩‍👧',38:'💯',39:'🪵',40:'🪙',41:'🛒',42:'✏️',43:'📏',44:'⚖️',45:'🪣',46:'📅',47:'🕐',48:'📊',49:'📈'}},
   {id:'2-1',first:50,last:69,title:'2-ci sinif riyaziyyat',part:'1-ci hissə',next:'2-ci hissəyə keçmək',sections:[['Ədədlərin müqayisəsi. Sıralama',50,51],['Toplama (100-ə qədər)',52,54],['Çıxma (100-ə qədər)',55,57],['Vurma və bölmə',58,62],['Həndəsi fiqurlar',63,66],['Toplama (yeni onluğun yaranması)',67,69]],
-   icons:{50:'⚖️',51:'📶',52:'➕',53:'🔟',54:'🧮',55:'➖',56:'🪵',57:'🍂',58:'🔁',59:'✖️',60:'🍬',61:'➗',62:'🧦',63:'📐',64:'🔷',65:'🧊',66:'🗂️',67:'🥚',68:'🧱',69:'🎲'}}];
+   icons:{50:'⚖️',51:'📶',52:'➕',53:'🔟',54:'🧮',55:'➖',56:'🪵',57:'🍂',58:'🔁',59:'✖️',60:'🍬',61:'➗',62:'🧦',63:'📐',64:'🔷',65:'🧊',66:'🗂️',67:'🥚',68:'🧱',69:'🎲'}},
+  {id:'2-2',first:70,last:91,title:'2-ci sinif riyaziyyat',part:'2-ci hissə',next:'',sections:[['Çıxma (onluğun ayrılması)',70,74],['Vurma və bölmə',75,80],['Ədədlər (500-ə qədər). Pullar',81,84],['Ölçmə',85,89],['Məlumatların təsviri',90,91]],
+   icons:{70:'➖',71:'🧮',72:'🔺',73:'🔣',74:'🪜',75:'✖️',76:'✌️',77:'🖐️',78:'🔢',79:'➗',80:'🔁',81:'💯',82:'🧊',83:'🪙',84:'🛒',85:'📏',86:'⚖️',87:'🥛',88:'🎲',89:'🕒',90:'📊',91:'📝'}}];
 const AY=['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
 const DN=['B.e','Ç.a','Ç','C.a','C','Ş','B'];
 const app=document.getElementById('app');
@@ -326,7 +328,8 @@ const TIPS={
   'Vurma':['🍽️','Süfrədə meyvələri boşqablara bərabər paylayın: «Hər boşqaba neçə düşür?»'],
   'Həndəsi':['📦','Evdə qutunun üzlərini, tillərini və təpələrini birlikdə sayın. Kitabın küncündə düz bucaq tapın.'],
   'Ölçmə':['📏','Evdə əşyaları ölçün: «Hansı uzundur? Hansı ağırdır?»'],
-  'Pul':['🪙','Mağazada: «Bu neçə qəpikdir? Qalıq nə qədər olar?»']};
+  'Pul':['🪙','Mağazada: «Bu neçə qəpikdir? Qalıq nə qədər olar?»'],
+  'Məlumat':['📊','Ailədə kiçik sorğu keçirin: «Kim hansı meyvəni sevir?» Cavabları cizgilərlə qeyd edib sayın.']};
 function monthly(){
   const p=R.period,S=stats(p),P=stats(prevPeriod(p));
   const y=+p.from.slice(0,4),mo=+p.from.slice(5,7),nDays=+p.to.slice(8),lead=(new Date(Date.UTC(y,mo-1,1)).getUTCDay()+6)%7;
@@ -351,7 +354,7 @@ function monthly(){
     const lbl=x=>x==null?'Səviyyə testi':x==='all'?'Hamısı bitdi':'Mövzu '+x;
     app.append(h('section',{class:'card'},h('div',{class:'sec-h'},h('h2',{},'Harada idi, indi haradadır')),
       h('div',{class:'move'},h('div',{class:'pill'},'Ayın əvvəli',h('small',{},lbl(a))),h('span',{class:'arrow','aria-hidden':'true'},'→'),h('div',{class:'pill now'},'İndi',h('small',{style:'color:inherit'},lbl(z)))),
-      h('div',{class:'path'},track,h('div',{class:'ends'},h('span',{},'Mövzu '+cur.first),h('span',{},'Mövzu '+cur.last+(cur.id==='1-1'?' → 2-ci hissə':cur.id==='1-2'?' → 2-ci sinif':'')))),
+      h('div',{class:'path'},track,h('div',{class:'ends'},h('span',{},'Mövzu '+cur.first),h('span',{},'Mövzu '+cur.last+(cur.id==='1-1'||cur.id==='2-1'?' → 2-ci hissə':cur.id==='1-2'?' → 2-ci sinif':'')))),
       legend([['background:var(--level)','Səviyyə testinə görə bilir'],['background:var(--good)','Öyrəndi'],['background:var(--primary)','Növbəti']])));
   }
   // bölmələr
