@@ -15,7 +15,7 @@
  *  - 메뉴 「주간 리포트 만들기」(일요일 저녁) / 「월간 리포트 만들기」(월말)를 누르면 Hesabatlar 탭에 학생별 줄이 생깁니다.
  *    선생님 한마디를 적고 「💬 Göndər」를 누르면 부모님께 리포트 링크(hesabat.html)를 왓츠앱으로 보냅니다.
  *
- * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름 · S~W 2-1권 · X~AB 2-2권
+ * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권
  * 개인정보(생년월일, 전화번호)는 이 시트 안에만 있고, 사이트에는 학생 이름만 전달됩니다.
  */
 
@@ -39,7 +39,7 @@ const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
 const C = { NAME: 1, BIRTH: 2, PHONE: 3, CODE: 4, LINK: 5, WA: 6, GRADE: 17, PARENT: 18 };
-const NCOL = 28; // A~F 학생 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 · S~W 2-1권 · X~AB 2-2권
+const NCOL = 38; // A~F 학생 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권
 const REG_HEADERS = ['Tarix (제출 시각)', 'Şagirdin adı (이름)', 'Soyadı (성)', 'Doğum tarixi (생년월일)', 'Sinif (학년)',
   'Valideyn (부모 이름)', 'Telefon (전화)', 'Valideyn təsdiqi (보호자 확인)', 'Razılıq 1 (정보 이용)', 'Razılıq 2 (결과 저장·발송)',
   'Razılıq 3 – reklam (홍보, 선택)', 'Kod (코드)', 'Qeyd (메모)'];
@@ -114,6 +114,36 @@ const BOOKS = {
     lvAll: 92,
     lvSections: [[70, 74], [75, 80], [81, 84], [85, 89], [90, 91]],
     topics: ["İkirəqəmli ədədlə birrəqəmli ədədin fərqi", "İkirəqəmli ədədlərin fərqi", "Toplama və çıxmanın əlaqəsi", "Mötərizəli ifadələr", "İkiaddımlı məsələlər", "Vurma", "2-yə və 3-ə vurma", "4-ə və 5-ə vurma", "Vurma cədvəli", "Bölmə", "Vurma və bölmənin əlaqəsi", "500-ə qədər sayma", "Yüzlük, onluq və təklik", "Pullar", "Alış-veriş", "Uzunluq", "Kütlə", "Tutum", "Təkrarlanan hadisələr", "Saat", "Cədvəl, piktoqram, diaqram", "Məlumatları necə toplamalı?"]
+  },
+  '3-1': {
+    name: '3-1', color: '#C5F6FA',
+    col: { STATUS: 29, DATE: 30, LV_START: 31, LV_DATE: 32, LV_RETRY: 33 },
+    results: 'Nəticələr 3-1', level: 'Səviyyə 3-1', first: 92,
+    key: [
+      { a: 'A', ans: [243] }, { a: 'A', ans: [608] }, { a: 'A', k: 'choice', ans: 1 }, { a: 'A', ans: [350] },
+      { a: 'B', ans: [587] }, { a: 'B', ans: [473] }, { a: 'B', ans: [624] }, { a: 'B', ans: [520] },
+      { a: 'C', ans: [342] }, { a: 'C', ans: [235] }, { a: 'C', ans: [355] }, { a: 'C', ans: [335] },
+      { a: 'D', ans: [42] }, { a: 'D', ans: [72] }, { a: 'D', ans: [8] }, { a: 'D', ans: [9] },
+      { a: 'E', ans: [180] }, { a: 'E', ans: [50] }, { a: 'E', ans: [54] }, { a: 'E', ans: [8] }
+    ],
+    lvAll: 117,
+    lvSections: [[92, 95], [96, 101], [102, 107], [108, 112], [113, 116]],
+    topics: ["Üçrəqəmli ədədlər", "Ədədin yazılış formaları", "Ədədlərin müqayisəsi və sıralama", "Yuvarlaqlaşdırma", "Üçrəqəmli ədədlərin toplanması", "Üçrəqəmli ədədlərin toplanması (yeni onluğun yaranması)", "Üçrəqəmli ədədlərin toplanması (yeni yüzlüyün yaranması)", "Üçrəqəmli ədədlərin toplanması (yeni onluq və yüzlüyün yaranması)", "Üç və daha çox ədədin toplanması", "Toplamanın digər üsulları", "Üçrəqəmli ədədlərin çıxılması", "Üçrəqəmli ədədlərin çıxılması (onluğun ayrılması)", "Üçrəqəmli ədədlərin çıxılması (yüzlüyün ayrılması)", "Üçrəqəmli ədədlərin çıxılması (onluq və yüzlüyün ayrılması)", "Çıxmanın digər üsulları", "Təqribi toplama və çıxma", "6-ya və 7-yə vurma", "8, 9 və 10-a vurma", "2, 3, 4 və 5-ə bölmə", "6-ya və 7-yə bölmə", "8, 9 və 10-a bölmə", "Məchulun tapılması", "Əməllər ardıcıllığı", "Dəyişəni olan ifadələr", "Tənlik"]
+  },
+  '3-2': {
+    name: '3-2', color: '#FFDEEB',
+    col: { STATUS: 34, DATE: 35, LV_START: 36, LV_DATE: 37, LV_RETRY: 38 },
+    results: 'Nəticələr 3-2', level: 'Səviyyə 3-2', first: 117,
+    key: [
+      { a: 'A', k: 'choice', ans: 1 }, { a: 'A', k: 'choice', ans: 0 }, { a: 'A', k: 'choice', ans: 0 }, { a: 'A', ans: [6] },
+      { a: 'B', ans: [72] }, { a: 'B', ans: [636] }, { a: 'B', ans: [5, 3] }, { a: 'B', ans: [213] },
+      { a: 'C', k: 'choice', ans: 0 }, { a: 'C', ans: [5] }, { a: 'C', k: 'choice', ans: 1 }, { a: 'C', ans: [10] },
+      { a: 'D', ans: [3405] }, { a: 'D', ans: [325] }, { a: 'D', ans: [20] }, { a: 'D', ans: [2300] },
+      { a: 'E', ans: [14, 20] }, { a: 'E', ans: [15] }, { a: 'E', k: 'choice', ans: 0 }, { a: 'E', ans: [18] }
+    ],
+    lvAll: 143,
+    lvSections: [[117, 121], [122, 128], [129, 131], [132, 134], [135, 139], [140, 142]],
+    topics: ["Kəsişən və paralel düz xətlər", "Müstəvi fiqurlar", "Simmetriya və yerdəyişmə", "Fəza fiqurları", "Müstəvi və fəza fiqurlarının əlaqəsi", "Vurmanın xassələri", "İkirəqəmli ədədin birrəqəmli ədədə vurulması", "Üçrəqəmli ədədin birrəqəmli ədədə vurulması", "Qalıqlı bölmə", "İkirəqəmli ədədin birrəqəmli ədədə bölünməsi", "Üçrəqəmli ədədin birrəqəmli ədədə bölünməsi", "Vurma və bölmənin digər üsulları", "Tam və bərabər hissələr. Kəsr", "Ədədin hissəsi", "Kəsrlərin müqayisəsi", "Dördrəqəmli ədədlər", "Pullarla hesablamalar", "Gəlir, xərc, qazanc", "Uzunluq", "Perimetr və sahə", "Kütlə", "Tutum", "Saat", "Xətti diaqram", "Hadisələr", "Məlumatların təsviri. Praktik dərs"]
   }
 };
 
@@ -193,8 +223,8 @@ function setup() {
   setupReports_(ss);
   SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.\n\n' +
     '동의서(qeydiyyat.html)로 등록한 학생은 자동으로 추가되고 링크도 자동으로 만들어집니다. Ayarlar 탭 ELAQE_NOMRESI 칸에 연락처를 넣어 주세요.\n\n' +
-    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름, S~W = 2-1권, X~AB = 2-2권.\n' +
-    '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49, 2-1권 50~69, 2-2권 70~91), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
+    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름, S~W = 2-1권, X~AB = 2-2권, AC~AG = 3-1권, AH~AL = 3-2권.\n' +
+    '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49, 2-1권 50~69, 2-2권 70~91, 3-1권 92~116, 3-2권 117~142), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
 }
 
 /* ---------------- 학생 링크 만들기 ---------------- */
@@ -925,7 +955,7 @@ function sanitizeAns_(raw, KEY) {
     const v = raw[k];
     if (v === undefined || v === null) return;
     if (it.k === 'choice') { if (typeof v === 'number') out[k] = v; }
-    else if (Array.isArray(v)) out[k] = v.slice(0, it.ans.length).map(x => (x === null ? null : String(x).slice(0, 3)));
+    else if (Array.isArray(v)) out[k] = v.slice(0, it.ans.length).map(x => (x === null ? null : String(x).slice(0, 5)));
   });
   return out;
 }
@@ -1032,7 +1062,7 @@ const COL = { brand: '#5145E6', brandSoft: '#ECEAFF', sun: '#FFF4D6', sunInk: '#
   warn: '#B06000', warnSoft: '#FEF7E0', bad: '#C5221F', badSoft: '#FCE8E6', grey: '#BDC1C6', muted: '#5F6368', edit: '#FFF8C5' };
 const STATUS = { bad: ['연락 필요', COL.bad, COL.badSoft], warn: ['살펴보기', COL.warn, COL.warnSoft], ok: ['잘하고 있음', COL.ok, COL.okSoft] };
 
-function bookByTopic_(n) { return n >= BOOKS['2-2'].first ? BOOKS['2-2'] : n >= BOOKS['2-1'].first ? BOOKS['2-1'] : n >= BOOKS['1-2'].first ? BOOKS['1-2'] : BOOKS['1-1']; }
+function bookByTopic_(n) { return n >= BOOKS['3-2'].first ? BOOKS['3-2'] : n >= BOOKS['3-1'].first ? BOOKS['3-1'] : n >= BOOKS['2-2'].first ? BOOKS['2-2'] : n >= BOOKS['2-1'].first ? BOOKS['2-1'] : n >= BOOKS['1-2'].first ? BOOKS['1-2'] : BOOKS['1-1']; }
 
 // 학생 한 명의 요약 (현황판·학생 보기가 같이 씀)
 function studentSummary_(stu, rows, today) {
@@ -1292,7 +1322,7 @@ function tidySheets() {
   refreshPanel();
   const order = [
     [SH_PANEL, '#5145E6'], [SH_DETAIL, '#E8790C'], [SH_STUDENTS, '#F6A623'], [SH_REPORTS, '#8E6CEF'], [SH_DAILY, '#3BA6F5'],
-    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['2-1'].level, '#9AA0A6'], [BOOKS['2-2'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'], [BOOKS['2-1'].results, '#9AA0A6'], [BOOKS['2-2'].results, '#9AA0A6'],
+    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['2-1'].level, '#9AA0A6'], [BOOKS['2-2'].level, '#9AA0A6'], [BOOKS['3-1'].level, '#9AA0A6'], [BOOKS['3-2'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'], [BOOKS['2-1'].results, '#9AA0A6'], [BOOKS['2-2'].results, '#9AA0A6'], [BOOKS['3-1'].results, '#9AA0A6'], [BOOKS['3-2'].results, '#9AA0A6'],
     [SH_SETTINGS, '#5F6368']];
   let pos = 1;
   order.forEach(([name, color]) => {

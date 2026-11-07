@@ -1,6 +1,6 @@
 ---
 name: riyaziyyat-site
-description: How to change the Riyaziyyat Dostu math worksheet site (skyazery/riyaziyyat, GitHub Pages) without breaking it — editing or adding problems, topics and whole books (1-1, 1-2, 2-1, next 2-2 / 3rd grade), changing on-screen wording, regenerating the Azerbaijani TTS audio, design/UI changes in app.js/app.css, the test and teacher pages, and deploying through main. Use this whenever the user works on this repository or talks about the worksheet site, 학습지, mövzu, tapşırıq, səs (audio), 새 책/새 권, 문구 수정, 디자인 수정, or putting changes "on the real site", even if they don't name files. Also use it before touching apps-script/Code.gs because the sheet program and the site must stay in step.
+description: How to change the Riyaziyyat Dostu math worksheet site (skyazery/riyaziyyat, GitHub Pages) without breaking it — editing or adding problems, topics and whole books (1-1, 1-2, 2-1, 2-2, 3-1, 3-2), changing on-screen wording, regenerating the Azerbaijani TTS audio, design/UI changes in app.js/app.css, the test and teacher pages, and deploying through main. Use this whenever the user works on this repository or talks about the worksheet site, 학습지, mövzu, tapşırıq, səs (audio), 새 책/새 권, 문구 수정, 디자인 수정, or putting changes "on the real site", even if they don't name files. Also use it before touching apps-script/Code.gs because the sheet program and the site must stay in step.
 ---
 
 # Riyaziyyat Dostu – worksheet site
@@ -17,7 +17,7 @@ out, and say clearly what is live and what is not.
 
 | Path | What it is |
 |---|---|
-| `index.html`, `1-2/index.html`, `2-1/index.html` | One page per book. Only a `BOOK={...}` config differs (id, first/last topic, sections, icons, `lvq` placement questions, links to other books). |
+| `index.html`, `1-2/`, `2-1/`, `2-2/`, `3-1/`, `3-2/` `index.html` | One page per book. Only a `BOOK={...}` config differs (id, first/last topic, sections, icons, `lvq` placement questions, links to other books). |
 | `app.js`, `app.css`, `base.css`, `sagird.js` | Shared code for all books. One change here changes every book. |
 | `<book>/data/topics.json` | Topics → 10 problems each (`ins` text, `img`, `check` or `web`, `audio` id). |
 | `<book>/data/voice.json` | audio id → the exact text that was spoken. |
@@ -26,7 +26,7 @@ out, and say clearly what is live and what is not.
 | `<book>/test.html` | Final test; items in `const DATA = {...}` (1-1 and 1-2 embed audio as data URIs, 2-1 uses ids). |
 | `<book>/muellim.html` | Teacher page (answers, guidance). Generated, but plain HTML. |
 | `hesabat.html`, `qeydiyyat.html` | Parent report, parent consent form. |
-| `tools/content.py` (1-2), `tools/content21.py` (2-1) + `draw.py`, `draw2.py` | Generators that draw images and write topics.json/voice.json. There is **no generator for 1-1** — edit its JSON directly. |
+| `tools/content.py` (1-2), `tools/content21.py` (2-1), `content22.py` (2-2), `content31.py`/`content32.py` (3rd grade, helpers in `bookgen.py`) + `draw.py`, `draw2.py` | Generators that draw images and write topics.json/voice.json. There is **no generator for 1-1** — edit its JSON directly. |
 | `tools/test12.py`, `test21.py`, `build_test21.py`, `build_muellim21.py` | Test / teacher page generators (paths inside are hardcoded to `/home/claude/riyaziyyat`; pass or patch paths before running). |
 | `tools/formal.py` | Converts informal imperatives to the formal form. |
 | `tools/tts_all.py` | Makes missing audio, updates audio.json, deletes unused mp3s, refreshes test audio. |
@@ -55,12 +55,12 @@ Details on file formats: `references/data-format.md`. Adding a whole new book: `
    `tools/greet.mp3` in front. Needs `pip install --user -U edge-tts imageio-ffmpeg` (ask the user
    before installing; an old edge-tts gets HTTP 403). Run it in the background; ~400 files take a few
    minutes. It must end with `{'ok': N}` and no `fail`; if anything fails, rerun (finished files are kept).
-4. **10 problems per topic, topics numbered across books** (1-1: 1–28, 1-2: 29–49, 2-1: 50–69).
+4. **10 problems per topic, topics numbered across books** (1-1: 1–28, 1-2: 29–49, 2-1: 50–69, 2-2: 70–91, 3-1: 92–116, 3-2: 117–142).
    The Apps Script, placement test and reports rely on these numbers.
 5. **Shared code, three books.** A change to `app.js`/`app.css` must be checked in every book.
    Keep `app.js` dependency-free and readable for the owner; comments in Azerbaijani like the rest.
 6. **Design language:** warm cream background, Nunito 600–900, rounded cards (20–26px), chunky
-   buttons with a darker bottom shadow, book colours (1-1 blue, 1-2 green, 2-1 orange), green =
+   buttons with a darker bottom shadow, book colours (1-1 blue, 1-2 green, 2-1 orange, 2-2 purple, 3-1 teal, 3-2 pink), green =
    done/correct, amber `#F0A020` = today/active, dashed grey = locked. On a phone (375×812) the
    picture, answer box and number pad of a problem must fit on one screen without scrolling — that is
    why the teacher card is a one-line `.teach.mini` on problems. Respect `prefers-reduced-motion`
@@ -77,7 +77,7 @@ Work on a branch (`git switch -c <topic>`), never straight on `main`.
 
 1. **Understand the request** in the owner's words; if wording in Azerbaijani is involved, show the
    exact before → after sentences.
-2. **Make the change** with the rules above. For generated books (1-2, 2-1) change the generator
+2. **Make the change** with the rules above. For generated books (1-2, 2-1, 2-2, 3-1, 3-2) change the generator
    string too, so a future regeneration doesn't bring the old text back.
 3. **Regenerate audio** if any spoken text changed (rule 2–3).
 4. **Run the checker:** `python3 .claude/skills/riyaziyyat-site/scripts/check_site.py` — it fails on

@@ -31,6 +31,12 @@ Bütün hissələr eyni kodu işlədir: `app.js`, `app.css`, `sagird.js`. Kitab�
 - Mənbə: `tools/content22.py`, `tools/test22.py`, `tools/build_test22.py`, `tools/build_muellim22.py`
 - macOS-da şəkillər üçün DejaVu şrifti və Noto emoji PNG-ləri `~/riyaziyyat-assets/` qovluğundadır (`draw.py` özü tapır, çatmayan emojini bir dəfə endirir)
 
+## 3-cü sinif, 1-ci hissə (`3-1/`) və 2-ci hissə (`3-2/`)
+
+- `3-1/index.html` – 25 mövzu (92–116), 250 şəkilli tapşırıq; `3-2/index.html` – 26 mövzu (117–142), 260 şəkilli tapşırıq
+- `3-1/test.html`, `3-2/test.html` – 20 tapşırıqlı yoxlama testləri; `muellim.html` – cavablar və qiymətləndirmə
+- Mənbə: `tools/bookgen.py` (ümumi çəkmə köməkçiləri), `tools/content31.py`, `tools/content32.py`, `tools/testcommon.py`, `tools/test31.py`, `tools/test32.py`, `tools/build_test3.py 3-1|3-2`, `tools/build_muellim3.py 3-1|3-2`
+
 ## Mətnlər və səslər
 
 - Bütün tapşırıq mətnləri hörmətli formadadır (yazın, sayın, toxunun …). Yeni mətn əlavə edəndə `python3 tools/formal.py --apply` çevirir.

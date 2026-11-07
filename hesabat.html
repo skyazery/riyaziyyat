@@ -176,8 +176,12 @@ const BOOKS=[
    icons:{29:'🔺',30:'🧊',31:'🌗',32:'➕',33:'🔟',34:'🎲',35:'➖',36:'🪜',37:'👨‍👩‍👧',38:'💯',39:'🪵',40:'🪙',41:'🛒',42:'✏️',43:'📏',44:'⚖️',45:'🪣',46:'📅',47:'🕐',48:'📊',49:'📈'}},
   {id:'2-1',first:50,last:69,title:'2-ci sinif riyaziyyat',part:'1-ci hissə',next:'2-ci hissəyə keçmək',sections:[['Ədədlərin müqayisəsi. Sıralama',50,51],['Toplama (100-ə qədər)',52,54],['Çıxma (100-ə qədər)',55,57],['Vurma və bölmə',58,62],['Həndəsi fiqurlar',63,66],['Toplama (yeni onluğun yaranması)',67,69]],
    icons:{50:'⚖️',51:'📶',52:'➕',53:'🔟',54:'🧮',55:'➖',56:'🪵',57:'🍂',58:'🔁',59:'✖️',60:'🍬',61:'➗',62:'🧦',63:'📐',64:'🔷',65:'🧊',66:'🗂️',67:'🥚',68:'🧱',69:'🎲'}},
-  {id:'2-2',first:70,last:91,title:'2-ci sinif riyaziyyat',part:'2-ci hissə',next:'',sections:[['Çıxma (onluğun ayrılması)',70,74],['Vurma və bölmə',75,80],['Ədədlər (500-ə qədər). Pullar',81,84],['Ölçmə',85,89],['Məlumatların təsviri',90,91]],
-   icons:{70:'➖',71:'🧮',72:'🔺',73:'🔣',74:'🪜',75:'✖️',76:'✌️',77:'🖐️',78:'🔢',79:'➗',80:'🔁',81:'💯',82:'🧊',83:'🪙',84:'🛒',85:'📏',86:'⚖️',87:'🥛',88:'🎲',89:'🕒',90:'📊',91:'📝'}}];
+  {id:'2-2',first:70,last:91,title:'2-ci sinif riyaziyyat',part:'2-ci hissə',next:'3-cü sinfə keçmək',sections:[['Çıxma (onluğun ayrılması)',70,74],['Vurma və bölmə',75,80],['Ədədlər (500-ə qədər). Pullar',81,84],['Ölçmə',85,89],['Məlumatların təsviri',90,91]],
+   icons:{70:'➖',71:'🧮',72:'🔺',73:'🔣',74:'🪜',75:'✖️',76:'✌️',77:'🖐️',78:'🔢',79:'➗',80:'🔁',81:'💯',82:'🧊',83:'🪙',84:'🛒',85:'📏',86:'⚖️',87:'🥛',88:'🎲',89:'🕒',90:'📊',91:'📝'}},
+  {id:'3-1',first:92,last:116,title:'3-cü sinif riyaziyyat',part:'1-ci hissə',next:'2-ci hissəyə keçmək',sections:[['Ədədlər (1000-ə qədər)',92,95],['Üçrəqəmli ədədlərin toplanması',96,101],['Üçrəqəmli ədədlərin çıxılması',102,107],['Vurma və bölmə',108,112],['İfadələr və tənliklər',113,116]],
+   icons:{92:'💯',93:'🧩',94:'⚖️',95:'🎯',96:'➕',97:'🔟',98:'🧱',99:'🏗️',100:'🧮',101:'💡',102:'➖',103:'🔓',104:'📦',105:'🪜',106:'🔁',107:'🤏',108:'✖️',109:'🕷️',110:'➗',111:'🍕',112:'🎂',113:'❓',114:'🚦',115:'🔤',116:'⚖️'}},
+  {id:'3-2',first:117,last:142,title:'3-cü sinif riyaziyyat',part:'2-ci hissə',next:'',sections:[['Həndəsi fiqurlar',117,121],['Vurma və bölmə',122,128],['Kəsrlər',129,131],['Ədədlər (10 000-ə qədər). Pullar',132,134],['Ölçmə',135,139],['Məlumatların təsviri. Hadisələr',140,142]],
+   icons:{117:'📐',118:'🔺',119:'🦋',120:'🔷',121:'🧊',122:'🔁',123:'✖️',124:'🧮',125:'🧁',126:'➗',127:'📚',128:'💡',129:'🍕',130:'🎈',131:'⚖️',132:'🔢',133:'🪙',134:'💵',135:'📏',136:'🟩',137:'🏋️',138:'🥛',139:'⏰',140:'📈',141:'🎲',142:'📊'}}];
 const AY=['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
 const DN=['B.e','Ç.a','Ç','C.a','C','Ş','B'];
 const app=document.getElementById('app');
@@ -354,7 +358,7 @@ function monthly(){
     const lbl=x=>x==null?'Səviyyə testi':x==='all'?'Hamısı bitdi':'Mövzu '+x;
     app.append(h('section',{class:'card'},h('div',{class:'sec-h'},h('h2',{},'Harada idi, indi haradadır')),
       h('div',{class:'move'},h('div',{class:'pill'},'Ayın əvvəli',h('small',{},lbl(a))),h('span',{class:'arrow','aria-hidden':'true'},'→'),h('div',{class:'pill now'},'İndi',h('small',{style:'color:inherit'},lbl(z)))),
-      h('div',{class:'path'},track,h('div',{class:'ends'},h('span',{},'Mövzu '+cur.first),h('span',{},'Mövzu '+cur.last+(cur.id==='1-1'||cur.id==='2-1'?' → 2-ci hissə':cur.id==='1-2'?' → 2-ci sinif':'')))),
+      h('div',{class:'path'},track,h('div',{class:'ends'},h('span',{},'Mövzu '+cur.first),h('span',{},'Mövzu '+cur.last+(cur.id==='1-1'||cur.id==='2-1'||cur.id==='3-1'?' → 2-ci hissə':cur.id==='1-2'?' → 2-ci sinif':cur.id==='2-2'?' → 3-cü sinif':'')))),
       legend([['background:var(--level)','Səviyyə testinə görə bilir'],['background:var(--good)','Öyrəndi'],['background:var(--primary)','Növbəti']])));
   }
   // bölmələr

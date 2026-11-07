@@ -188,7 +188,7 @@ function lvIntro(){
   app.append(h('a',{class:'backlink',href:'#'},'← Bütün mövzular'),brand(null),
     h('div',{class:'card lvbox pop'},h('div',{class:'ic'},'🧭'),h('h2',{},'Səviyyə testi'),
       h('p',{style:'margin:0;text-align:center;font-weight:700'},'Bu qısa test uşağın hansı mövzudan başlamalı olduğunu göstərir.'),
-      h('ul',{},h('li',{},'Hər bölmədən 2 sual, ən çox 12 sual (5–10 dəqiqə).'),h('li',{},'Suallar səslidir – valideyn uşağın yanında olsun.'),h('li',{},'Cavabın düz və ya səhv olduğu göstərilmir, sakitcə növbəti suala keçir.'),h('li',{},'Uşaq bilmədiyi sual gələndə test özü bitir – bu normaldır.'),KOD?h('li',{},'Nəticə müəllimə göndərilir.'):null),
+      h('ul',{},h('li',{},'Hər bölmədən 2 sual, ən çox '+LV_Q.flat().length+' sual (5–10 dəqiqə).'),h('li',{},'Suallar səslidir – valideyn uşağın yanında olsun.'),h('li',{},'Cavabın düz və ya səhv olduğu göstərilmir, sakitcə növbəti suala keçir.'),h('li',{},'Uşaq bilmədiyi sual gələndə test özü bitir – bu normaldır.'),KOD?h('li',{},'Nəticə müəllimə göndərilir.'):null),
       prev!=null?h('p',{class:'muted',style:'margin:0;text-align:center'},'Əvvəlki nəticə: '+(prev>=LV_ALL?'bütün mövzular':'Mövzu '+prev)):null,
       h('button',{class:'big',onclick(){LT={phase:'q',i:0,j:0,n:0,log:[]};st=null;go()}},'Başlayın →'),
       h('a',{class:'backlink',href:'#',style:'align-self:center'},'İndi yox')));

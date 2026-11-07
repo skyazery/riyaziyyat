@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>3-cü sinif riyaziyyat · 1-ci hissə</title>
+<meta name="description" content="3-cü sinif üçün şəkilli və səsli riyaziyyat tapşırıqları (1-ci hissə, 25 mövzu).">
+<meta property="og:title" content="3-cü sinif riyaziyyat (1-ci hissə) – şəkilli və səsli tapşırıqlar">
+<meta property="og:description" content="25 mövzu, 250 şəkilli tapşırıq, səsli izah və yoxlama testi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../sagird.js"></script>
+</head>
+<body>
+<div class="wrap" id="app"><p class="muted" style="text-align:center;padding:40px">Yüklənir...</p></div>
+<div class="bar" id="bar" hidden><div class="in" id="barIn"></div></div>
+<canvas class="confetti" id="cf"></canvas>
+<script>
+const BOOK={id:'3-1',praise:'../audio/',first:92,last:116,key:'riyaziyyat-3-1-progress',logo:'📘',
+  title:'3-cü sinif riyaziyyat',sub:'Mövzu 92–116 · şəkilli və səsli tapşırıqlar',part:'1',partName:'1-ci hissə',
+  sections:[['Ədədlər (1000-ə qədər)',92,95],['Üçrəqəmli ədədlərin toplanması',96,101],['Üçrəqəmli ədədlərin çıxılması',102,107],['Vurma və bölmə',108,112],['İfadələr və tənliklər',113,116]],
+  icons:{92:'💯',93:'🧩',94:'⚖️',95:'🎯',96:'➕',97:'🔟',98:'🧱',99:'🏗️',100:'🧮',101:'💡',102:'➖',103:'🔓',104:'📦',105:'🪜',106:'🔁',107:'🤏',108:'✖️',109:'🕷️',110:'➗',111:'🍕',112:'🎂',113:'❓',114:'🚦',115:'🔤',116:'⚖️'},
+  /* səviyyə testi: hər bölmədən 2 tapşırıq [mövzu, tapşırığın sırası (0-dan)] */
+  lvq:[[[93,3],[95,2]],[[97,2],[101,3]],[[103,2],[107,4]],[[109,2],[112,2]],[[114,2],[116,2]]],
+  allText:'İstədiyi mövzunu təkrar edə bilər. Hazır olanda yoxlama testini edin.',
+  footer:'Mövzular Azərbaycan Respublikasının «Riyaziyyat 3» dərsliyinin (1-ci hissə) ardıcıllığı ilə hazırlanıb.',
+  other:[{id:'3-2',href:'../3-2/',label:'📗 3-cü sinif, 2-ci hissə: Mövzu 117–142 →',text:'Fiqurlar, vurma və bölmə, kəsrlər, 10 000-ə qədər ədədlər, ölçmə, diaqramlar',next:true},
+         {id:'2-2',href:'../2-2/',label:'📕 ← 2-ci sinif, 2-ci hissə: Mövzu 70–91',text:'Çıxma, vurma və bölmə, 500-ə qədər ədədlər, pullar, ölçmə'}]};
+const KITAB=BOOK.id;
+</script>
+<script src="../app.js"></script>
+</body>
+</html>
