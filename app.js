@@ -306,7 +306,7 @@ function problemView(p,k){
     const set=v=>{if(v===null)fresh=false;a[active]=v;if(v!==null&&active<a.length-1&&c.mode==='sign')active++;paint();upd()};
     if(!locked){
       if(c.mode==='sign')task.append(h('div',{class:'signs'},['>','<','='].map(sg=>h('button',{onclick(){set(sg)}},sg))));
-      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=fresh||a[active]==null?'':String(a[active]);fresh=false;let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>3||Number(v)>100)v=String(d);set(Number(v))}},String(d))));pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Silin'));task.append(pad)}
+      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=fresh||a[active]==null?'':String(a[active]);fresh=false;let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>5)v=String(d);set(Number(v))}},String(d))));pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Silin'));task.append(pad)}
     }
     const tries=st.tries[k]||0;
     if(solved)(task).append(cheer(st.first[k]));
