@@ -342,11 +342,12 @@ function webView(p,k,task){
   function draw(){
   area.replaceChildren();
   const solved=st.first[k]!==undefined&&isOk(), shown=!!st.shown[k], locked=solved||shown;
-  const optEl=(o,j,cls,fn)=>h('button',{class:'opt'+cls,disabled:locked,onclick:fn},o.img?h('img',{src:o.img,alt:''}):o.t);
+  const optEl=(o,j,cls,fn)=>h('button',{class:'opt'+(o.img?'':' txt')+cls,disabled:locked,onclick:fn},o.img?h('img',{src:o.img,alt:''}):o.t);
   let hint;
   if(m==='choice'||m==='multi'||m==='order'){
     hint=m==='choice'?'Düzgün cavaba toxunun:':m==='multi'?'Uyğun olanların hamısına toxunun:':(w.hint||'Heyvanlara sıra ilə toxunun: 1-ci, 2-ci, 3-cü yer.');
-    const box=h('div',{class:'opts'+(w.opts.length<=3?' few':'')});
+    const tl=Math.max(0,...w.opts.map(o=>o.img?0:String(o.t).length)); // uzun söz/cümlə: kiçik şrift, bir sütun
+    const box=h('div',{class:'opts'+(w.opts.length<=3?' few':'')+(tl>=9?' wordy':tl>=5?' mid':'')});
     w.opts.forEach((o,j)=>{
       let cls='';const pos=m==='order'?a.indexOf(j):-1;
       const sel=m==='choice'?a===j:m==='multi'?a.includes(j):pos>=0;

@@ -30,6 +30,10 @@ a{color:inherit}
 .opts.few{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
 .opt{position:relative;background:#fff;border:4px solid #E3E6EF;border-radius:20px;padding:8px;min-height:84px;display:grid;place-items:center;font-size:40px;font-weight:900;color:#1F2433;box-shadow:0 4px 0 #E3E6EF;cursor:pointer;font-family:inherit}
 .opt img{max-width:100%;max-height:130px;object-fit:contain;pointer-events:none}
+.opt.txt{overflow-wrap:anywhere;text-align:center;line-height:1.2}
+.opts.mid .opt.txt{font-size:26px}
+.opts.wordy{grid-template-columns:1fr}
+.opts.wordy .opt.txt{font-size:22px;min-height:60px;padding:10px 16px}
 .opt.sel{border-color:#F0A020;box-shadow:0 0 0 5px #FFE2A6;transform:translateY(-2px)}
 .opt.right{border-color:var(--good);background:#E6F6EC;box-shadow:0 0 0 5px #BFE8CF}
 .opt.wrong{border-color:var(--bad);background:#FDECEC}
