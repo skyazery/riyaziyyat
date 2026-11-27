@@ -1,0 +1,1388 @@
+{
+ "33": {
+  "scenes": [
+   {
+    "say": "8 üstəgəl 5 neçə edir?",
+    "audio": "a8845dcc35",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l33_01.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_02.webp",
+      "at": 0.5,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Onluq qutuya 8 qırmızı top qoyaq.",
+    "audio": "f687931729",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l33_03.webp",
+      "at": 0.0,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l33_04.webp",
+      "at": 0.3,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_05.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "5 göy topdan 2-sini qutuya qoyuruq. Qutu doldu: 10 oldu.",
+    "audio": "c007243f39",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l33_06.webp",
+      "at": 0.05,
+      "fx": "pop",
+      "out": 0.42
+     },
+     {
+      "src": "img/lesson/l33_07.webp",
+      "at": 0.42,
+      "fx": "fly"
+     },
+     {
+      "src": "img/lesson/l33_08.webp",
+      "at": 0.42,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l33_09.webp",
+      "at": 0.78,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Qalan 3-ü də əlavə edirik: 10 üstəgəl 3 bərabərdir 13.",
+    "audio": "f1817830af",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l33_10.webp",
+      "at": 0.32,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_11.webp",
+      "at": 0.44,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_12.webp",
+      "at": 0.56,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_13.webp",
+      "at": 0.6799999999999999,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_14.webp",
+      "at": 0.8,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Deməli, 8 üstəgəl 5 bərabərdir 13. İndi siz cəhd edin!",
+    "audio": "75433f00d2",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l33_15.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_16.webp",
+      "at": 0.62,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "29": {
+  "scenes": [
+   {
+    "say": "Üçbucağın 3 tərəfi və 3 təpəsi var.",
+    "audio": "1bb3132c9c",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l29_01.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l29_02.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Kvadratın 4 tərəfi bərabərdir.",
+    "audio": "84b5ed5d34",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l29_03.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l29_04.webp",
+      "at": 0.55,
+      "fx": "fade"
+     }
+    ]
+   },
+   {
+    "say": "Dairənin isə təpəsi yoxdur.",
+    "audio": "4200586a68",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l29_05.webp",
+      "at": 0.15,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l29_06.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "30": {
+  "scenes": [
+   {
+    "say": "Zar kub formasındadır. Qutu – kuboid.",
+    "audio": "9b025dfd8d",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l30_01.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l30_02.webp",
+      "at": 0.5,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Top kürədir. Banka silindr, dondurma qabı isə konusdur.",
+    "audio": "91f8eb79e3",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l30_03.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l30_04.webp",
+      "at": 0.4,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l30_05.webp",
+      "at": 0.72,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l30_06.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "31": {
+  "scenes": [
+   {
+    "say": "Bu, tam pizzadır.",
+    "audio": "161d4e0646",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l31_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l31_02.webp",
+      "at": 0.5,
+      "fx": "pop",
+      "out": 1.4
+     }
+    ]
+   },
+   {
+    "say": "Onu 2 bərabər hissəyə bölürük.",
+    "audio": "dc381bbba2",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l31_03.webp",
+      "at": 0.3,
+      "fx": "fade"
+     }
+    ]
+   },
+   {
+    "say": "Hər hissə yarıdır.",
+    "audio": "6ca5759f92",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l31_04.webp",
+      "at": 0.0,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l31_05.webp",
+      "at": 0.3,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l31_06.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "32": {
+  "scenes": [
+   {
+    "say": "12 üstəgəl 3 neçə edir?",
+    "audio": "91153bb49b",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l32_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l32_02.webp",
+      "at": 0.3,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l32_03.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Toplayanda ədəd oxunda sağa gedirik: 3 addım.",
+    "audio": "7e0da7c10c",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l32_04.webp",
+      "at": 0.4,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l32_05.webp",
+      "at": 0.65,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l32_06.webp",
+      "at": 0.9,
+      "fx": "fade"
+     }
+    ]
+   },
+   {
+    "say": "15-ə çatdıq: 12 üstəgəl 3 bərabərdir 15.",
+    "audio": "243e212ccd",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l32_07.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l32_08.webp",
+      "at": 0.4,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l32_09.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "34": {
+  "scenes": [
+   {
+    "say": "6 üstəgəl 4 üstəgəl 5 neçə edir?",
+    "audio": "f1f71eba00",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l34_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Əvvəlcə 10 düzəldirik: 6 üstəgəl 4 bərabərdir 10.",
+    "audio": "e1ecc18bed",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l34_02.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l34_03.webp",
+      "at": 0.45,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Sonra 10 üstəgəl 5 bərabərdir 15.",
+    "audio": "670cf7875d",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l34_04.webp",
+      "at": 0.2,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l34_05.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "35": {
+  "scenes": [
+   {
+    "say": "14 çıx 3 neçə edir?",
+    "audio": "84a6add4ce",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l35_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l35_02.webp",
+      "at": 0.3,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l35_03.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Çıxanda ədəd oxunda sola gedirik: 3 addım.",
+    "audio": "96d7ad5a27",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l35_04.webp",
+      "at": 0.4,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l35_05.webp",
+      "at": 0.65,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l35_06.webp",
+      "at": 0.9,
+      "fx": "fade"
+     }
+    ]
+   },
+   {
+    "say": "11-ə çatdıq: 14 çıx 3 bərabərdir 11.",
+    "audio": "c830f8993f",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l35_07.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l35_08.webp",
+      "at": 0.4,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l35_09.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "36": {
+  "scenes": [
+   {
+    "say": "13 çıx 4 neçə edir?",
+    "audio": "7cf20bbf9c",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l36_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l36_02.webp",
+      "at": 0.3,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l36_03.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Əvvəlcə 3 çıxırıq və 10-a çatırıq.",
+    "audio": "3dc9d4088b",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l36_04.webp",
+      "at": 0.3,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l36_05.webp",
+      "at": 0.7,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Sonra daha 1 çıxırıq: 9 qalır. 13 çıx 4 bərabərdir 9.",
+    "audio": "beab8765c4",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l36_06.webp",
+      "at": 0.1,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l36_07.webp",
+      "at": 0.35,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l36_08.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l36_09.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "37": {
+  "scenes": [
+   {
+    "say": "9, 7 və 16 – bir ailədir.",
+    "audio": "224a54850d",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l37_01.webp",
+      "at": 0.2,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "9 üstəgəl 7 bərabərdir 16. 7 üstəgəl 9 da 16-dır.",
+    "audio": "a3773e018b",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l37_02.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l37_03.webp",
+      "at": 0.55,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "16 çıx 9 bərabərdir 7. 16 çıx 7 bərabərdir 9.",
+    "audio": "50314818e0",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l37_04.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l37_05.webp",
+      "at": 0.55,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l37_06.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "39": {
+  "scenes": [
+   {
+    "say": "47 ədədinə baxaq.",
+    "audio": "8f5daa2774",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l39_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Soldakı rəqəm onluqdur: 4 onluq.",
+    "audio": "05280e4c81",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l39_02.webp",
+      "at": 0.15,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l39_03.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Sağdakı rəqəm təklikdir: 7 təklik.",
+    "audio": "73dc227b82",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l39_04.webp",
+      "at": 0.15,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l39_05.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l39_06.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "40": {
+  "scenes": [
+   {
+    "say": "Sikkələr: 1, 3, 5, 10, 20 və 50 qəpik.",
+    "audio": "cdb76e7f39",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l40_01.webp",
+      "at": 0.15,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l40_02.webp",
+      "at": 0.3,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l40_03.webp",
+      "at": 0.44999999999999996,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l40_04.webp",
+      "at": 0.6,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l40_05.webp",
+      "at": 0.75,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l40_06.webp",
+      "at": 0.9,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "1 manat 100 qəpikdir.",
+    "audio": "43cccfa894",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l40_07.webp",
+      "at": 0.15,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l40_08.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "41": {
+  "scenes": [
+   {
+    "say": "Topun qiyməti 30 qəpikdir.",
+    "audio": "92c29f1ddc",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l41_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Biz 50 qəpik veririk.",
+    "audio": "5fdc48a58f",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l41_02.webp",
+      "at": 0.2,
+      "fx": "fly"
+     }
+    ]
+   },
+   {
+    "say": "Satıcı qalığı qaytarır: 50 çıx 30 bərabərdir 20 qəpik.",
+    "audio": "301179dbab",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l41_03.webp",
+      "at": 0.2,
+      "fx": "fly"
+     },
+     {
+      "src": "img/lesson/l41_04.webp",
+      "at": 0.5,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l41_05.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "42": {
+  "scenes": [
+   {
+    "say": "Göy qələm uzundur, sarı qələm qısadır.",
+    "audio": "f7a20d142b",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l42_01.webp",
+      "at": 0.05,
+      "fx": "fly"
+     },
+     {
+      "src": "img/lesson/l42_02.webp",
+      "at": 0.45,
+      "fx": "fly"
+     }
+    ]
+   },
+   {
+    "say": "Kublarla ölçək: uzun qələm 8 kub, qısa qələm 4 kubdur.",
+    "audio": "893fd496bd",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l42_03.webp",
+      "at": 0.25,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l42_04.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Ağac hündürdür, kol isə alçaqdır.",
+    "audio": "9c445d8ab6",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l42_05.webp",
+      "at": 0.2,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l42_06.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "46": {
+  "scenes": [
+   {
+    "say": "Günün vaxtları: səhər, günorta, axşam, gecə.",
+    "audio": "a8e6f36496",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l46_01.webp",
+      "at": 0.2,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l46_02.webp",
+      "at": 0.43333333333333335,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l46_03.webp",
+      "at": 0.6666666666666666,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l46_04.webp",
+      "at": 0.8999999999999999,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Həftədə 7 gün var.",
+    "audio": "7bcb4aa894",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l46_05.webp",
+      "at": 0.2,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İldə 12 ay və 4 fəsil var.",
+    "audio": "9c6ea9212a",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l46_06.webp",
+      "at": 0.4,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l46_07.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "47": {
+  "scenes": [
+   {
+    "say": "Saatın qısa və uzun əqrəbi var.",
+    "audio": "7ec16fb7f8",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l47_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Uzun əqrəb 12-nin üstündədir. Deməli, saat tamamdır.",
+    "audio": "3293cf4fab",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l47_02.webp",
+      "at": 0.25,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Qısa əqrəb 7-ni göstərir. Bu saat 7-dir.",
+    "audio": "8f185437f7",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l47_03.webp",
+      "at": 0.25,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l47_04.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l47_05.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "48": {
+  "scenes": [
+   {
+    "say": "Piktoqramda hər şəkil bir meyvəni göstərir.",
+    "audio": "23db5df49c",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l48_01.webp",
+      "at": 0.2,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l48_02.webp",
+      "at": 0.55,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l48_03.webp",
+      "at": 0.8999999999999999,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Almalar 4, bananlar 2, armudlar 5-dir.",
+    "audio": "69aa7dca7d",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l48_04.webp",
+      "at": 0.15,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l48_05.webp",
+      "at": 0.5,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l48_06.webp",
+      "at": 0.85,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Cədvəldə saymaq üçün cizgi qoyuruq: 5 cizgi belə olur.",
+    "audio": "860663d8c0",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l48_07.webp",
+      "at": 0.5,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l48_08.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "49": {
+  "scenes": [
+   {
+    "say": "Diaqramda hər meyvənin sütunu var.",
+    "audio": "b18cf95451",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l49_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l49_02.webp",
+      "at": 0.35,
+      "fx": "fly"
+     },
+     {
+      "src": "img/lesson/l49_03.webp",
+      "at": 0.625,
+      "fx": "fly"
+     },
+     {
+      "src": "img/lesson/l49_04.webp",
+      "at": 0.9,
+      "fx": "fly"
+     }
+    ]
+   },
+   {
+    "say": "Sütun nə qədər hündürdürsə, say o qədər çoxdur.",
+    "audio": "f8848941fa",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l49_05.webp",
+      "at": 0.3,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Banan ən çoxdur: 5.",
+    "audio": "3216e68e97",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l49_06.webp",
+      "at": 0.3,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l49_07.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "38": {
+  "scenes": [
+   {
+    "say": "Yüzlük kartda 1-dən 100-ə qədər ədədlər var.",
+    "audio": "febfa45c6a",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l38_01.webp",
+      "at": 0.1,
+      "fx": "fade"
+     }
+    ]
+   },
+   {
+    "say": "On-on sayaq: 10, 20, 30, 40, 50, 60, 70, 80, 90, 100.",
+    "audio": "4379465ce0",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l38_02.webp",
+      "at": 0.1,
+      "fx": "fade"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l38_03.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "43": {
+  "scenes": [
+   {
+    "say": "Uzunluğu santimetrlə ölçürük. Bu, xətkeşdir.",
+    "audio": "48d7ecca41",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l43_01.webp",
+      "at": 0.1,
+      "fx": "fly"
+     }
+    ]
+   },
+   {
+    "say": "Xətkeşin 0-ını qələmin ucuna qoyuruq.",
+    "audio": "3f30d60f9a",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l43_02.webp",
+      "at": 0.2,
+      "fx": "fly"
+     },
+     {
+      "src": "img/lesson/l43_03.webp",
+      "at": 0.6,
+      "fx": "pop",
+      "out": 0.95
+     }
+    ]
+   },
+   {
+    "say": "Qələm 6 santimetrdir.",
+    "audio": "160a80741e",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l43_04.webp",
+      "at": 0.2,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l43_05.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "44": {
+  "scenes": [
+   {
+    "say": "Tərəzinin bir tərəfində qarpız, o biri tərəfində alma var.",
+    "audio": "4417bcc499",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l44_01.webp",
+      "at": 0.05,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l44_02.webp",
+      "at": 0.4,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l44_03.webp",
+      "at": 0.7,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Ağır tərəf aşağı enir. Qarpız ağırdır, alma yüngüldür.",
+    "audio": "e7e5b028eb",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l44_04.webp",
+      "at": 0.4,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Kütləni kiloqramla ölçürük.",
+    "audio": "0fbd3a7350",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l44_05.webp",
+      "at": 0.3,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l44_06.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ },
+ "45": {
+  "scenes": [
+   {
+    "say": "Bu iki qabdan hansı çox su tutur?",
+    "audio": "ab3189b214",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l45_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Kiçik qab 2 stəkan, böyük qab 5 stəkan su tutur.",
+    "audio": "8d000b3307",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l45_02.webp",
+      "at": 0.1,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l45_03.webp",
+      "at": 0.5,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l45_04.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Çox su tutan qabın tutumu böyükdür. Tutumu litrlə ölçürük.",
+    "audio": "bab2f2abbe",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l45_05.webp",
+      "at": 0.2,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l45_06.webp",
+      "at": 0.7,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l45_07.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ }
+}
