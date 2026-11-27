@@ -104,13 +104,13 @@ async def main():
                 if item.get('aid') == aid(item['ins']):
                     continue  # səs bu mətnə uyğundur – yenidən yaratmağa ehtiyac yoxdur
                 out = os.path.join(tmp, 'test_%s_%d.mp3' % (b.replace('.', 'b11'), i))
-                jobs.append(synth(sem, item['ins'], out))
+                jobs.append(synth(sem, speakable(item['ins']) if b.startswith('4-') else item['ins'], out))
                 tests.append((f, i, out))
             elif a:
                 k = aid(item['ins'])
                 out = os.path.join(ROOT, b, 'audio', k + '.mp3')
                 if not os.path.exists(out):
-                    jobs.append(synth(sem, item['ins'], out))
+                    jobs.append(synth(sem, speakable(item['ins']) if b.startswith('4-') else item['ins'], out))
                 tests.append((f, i, k))
     print('işlər:', len(jobs))
     res = await asyncio.gather(*jobs)

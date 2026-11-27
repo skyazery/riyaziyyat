@@ -1,4 +1,4 @@
-"""Yoxlama testləri üçün ümumi hissə (3-1, 3-2): it() tapşırıq əlavə edir, save() test_items.json yazır."""
+"""Yoxlama testləri üçün ümumi hissə (3-1, 3-2, 4-1, 4-2): it() tapşırıq əlavə edir, save() test_items.json yazır."""
 import base64, hashlib, io, json, os
 from bookgen import *
 
@@ -37,16 +37,16 @@ LEVELS = [{'min': 4, 'name': 'Mükəmməl', 'text': 'Bu bacarığı tam mənims�
           {'min': 0, 'name': 'Dəstək lazımdır', 'text': 'Bu bacarıq hələ formalaşmayıb. Mövzu {t} əvvəldən, əşyalar və şəkillərlə təkrar edilməlidir.'}]
 
 
-def overall(part):
-    return [{'min': 18, 'name': 'Əla', 'text': 'Uşaq 3-cü sinfin %s çox yaxşı mənimsəyib.' % part},
+def overall(part, grade='3-cü'):
+    return [{'min': 18, 'name': 'Əla', 'text': 'Uşaq %s sinfin %s çox yaxşı mənimsəyib.' % (grade, part)},
             {'min': 14, 'name': 'Yaxşı', 'text': 'Uşaq mövzuların çoxunu mənimsəyib. Zəif sahələri qısa təkrarla möhkəmləndirin.'},
             {'min': 10, 'name': 'Orta', 'text': 'Uşaq bəzi mövzularda çətinlik çəkir. «İnkişaf edir» və «Dəstək lazımdır» olan sahələri 1–2 həftə təkrar edin.'},
             {'min': 0, 'name': 'Əlavə dəstək lazımdır', 'text': 'Uşağa əlavə köməklik lazımdır. Müəllimlə birlikdə zəif sahələr üzrə fərdi plan hazırlayın.'}]
 
 
-def save_test(out, areas, part):
+def save_test(out, areas, part, grade='3-cü'):
     assert len(ITEMS) == 20 and all(sum(1 for i in ITEMS if i['area'] == a) == 4 for a in 'ABCDE'), len(ITEMS)
     os.makedirs(out, exist_ok=True)
-    json.dump({'items': ITEMS, 'areas': areas, 'levels': LEVELS, 'overall': overall(part)}, open(os.path.join(out, 'test_items.json'), 'w'), ensure_ascii=False)
+    json.dump({'items': ITEMS, 'areas': areas, 'levels': LEVELS, 'overall': overall(part, grade)}, open(os.path.join(out, 'test_items.json'), 'w'), ensure_ascii=False)
     json.dump(VOICE, open(os.path.join(out, 'test_voice.json'), 'w'), ensure_ascii=False, indent=0)
     print('items', len(ITEMS), 'voice', len(VOICE))
