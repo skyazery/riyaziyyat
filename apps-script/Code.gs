@@ -15,7 +15,7 @@
  *  - 메뉴 「주간 리포트 만들기」(일요일 저녁) / 「월간 리포트 만들기」(월말)를 누르면 Hesabatlar 탭에 학생별 줄이 생깁니다.
  *    선생님 한마디를 적고 「💬 Göndər」를 누르면 부모님께 리포트 링크(hesabat.html)를 왓츠앱으로 보냅니다.
  *
- * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권 · AM~AQ 4-1권 · AR~AV 4-2권
+ * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권 · AM~AQ 4-1권 · AR~AV 4-2권 · AW~BA 5-1권 · BB~BF 5-2권 · BG~BK 6-1권 · BL~BP 6-2권
  * 개인정보(생년월일, 전화번호)는 이 시트 안에만 있고, 사이트에는 학생 이름만 전달됩니다.
  */
 
@@ -39,7 +39,7 @@ const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
 const C = { NAME: 1, BIRTH: 2, PHONE: 3, CODE: 4, LINK: 5, WA: 6, GRADE: 17, PARENT: 18 };
-const NCOL = 48; // A~F 학생 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권 · AM~AQ 4-1권 · AR~AV 4-2권
+const NCOL = 68; // A~F 학생 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권 · AM~AQ 4-1권 · AR~AV 4-2권 · AW~BA 5-1권 · BB~BF 5-2권 · BG~BK 6-1권 · BL~BP 6-2권
 const REG_HEADERS = ['Tarix (제출 시각)', 'Şagirdin adı (이름)', 'Soyadı (성)', 'Doğum tarixi (생년월일)', 'Sinif (학년)',
   'Valideyn (부모 이름)', 'Telefon (전화)', 'Valideyn təsdiqi (보호자 확인)', 'Razılıq 1 (정보 이용)', 'Razılıq 2 (결과 저장·발송)',
   'Razılıq 3 – reklam (홍보, 선택)', 'Kod (코드)', 'Qeyd (메모)'];
@@ -174,6 +174,66 @@ const BOOKS = {
     lvAll: 191,
     lvSections: [[171, 174], [175, 177], [178, 180], [181, 183], [184, 187], [188, 190]],
     topics: ["Bərabər kəsrlər", "Kəsrlərin müqayisəsi", "Məxrəcləri bərabər olan kəsrlərin toplanması və çıxılması", "Qarışıq ədədlər", "Onluq kəsrlər", "Onluq kəsrlərin müqayisəsi", "Onluq kəsrlərin toplanması və çıxılması", "Pullar və onluq kəsrlər", "Pullarla hesablamalar", "Dəyişən və dəyişməyən xərclər", "Uzunluq", "Perimetr", "Sahə", "Kütlə və tutum", "Həcm", "Zaman", "Sürət", "Cədvəl. Piktoqram", "Dairəvi diaqram", "Xətti diaqram"]
+  },
+  '5-1': {
+    name: '5-1', color: '#FFE8CC',
+    col: { STATUS: 49, DATE: 50, LV_START: 51, LV_DATE: 52, LV_RETRY: 53 },
+    results: 'Nəticələr 5-1', level: 'Səviyyə 5-1', first: 191,
+    key: [
+      { a: 'A', ans: [3200040] }, { a: 'A', ans: [46000] }, { a: 'A', ans: [24] }, { a: 'A', k: 'choice', ans: 0 },
+      { a: 'B', ans: [3, 2] }, { a: 'B', ans: [3, 4] }, { a: 'B', ans: [11, 12] }, { a: 'B', ans: [2, 2, 3] },
+      { a: 'C', ans: [2, 3] }, { a: 'C', ans: [2] }, { a: 'C', ans: [18] }, { a: 'C', ans: [35] },
+      { a: 'D', k: 'choice', ans: 1 }, { a: 'D', ans: [7, 35] }, { a: 'D', ans: [0, 6] }, { a: 'D', ans: [9] },
+      { a: 'E', ans: [60] }, { a: 'E', ans: [50] }, { a: 'E', ans: [40] }, { a: 'E', ans: [45] }
+    ],
+    lvAll: 224,
+    lvSections: [[191, 198], [199, 203], [204, 208], [209, 213], [214, 219], [220, 223]],
+    topics: ["Natural ədədlər", "Natural ədədlərin müqayisəsi", "Natural ədədlərin yuvarlaqlaşdırılması", "Natural ədədlərin toplanması və çıxılması", "Natural ədədin kvadratı və kubu", "Natural ədədlərin vurulması və bölünməsi", "Ədədi ifadələr", "Ədədin bölənləri və bölünənləri", "Düzgün və düzgün olmayan kəsrlər", "Kəsrlərin müqayisəsi və sıralanması", "Məxrəcləri müxtəlif olan kəsrlərin toplanması və çıxılması", "Qarışıq ədədlərin toplanması", "Qarışıq ədədlərin çıxılması", "Adi kəsrlərin vurulması", "Qarışıq ədədlərin vurulması", "Adi kəsrlərin bölünməsi", "Qarışıq ədədlərin bölünməsi", "Ədədin hissəsinin və hissəsinə görə ədədin tapılması", "Onluq kəsrlər", "Onluq kəsrlərin müqayisəsi və sıralanması", "Onluq kəsrlərin yuvarlaqlaşdırılması", "Adi kəsrin onluq kəsrə və onluq kəsrin adi kəsrə çevrilməsi", "Onluq kəsrlərin toplanması və çıxılması", "Onluq kəsrlərin 10, 100, 1000-ə vurulması və bölünməsi", "Onluq kəsrin natural ədədə vurulması", "Onluq kəsrlərin vurulması", "Onluq kəsrin natural ədədə bölünməsi", "Ədədin onluq kəsrə bölünməsi", "Adi və onluq kəsrlər üzərində əməllər", "Faiz, adi kəsr, onluq kəsr", "Ədədin faizi", "Faizinə görə ədədin tapılması", "Kəmiyyətin faizlə artırılması və azaldılması"]
+  },
+  '5-2': {
+    name: '5-2', color: '#C5F6FA',
+    col: { STATUS: 54, DATE: 55, LV_START: 56, LV_DATE: 57, LV_RETRY: 58 },
+    results: 'Nəticələr 5-2', level: 'Səviyyə 5-2', first: 224,
+    key: [
+      { a: 'A', ans: [19] }, { a: 'A', ans: [6] }, { a: 'A', ans: [7] }, { a: 'A', ans: [4] },
+      { a: 'B', ans: [70] }, { a: 'B', ans: [115] }, { a: 'B', ans: [50] }, { a: 'B', k: 'choice', ans: 1 },
+      { a: 'C', ans: [24] }, { a: 'C', ans: [26] }, { a: 'C', ans: [2] }, { a: 'C', ans: [24] },
+      { a: 'D', ans: [96] }, { a: 'D', ans: [120] }, { a: 'D', ans: [300] }, { a: 'D', ans: [4000] },
+      { a: 'E', ans: [9] }, { a: 'E', ans: [5] }, { a: 'E', ans: [8] }, { a: 'E', k: 'choice', ans: 1 }
+    ],
+    lvAll: 244,
+    lvSections: [[224, 225], [226, 229], [230, 231], [232, 235], [236, 240], [241, 243]],
+    topics: ["Dəyişəni olan ifadələr", "Birdəyişənli ifadələrin sadələşdirilməsi", "Bərabərlik və tənlik", "Tənlik qurmaqla məsələ həlli", "Bərabərsizliklər", "Asılı və asılı olmayan dəyişənlər", "Konqruyent bucaqlar. Bucağın tənböləni", "Qonşu və qarşılıqlı bucaqlar", "Düzbucaqlı üçbucağın sahəsi", "Mürəkkəb fiqurların sahəsi", "Paralel və perpendikulyar düz xətlər", "Üçbucaqların növləri və çəkilməsi", "Kub və kuboidin səthinin sahəsi", "Üçbucaqlı prizmanın səthinin sahəsi", "Düz prizmanın həcmi", "Sahə vahidləri", "Həcm vahidləri", "Ədədi orta", "Dairəvi diaqram", "Məlumatların təsviri"]
+  },
+  '6-1': {
+    name: '6-1', color: '#F3D9FA',
+    col: { STATUS: 59, DATE: 60, LV_START: 61, LV_DATE: 62, LV_RETRY: 63 },
+    results: 'Nəticələr 6-1', level: 'Səviyyə 6-1', first: 244,
+    key: [
+      { a: 'A', ans: [81] }, { a: 'A', k: 'choice', ans: 1 }, { a: 'A', ans: [6] }, { a: 'A', ans: [18] },
+      { a: 'B', ans: [4, 7] }, { a: 'B', ans: [20] }, { a: 'B', ans: [4] }, { a: 'B', ans: [8] },
+      { a: 'C', ans: [15] }, { a: 'C', ans: [8] }, { a: 'C', ans: [40] }, { a: 'C', ans: [25] },
+      { a: 'D', k: 'choice', ans: 1 }, { a: 'D', ans: [14] }, { a: 'D', ans: [7] }, { a: 'D', ans: [42] },
+      { a: 'E', k: 'choice', ans: 0 }, { a: 'E', k: 'choice', ans: 3 }, { a: 'E', ans: [6] }, { a: 'E', k: 'choice', ans: 1 }
+    ],
+    lvAll: 267,
+    lvSections: [[244, 247], [248, 252], [253, 256], [257, 259], [260, 263], [264, 266]],
+    topics: ["Natural ədədin qüvvəti", "Sadə və mürəkkəb ədədlər", "Ən böyük ortaq bölən (ƏBOB)", "Ən kiçik ortaq bölünən (ƏKOB)", "Nisbət", "Kəmiyyətlərin nisbəti", "Kəmiyyətin verilən nisbətdə bölünməsi", "Tənasüb", "Miqyas", "Düz mütənasib asılılıq", "Tərs mütənasib asılılıq", "Nisbətin faizlə ifadəsi", "Kəmiyyətin dəyişməsinin faizlə ifadəsi", "Tam ədədlər", "Tam ədədlərin müqayisəsi", "Ədədin mütləq qiyməti", "Tam ədədlərin toplanması", "Tam ədədlərin çıxılması", "Tam ədədlərin vurulması və bölünməsi", "Tam ədədlər üzərində əməllər", "Düzbucaqlı koordinat sistemi", "Koordinat sistemində məsafə", "Koordinat sistemində simmetriya və yerdəyişmə"]
+  },
+  '6-2': {
+    name: '6-2', color: '#FFE3E3',
+    col: { STATUS: 64, DATE: 65, LV_START: 66, LV_DATE: 67, LV_RETRY: 68 },
+    results: 'Nəticələr 6-2', level: 'Səviyyə 6-2', first: 267,
+    key: [
+      { a: 'A', ans: [5] }, { a: 'A', ans: [2] }, { a: 'A', ans: [5] }, { a: 'A', ans: [24] },
+      { a: 'B', ans: [12] }, { a: 'B', ans: [4] }, { a: 'B', ans: [5] }, { a: 'B', ans: [4] },
+      { a: 'C', ans: [9] }, { a: 'C', ans: [70] }, { a: 'C', ans: [60] }, { a: 'C', k: 'choice', ans: 1 },
+      { a: 'D', ans: [30] }, { a: 'D', ans: [40] }, { a: 'D', ans: [62, 8] }, { a: 'D', ans: [31, 4] },
+      { a: 'E', ans: [7] }, { a: 'E', ans: [7] }, { a: 'E', ans: [1, 6] }, { a: 'E', k: 'choice', ans: 2 }
+    ],
+    lvAll: 290,
+    lvSections: [[267, 269], [270, 275], [276, 280], [281, 283], [284, 285], [286, 289]],
+    topics: ["Çoxluq", "Çoxluqlar üzərində əməllər", "Eyler-Venn diaqramı ilə məsələ həlli", "Dəyişəni olan ifadələr", "Riyazi ifadələrdə mötərizələrin açılması", "Dəyişənli ifadələrin sadələşdirilməsi", "Tənliklər", "Tənlik qurmaqla məsələ həlli", "Bərabərsizliklər", "Üçbucağın medianı, tənböləni və hündürlüyü", "Üçbucaqların konqruyentlik əlamətləri", "Düz xətlərin paralelliyi", "Üçbucağın bucaqlarının cəmi", "Üç tərəfinə görə üçbucağın qurulması", "Üçbucağın sahəsi", "Paraleloqram və rombun sahəsi", "Çevrənin uzunluğu. Dairənin sahəsi", "Düzbucaqlı prizma və silindrin səthinin sahəsi", "Düzbucaqlı prizma və silindrin həcmi", "Median və moda", "Təsadüfi hadisə", "Hadisənin ehtimalı", "Məlumatların təsviri"]
   }
 };
 
@@ -253,8 +313,8 @@ function setup() {
   setupReports_(ss);
   SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.\n\n' +
     '동의서(qeydiyyat.html)로 등록한 학생은 자동으로 추가되고 링크도 자동으로 만들어집니다. Ayarlar 탭 ELAQE_NOMRESI 칸에 연락처를 넣어 주세요.\n\n' +
-    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름, S~W = 2-1권, X~AB = 2-2권, AC~AG = 3-1권, AH~AL = 3-2권, AM~AQ = 4-1권, AR~AV = 4-2권.\n' +
-    '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49, 2-1권 50~69, 2-2권 70~91, 3-1권 92~116, 3-2권 117~142, 4-1권 143~170, 4-2권 171~190), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
+    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름, S~W = 2-1권, X~AB = 2-2권, AC~AG = 3-1권, AH~AL = 3-2권, AM~AQ = 4-1권, AR~AV = 4-2권, AW~BA = 5-1권, BB~BF = 5-2권, BG~BK = 6-1권, BL~BP = 6-2권.\n' +
+    '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49, 2-1권 50~69, 2-2권 70~91, 3-1권 92~116, 3-2권 117~142, 4-1권 143~170, 4-2권 171~190, 5-1권 191~223, 5-2권 224~243, 6-1권 244~266, 6-2권 267~289), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
 }
 
 /* ---------------- 학생 링크 만들기 ---------------- */
@@ -1092,7 +1152,7 @@ const COL = { brand: '#5145E6', brandSoft: '#ECEAFF', sun: '#FFF4D6', sunInk: '#
   warn: '#B06000', warnSoft: '#FEF7E0', bad: '#C5221F', badSoft: '#FCE8E6', grey: '#BDC1C6', muted: '#5F6368', edit: '#FFF8C5' };
 const STATUS = { bad: ['연락 필요', COL.bad, COL.badSoft], warn: ['살펴보기', COL.warn, COL.warnSoft], ok: ['잘하고 있음', COL.ok, COL.okSoft] };
 
-function bookByTopic_(n) { return n >= BOOKS['4-2'].first ? BOOKS['4-2'] : n >= BOOKS['4-1'].first ? BOOKS['4-1'] : n >= BOOKS['3-2'].first ? BOOKS['3-2'] : n >= BOOKS['3-1'].first ? BOOKS['3-1'] : n >= BOOKS['2-2'].first ? BOOKS['2-2'] : n >= BOOKS['2-1'].first ? BOOKS['2-1'] : n >= BOOKS['1-2'].first ? BOOKS['1-2'] : BOOKS['1-1']; }
+function bookByTopic_(n) { const ids = Object.keys(BOOKS); for (let i = ids.length - 1; i > 0; i--) if (n >= BOOKS[ids[i]].first) return BOOKS[ids[i]]; return BOOKS[ids[0]]; } // mövzu nömrəsinə görə kitab (kitablar sıra ilə)
 
 // 학생 한 명의 요약 (현황판·학생 보기가 같이 씀)
 function studentSummary_(stu, rows, today) {
@@ -1352,7 +1412,7 @@ function tidySheets() {
   refreshPanel();
   const order = [
     [SH_PANEL, '#5145E6'], [SH_DETAIL, '#E8790C'], [SH_STUDENTS, '#F6A623'], [SH_REPORTS, '#8E6CEF'], [SH_DAILY, '#3BA6F5'],
-    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['2-1'].level, '#9AA0A6'], [BOOKS['2-2'].level, '#9AA0A6'], [BOOKS['3-1'].level, '#9AA0A6'], [BOOKS['3-2'].level, '#9AA0A6'], [BOOKS['4-1'].level, '#9AA0A6'], [BOOKS['4-2'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'], [BOOKS['2-1'].results, '#9AA0A6'], [BOOKS['2-2'].results, '#9AA0A6'], [BOOKS['3-1'].results, '#9AA0A6'], [BOOKS['3-2'].results, '#9AA0A6'], [BOOKS['4-1'].results, '#9AA0A6'], [BOOKS['4-2'].results, '#9AA0A6'],
+    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['2-1'].level, '#9AA0A6'], [BOOKS['2-2'].level, '#9AA0A6'], [BOOKS['3-1'].level, '#9AA0A6'], [BOOKS['3-2'].level, '#9AA0A6'], [BOOKS['4-1'].level, '#9AA0A6'], [BOOKS['4-2'].level, '#9AA0A6'], [BOOKS['5-1'].level, '#9AA0A6'], [BOOKS['5-2'].level, '#9AA0A6'], [BOOKS['6-1'].level, '#9AA0A6'], [BOOKS['6-2'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'], [BOOKS['2-1'].results, '#9AA0A6'], [BOOKS['2-2'].results, '#9AA0A6'], [BOOKS['3-1'].results, '#9AA0A6'], [BOOKS['3-2'].results, '#9AA0A6'], [BOOKS['4-1'].results, '#9AA0A6'], [BOOKS['4-2'].results, '#9AA0A6'], [BOOKS['5-1'].results, '#9AA0A6'], [BOOKS['5-2'].results, '#9AA0A6'], [BOOKS['6-1'].results, '#9AA0A6'], [BOOKS['6-2'].results, '#9AA0A6'],
     [SH_SETTINGS, '#5F6368']];
   let pos = 1;
   order.forEach(([name, color]) => {

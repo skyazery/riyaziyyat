@@ -55,7 +55,7 @@ Details on file formats: `references/data-format.md`. Adding a whole new book: `
    `tools/greet.mp3` in front. Needs `pip install --user -U edge-tts imageio-ffmpeg` (ask the user
    before installing; an old edge-tts gets HTTP 403). Run it in the background; ~400 files take a few
    minutes. It must end with `{'ok': N}` and no `fail`; if anything fails, rerun (finished files are kept).
-4. **10 problems per topic, topics numbered across books** (1-1: 1–28, 1-2: 29–49, 2-1: 50–69, 2-2: 70–91, 3-1: 92–116, 3-2: 117–142).
+4. **10 problems per topic, topics numbered across books** (1-1: 1–28, 1-2: 29–49, 2-1: 50–69, 2-2: 70–91, 3-1: 92–116, 3-2: 117–142, 4-1: 143–170, 4-2: 171–190, 5-1: 191–223, 5-2: 224–243, 6-1: 244–266, 6-2: 267–289).
    The Apps Script, placement test and reports rely on these numbers.
 5. **Shared code, three books.** A change to `app.js`/`app.css` must be checked in every book.
    Keep `app.js` dependency-free and readable for the owner; comments in Azerbaijani like the rest.
