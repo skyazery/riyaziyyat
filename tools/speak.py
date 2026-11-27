@@ -56,7 +56,7 @@ def speakable(t):
     s = re.sub(r'\b0?(\d{1,2}):(\d\d)\b', r'\1 \2', s)
     s = re.sub(r'(\d+) (\d+)/(\d+)', lambda m: '%s tam %s' % (m.group(1), frac(m.group(2), m.group(3))), s)
     s = re.sub(r'(\d+)/(\d+)', lambda m: frac(m.group(1), m.group(2)), s)
-    s = re.sub(r'(\d+),(\d)(\d)?', lambda m: '%s tam %s %s' % (m.group(1), loc(100 if m.group(3) else 10), (m.group(2) + (m.group(3) or '')).lstrip('0') or '0'), s)
+    s = re.sub(r'(\d+),(\d+)', lambda m: '%s tam %s %s' % (m.group(1), loc(10 ** len(m.group(2))), m.group(2).lstrip('0') or '0'), s)
     s = s.replace('°-', ' dərəcə').replace('°', ' dərəcə')
     s = s.replace(' · ', ' vur ').replace(' − ', ' çıx ').replace(' + ', ' üstəgəl ').replace(' = ', ' bərabərdir ')
     s = s.replace(' ≈ ', ' təqribən ').replace(' > ', ' böyükdür ').replace(' < ', ' kiçikdir ')
