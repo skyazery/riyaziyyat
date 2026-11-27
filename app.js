@@ -295,13 +295,14 @@ function problemView(p,k){
   app.append(task);
   if(w){webView(p,k,task);return}
   if(c&&c.frac)task.classList.add('frq'); // kəsr xanaları hündürdür: şəkil kiçilir
+  else if(c&&c.big)task.classList.add('nqb'); // koordinat toru: şəkil böyük
   else if(c&&/^[56]-/.test(BOOK.id))task.classList.add('nq'); // 5–6-cı sinif: şəkil + xana + düymələr bir ekrana sığsın
   if(c){
     let a=st.ans[k]||(st.ans[k]=c.slots.map(()=>null)); let active=Math.max(0,a.indexOf(null));
     let fresh=!!(st.tries[k]&&a.every(v=>v!==null)); // təzə başla: növbəti rəqəm köhnəni əvəz edir
     const solved=st.first[k]!==undefined&&a.every((v,j)=>String(v)===String(c.slots[j]));
     const locked=solved||st.shown[k];
-    const eq=h('div',{class:'eq'+(c.mode==='sign'&&c.pairs.some(pr=>pr.join('').length>10)?' small':'')+(c.frac?' fr':'')});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;fresh=true;paint()}});return s});
+    const eq=h('div',{class:'eq'+(c.mode==='sign'&&c.pairs.some(pr=>pr.join('').length>10)?' small':'')+(c.frac||c.big?' fr':'')});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;fresh=true;paint()}});return s});
     if(c.mode==='sign')c.pairs.forEach(([x,y],j)=>{if(j)eq.append(h('span',{class:'br'}));eq.append(h('span',{class:'fixed'},x),slots[j],h('span',{class:'fixed'},y))});
     else if(c.frac){ // c.frac: kəsr xanaları üst-üstə (2 xana: surət/məxrəc, 3 xana: tam hissə + surət/məxrəc)
       if(c.pre)eq.append(h('span',{class:'fixed txt'},c.pre));
@@ -314,9 +315,13 @@ function problemView(p,k){
     const set=v=>{if(v===null)fresh=false;a[active]=v;if(v!==null&&active<a.length-1&&c.mode==='sign')active++;paint();upd()};
     if(!locked){
       if(c.mode==='sign')task.append(h('div',{class:'signs'},['>','<','='].map(sg=>h('button',{onclick(){set(sg)}},sg))));
-      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=fresh||a[active]==null?'':String(a[active]);fresh=false;let v=cur+d;if(!c.raw)v=v.replace(/^(-?)0(\d)/,'$1$2');if(v.replace('-','').length>7)v=String(d);set(c.raw?v:Number(v))}},String(d))));
-        if(c.neg)pad.append(h('button',{class:'neg','aria-label':'mənfi',onclick(){const cur=a[active];fresh=false;set(cur==null||cur==='-'?(cur==='-'?null:'-'):(Number(cur)===0?'-':-Number(cur)))}},'−'));// c.neg: mənfi ədəd düyməsi
-        pad.append(h('button',{class:'del'+(c.neg?' n':''),onclick(){set(null)}},'⌫ Silin'));task.append(pad)}
+      else{const pad=h('div',{class:'pad'+(c.neg?' n6':'')});const dig=d=>h('button',{onclick(){const cur=fresh||a[active]==null?'':String(a[active]);fresh=false;let v=cur+d;if(!c.raw)v=v.replace(/^(-?)0(\d)/,'$1$2');if(v.replace('-','').length>7)v=String(d);set(c.raw?v:Number(v))}},String(d));
+        const neg=()=>h('button',{class:'neg','aria-label':'mənfi',onclick(){const cur=a[active];fresh=false;set(cur==null||cur==='-'?(cur==='-'?null:'-'):(Number(cur)===0?'-':-Number(cur)))}},'−');
+        const del=()=>h('button',{class:'del','aria-label':'Silin',onclick(){set(null)}},c.neg?'⌫':'⌫ Silin');
+        // c.neg: mənfi ədəd düyməsi; düymələr 6 sütunda, 2 sətirdə (ekrana sığsın)
+        if(c.neg)pad.append(...[1,2,3,4,5].map(dig),neg(),...[6,7,8,9,0].map(dig),del());
+        else{[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(dig(d)));pad.append(del())}
+        task.append(pad)}
     }
     const tries=st.tries[k]||0;
     if(solved)(task).append(cheer(st.first[k]));

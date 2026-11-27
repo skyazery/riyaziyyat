@@ -441,3 +441,95 @@ def prism3(la, lb, lh, unit=1.0, color=(255, 224, 178)):
     d.text(((A[0] - 12) * S, (A[1] + C[1]) / 2 * S), lb, font=f_, fill=BLUE, anchor='rm')
     d.text(((B[0] + B2[0]) / 2 * S + 18 * S, (B[1] + B2[1]) / 2 * S + 10 * S), lh, font=f_, fill=BLUE, anchor='lm')
     return done(im)
+
+
+# ---------------------------------------------------------------- 6-cı sinif: tam ədədlər, nisbət, koordinatlar
+SUPD = str.maketrans('0123456789', '⁰¹²³⁴⁵⁶⁷⁸⁹')
+
+
+def pw(base, p):
+    """2⁵ kimi qüvvət yazısı"""
+    return str(base) + str(p).translate(SUPD)
+
+
+def ms(v):
+    """mənfi işarəni tipoqrafik edir: -5 → −5"""
+    return str(v).replace('-', '−')
+
+
+def zans(t, ins, v, stem):
+    """tam ədəd cavabı (mənfi ola bilər): klaviaturada − düyməsi var"""
+    t.num(ins, [v], stem, disp=ms(v))
+    ck(t, neg=1)
+
+
+def zcalc(t, ins, expr_, v, size=60):
+    zans(t, ins, v, FX(expr_, '=', BOX, size=size))
+
+
+def crd(t, ins, xy, stem):
+    """koordinat cavabı (x; y)"""
+    t.num(ins, list(xy), stem, disp='(%s; %s)' % (ms(xy[0]), ms(xy[1])))
+    ck(t, sep=';', pre='(', suf=')', neg=1)
+
+
+def rat(t, ins, ab, stem, sep=':'):
+    t.num(ins, list(ab), stem, disp=(' %s ' % sep).join(str(v) for v in ab))
+    ck(t, sep=sep)
+
+
+def zline(a, b, marks=(), unit=None, w=860, size=28):
+    """tam ədədlər oxu a..b; marks = [(ədəd, 'A' / BOX)]"""
+    n = b - a
+    unit = unit or (w - 80) / n
+    W = int(n * unit + 80)
+    im, d = vec(W, 150)
+    y = 75
+    d.line([(20 * S, y * S), ((W - 14) * S, y * S)], fill=INK, width=4 * S)
+    d.polygon([((W - 4) * S, y * S), ((W - 22) * S, (y - 9) * S), ((W - 22) * S, (y + 9) * S)], fill=INK)
+    for k in range(n + 1):
+        x = 40 + k * unit
+        v = a + k
+        d.line([(x * S, (y - 10) * S), (x * S, (y + 10) * S)], fill=INK, width=(5 if v == 0 else 3) * S)
+        d.text((x * S, (y + 36) * S), ms(v), font=font(size * S), fill=RED if v < 0 else INK, anchor='mm')
+    im = done(im)
+    dd = ImageDraw.Draw(im)
+    for v, lab in marks:
+        x = 40 + (v - a) * unit
+        dd.ellipse([x - 9, y - 9, x + 9, y + 9], fill=BLUE)
+        if lab is BOX:
+            im.alpha_composite(box(46, 46, width=4, radius=10), (int(x - 23), 4))
+        elif lab:
+            tl = txt(lab, 32, BLUE)
+            im.alpha_composite(tl, (int(x - tl.width / 2), 6))
+    return im
+
+
+def cgrid(n=5, pts=(), cell=34, poly_=None, color=(187, 222, 251)):
+    """dörd rüblü koordinat müstəvisi −n..n; pts = [(x, y, 'A')]"""
+    W = 2 * n * cell + 56
+    im, d = vec(W, W)
+    O = W / 2
+    P = lambda x, y: ((O + x * cell) * S, (O - y * cell) * S)
+    if poly_:
+        d.polygon([P(x, y) for x, y in poly_], fill=color, outline=BLUE, width=4 * S)
+    for k in range(-n, n + 1):
+        d.line([P(k, -n), P(k, n)], fill=(207, 216, 220), width=2 * S)
+        d.line([P(-n, k), P(n, k)], fill=(207, 216, 220), width=2 * S)
+    d.line([P(-n - 0.6, 0), P(n + 0.6, 0)], fill=INK, width=4 * S)
+    d.line([P(0, -n - 0.6), P(0, n + 0.6)], fill=INK, width=4 * S)
+    f_ = font(20 * S)
+    for k in range(-n, n + 1):
+        if k:
+            d.text((P(k, 0)[0], P(k, 0)[1] + 16 * S), ms(k), font=f_, fill=GREY, anchor='mm')
+            d.text((P(0, k)[0] - 16 * S, P(0, k)[1]), ms(k), font=f_, fill=GREY, anchor='mm')
+    d.text((P(n + 0.6, 0)[0], P(n + 0.6, 0)[1] - 18 * S), 'x', font=font(26 * S), fill=INK, anchor='mm')
+    d.text((P(0, n + 0.6)[0] + 18 * S, P(0, n + 0.6)[1]), 'y', font=font(26 * S), fill=INK, anchor='mm')
+    d.text((P(0, 0)[0] - 14 * S, P(0, 0)[1] + 16 * S), '0', font=f_, fill=GREY, anchor='mm')
+    for x, y, lab in pts:
+        cx, cy = P(x, y)
+        r = 8 * S
+        d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=RED)
+        if lab:
+            d.text((cx + 18 * S, cy - 18 * S), lab, font=font(28 * S), fill=RED, anchor='mm')
+    return done(im)

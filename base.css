@@ -93,8 +93,9 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(-
 .pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .pad button{height:58px;border-radius:16px;border:2px solid #E3E6EF;background:var(--card);font-size:26px;font-weight:900;box-shadow:0 3px 0 #E3E6EF}
 .pad button.del{grid-column:span 5;font-size:16px;height:46px}
-.pad button.del.n{grid-column:span 4}
-.pad button.neg{height:46px;font-size:30px;color:var(--primary)}
+.pad.n6{grid-template-columns:repeat(6,1fr)}
+.pad.n6 button.del{grid-column:auto;height:58px;font-size:24px}
+.pad button.neg{font-size:32px;color:var(--primary)}
 .eq .frac{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
 .eq .frac .fline{display:block;width:100%;min-width:72px;height:5px;border-radius:3px;background:var(--ink)}
 .eq.fr .slot{height:54px;min-width:62px;font-size:30px;border-radius:14px}
@@ -105,6 +106,9 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(-
 .nq .paper{min-height:0;padding:8px}
 .nq .paper img{max-height:150px;width:auto;max-width:100%}
 .nq .paperhint{margin:6px 0}
+.nqb .paper{min-height:0;padding:6px}
+.nqb .paper img{max-height:165px;width:auto;max-width:100%}
+.nqb .paperhint{margin:4px 0}
 .eq.fr .frac .fline{min-width:62px;height:4px}
 .eq .fixed.txt{font-size:32px;background:none;min-width:0;padding:0 2px}
 .signs{display:flex;gap:12px;justify-content:center}
