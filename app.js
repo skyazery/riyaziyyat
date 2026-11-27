@@ -54,6 +54,7 @@ function home(){
   app.append(h('footer',{},BOOK.footer));
 }
 function testCard(){
+  if(BOOK.noTest)return h('div',{class:'testcard lock'},h('span',{class:'ic'},'🛠️'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Bu kitabın testi hazırlanır, tezliklə açılacaq.'))); // test.html hələ yoxdur
   if(!KOD)return h('div',{class:'testcard lock'},h('span',{class:'ic'},'🔒'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Test yalnız müəllimin göndərdiyi şəxsi linklə açılır.')));
   if(SAGIRD&&SAGIRD.done)return h('a',{class:'testcard done',href:'test.html?s='+KOD},h('span',{class:'ic'},'📋'),h('div',{},h('b',{},'Testin nəticəsi'),h('span',{},'Valideyn hesabatına baxın')));
   return h('a',{class:'testcard',href:'test.html?s='+KOD},h('span',{class:'ic'},'🏆'),h('div',{},h('b',{},'Yoxlama testi'),h('span',{},'Bütün mövzulardan sonra · yalnız 1 dəfə · 20 tapşırıq')));
