@@ -333,3 +333,111 @@ def story(emojis, toks=None, size=80):
 def sup(base, p):
     """7² kimi"""
     return str(base) + {2: '²', 3: '³'}[p]
+
+
+# ---------------------------------------------------------------- həndəsə (5-2)
+def _arc_lbl(d, cx, cy, r, a0, a1, lab, color=RED, fs=30):
+    """bucaq qövsü (dərəcə, saat əqrəbinin əksinə, ekranda y aşağı) və yazı"""
+    d.arc([(cx - r) * S, (cy - r) * S, (cx + r) * S, (cy + r) * S], -a1, -a0, fill=color, width=4 * S)
+    if lab:
+        m = math.radians((a0 + a1) / 2)
+        rr = r + 30
+        d.text(((cx + rr * math.cos(m)) * S, (cy - rr * math.sin(m)) * S), lab, font=font(fs * S), fill=color, anchor='mm')
+
+
+def ang(deg, lab=None, L=230, color=BLUE):
+    """bucaq: təpə solda, bir şüa üfüqi"""
+    W, H = L + 120, int(max(90, L * math.sin(math.radians(min(deg, 90))) + 90)) if deg <= 90 else L + 60
+    cx = 60 if deg <= 90 else 60 + int(L * 0.6)
+    W = max(W, cx + L + 30)
+    cy = H - 40
+    im, d = vec(W, H)
+    d.line([cx * S, cy * S, (cx + L) * S, cy * S], fill=color, width=6 * S)
+    ex, ey = cx + L * math.cos(math.radians(deg)), cy - L * math.sin(math.radians(deg))
+    d.line([cx * S, cy * S, ex * S, ey * S], fill=color, width=6 * S)
+    if deg == 90:
+        q = 22
+        d.line([(cx + q) * S, cy * S, (cx + q) * S, (cy - q) * S, cx * S, (cy - q) * S], fill=RED, width=4 * S)
+        if lab:
+            d.text(((cx + 60) * S, (cy - 60) * S), lab, font=font(30 * S), fill=RED, anchor='mm')
+    else:
+        _arc_lbl(d, cx, cy, 50, 0, deg, lab)
+    d.ellipse([(cx - 6) * S, (cy - 6) * S, (cx + 6) * S, (cy + 6) * S], fill=INK)
+    return done(im)
+
+
+def adj(deg, lab1, lab2, L=230):
+    """qonşu bucaqlar: düz xətt və ortadan çıxan şüa; lab1 sağdakı (deg), lab2 soldakı"""
+    W, H = 2 * L + 80, int(L * 0.85) + 60
+    cx, cy = W // 2, H - 40
+    im, d = vec(W, H)
+    d.line([(cx - L) * S, cy * S, (cx + L) * S, cy * S], fill=BLUE, width=6 * S)
+    ex, ey = cx + L * 0.9 * math.cos(math.radians(deg)), cy - L * 0.9 * math.sin(math.radians(deg))
+    d.line([cx * S, cy * S, ex * S, ey * S], fill=BLUE, width=6 * S)
+    _arc_lbl(d, cx, cy, 46, 0, deg, lab1, RED)
+    _arc_lbl(d, cx, cy, 62, deg, 180, lab2, (46, 125, 50))
+    d.ellipse([(cx - 6) * S, (cy - 6) * S, (cx + 6) * S, (cy + 6) * S], fill=INK)
+    return done(im)
+
+
+def cross(deg, labs, L=200):
+    """iki düz xəttin kəsişməsi; labs = 4 bucağın yazısı (sağdan başlayaraq saat əqrəbinin əksinə)"""
+    W, H = 2 * L + 80, int(2 * L * 0.75) + 40
+    cx, cy = W // 2, H // 2
+    im, d = vec(W, H)
+    for a, col in ((0, BLUE), (deg, PURPLE)):
+        dx, dy = L * math.cos(math.radians(a)), L * math.sin(math.radians(a))
+        k = 1 if a == 0 else 0.75
+        d.line([(cx - dx * k) * S, (cy + dy * k) * S, (cx + dx * k) * S, (cy - dy * k) * S], fill=col, width=6 * S)
+    bounds = [0, deg, 180, 180 + deg, 360]
+    cols = [RED, (46, 125, 50), RED, (46, 125, 50)]
+    for i, lab in enumerate(labs):
+        if lab:
+            _arc_lbl(d, cx, cy, 40 + 8 * (i % 2), bounds[i], bounds[i + 1], lab, cols[i])
+    return done(im)
+
+
+def poly_l(pts, labs=(), unit=40, color=(187, 222, 251), holes=(), fs=28, extra=()):
+    """çoxbucaqlı (vahidlərlə: x sağa, y aşağı); labs = [(x, y, yazı)]; holes = ağ çoxbucaqlılar; extra = [(nöqtələr, rəng)]"""
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    W, H = int(max(xs) * unit) + 160, int(max(ys) * unit) + 110
+    im, d = vec(W, H)
+    T_ = lambda p: ((80 + p[0] * unit) * S, (50 + p[1] * unit) * S)
+    d.polygon([T_(p) for p in pts], fill=color, outline=INK, width=5 * S)
+    for pp, col in extra:
+        d.polygon([T_(p) for p in pp], fill=col, outline=INK, width=4 * S)
+    for h_ in holes:
+        d.polygon([T_(p) for p in h_], fill=WHITE, outline=INK, width=4 * S)
+    for x, y, s_ in labs:
+        d.text(T_((x, y)), s_, font=font(fs * S), fill=BLUE, anchor='mm')
+    return done(im)
+
+
+def rtri(a, b, la, lb, unit=34, color=(255, 236, 179)):
+    """düzbucaqlı üçbucaq: katetlər a (üfüqi), b (şaquli)"""
+    pts = [(0, 0), (0, b), (a, b)]
+    im = poly_l(pts, [(-50 / unit, b / 2, lb), (a / 2, b + 26 / unit, la)], unit, color)
+    return im
+
+
+def prism3(la, lb, lh, unit=1.0, color=(255, 224, 178)):
+    """oturacağı düzbucaqlı üçbucaq olan prizma"""
+    W, H = 460, 330
+    im, d = vec(W, H)
+    A, B, C = (90, 280), (300, 280), (90, 170)      # ön üçbucaq (düz bucaq A-da)
+    dx, dy = 110, -110
+    A2, B2, C2 = [(x + dx, y + dy) for x, y in (A, B, C)]
+    P = lambda *q: [(x * S, y * S) for x, y in q]
+    side = tuple(int(c * 0.85) for c in color)
+    d.polygon(P(B, B2, C2, C), fill=side, outline=INK, width=4 * S)
+    d.polygon(P(C, C2, A2, A), fill=tuple(min(255, int(c * 1.05)) for c in color), outline=INK, width=4 * S)
+    d.polygon(P(A, B, C), fill=color, outline=INK, width=5 * S)
+    d.line(P(A, A2), fill=GREY, width=3 * S)
+    d.line(P(A2, B2), fill=GREY, width=3 * S)
+    d.line([(A[0] + 16) * S, A[1] * S, (A[0] + 16) * S, (A[1] - 16) * S, A[0] * S, (A[1] - 16) * S], fill=INK, width=3 * S)
+    f_ = font(26 * S)
+    d.text(((A[0] + B[0]) / 2 * S, (A[1] + 24) * S), la, font=f_, fill=BLUE, anchor='mm')
+    d.text(((A[0] - 12) * S, (A[1] + C[1]) / 2 * S), lb, font=f_, fill=BLUE, anchor='rm')
+    d.text(((B[0] + B2[0]) / 2 * S + 18 * S, (B[1] + B2[1]) / 2 * S + 10 * S), lh, font=f_, fill=BLUE, anchor='lm')
+    return done(im)

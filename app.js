@@ -295,6 +295,7 @@ function problemView(p,k){
   app.append(task);
   if(w){webView(p,k,task);return}
   if(c&&c.frac)task.classList.add('frq'); // kəsr xanaları hündürdür: şəkil kiçilir
+  else if(c&&/^[56]-/.test(BOOK.id))task.classList.add('nq'); // 5–6-cı sinif: şəkil + xana + düymələr bir ekrana sığsın
   if(c){
     let a=st.ans[k]||(st.ans[k]=c.slots.map(()=>null)); let active=Math.max(0,a.indexOf(null));
     let fresh=!!(st.tries[k]&&a.every(v=>v!==null)); // təzə başla: növbəti rəqəm köhnəni əvəz edir

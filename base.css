@@ -102,6 +102,9 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(-
 .frq .paper{min-height:0;padding:6px}
 .frq .paper img{max-height:100px;width:auto;max-width:100%}
 .frq .paperhint{margin:6px 0}
+.nq .paper{min-height:0;padding:8px}
+.nq .paper img{max-height:150px;width:auto;max-width:100%}
+.nq .paperhint{margin:6px 0}
 .eq.fr .frac .fline{min-width:62px;height:4px}
 .eq .fixed.txt{font-size:32px;background:none;min-width:0;padding:0 2px}
 .signs{display:flex;gap:12px;justify-content:center}
