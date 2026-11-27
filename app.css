@@ -85,6 +85,9 @@ footer{font-size:12.5px;color:var(--muted);text-align:center;padding:10px}
 .bk-4-1{--bk1:#4263EB;--bk2:#748FFC;--bk3:#364FC7;--bkink:#3B5BDB}
 .bk-4-2{--bk1:#5C940D;--bk2:#94D82D;--bk3:#466F0A;--bkink:#5C940D}
 .bk-5-1{--bk1:#E8590C;--bk2:#FFA94D;--bk3:#B8450A;--bkink:#D9480F}
+.bk-5-2{--bk1:#0C8599;--bk2:#3BC9DB;--bk3:#0B7285;--bkink:#0C8599}
+.bk-6-1{--bk1:#9C36B5;--bk2:#DA77F2;--bk3:#7B2A8E;--bkink:#9C36B5}
+.bk-6-2{--bk1:#C92A2A;--bk2:#FF8787;--bk3:#A61E1E;--bkink:#C92A2A}
 .hdr.bk .part{flex:none;width:58px;height:58px;border-radius:18px;background:#fff;color:var(--bkink);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 3px 0 rgba(0,0,0,.18)}
 .hdr.bk .part b{font-size:30px;font-weight:900}
 .hdr.bk .part span{font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}

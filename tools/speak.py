@@ -39,6 +39,16 @@ def frac(a, b):
     return '%s %s' % (loc(b), a)
 
 
+def dat(n):
+    """yönlük hal: 2-yə, 3-ə, 6-ya"""
+    w = last_word(n)
+    return '%s-%s%s' % (n, 'y' if w[-1] in 'aıoueəiöü' else '', 'a' if back(w) else 'ə')
+
+
+UNIT = {'mm': 'millimetr', 'sm': 'santimetr', 'dm': 'desimetr', 'm': 'metr', 'km': 'kilometr'}
+SUP = {'⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9'}
+
+
 def front(suf):
     return suf.translate(str.maketrans('aıou', 'əiöü'))
 
@@ -46,6 +56,17 @@ def front(suf):
 def speakable(t):
     s = t
     s = s.replace('>, < və ya =', 'böyükdür, kiçikdir və ya bərabərdir işarəsini')
+    # 5–6-cı sinif: vahidlərin kvadratı və kubu, qüvvət, modul, koordinatlar, nisbət
+    s = re.sub(r'\b(mm|sm|dm|km|m)²', lambda m: 'kvadrat ' + UNIT[m.group(1)], s)
+    s = re.sub(r'\b(mm|sm|dm|km|m)³', lambda m: 'kub ' + UNIT[m.group(1)], s)
+    s = re.sub(r'([\d)a-z])([⁰¹²³⁴⁵⁶⁷⁸⁹]+)', lambda m: m.group(1) + ' üstü ' + ''.join(SUP[c] for c in m.group(2)), s)
+    s = re.sub(r'\|([^|]+)\|', r'modul \1', s)
+    for a_, b_ in (('π', ' pi '), ('∠', 'bucaq '), ('∉', ' daxil deyil '), ('∈', ' daxildir '), ('∩', ' kəsişmə '), ('∪', ' birləşmə '), (' \\ ', ' fərq '), ('d₁', 'd bir'), ('d₂', 'd iki'), ('≤', ' kiçik və ya bərabərdir '), ('≥', ' böyük və ya bərabərdir ')):
+        s = s.replace(a_, b_)
+    s = re.sub(r'(ƏBOB|ƏKOB)\(', r'\1 ', s)
+    s = re.sub(r'\((−?\d+); (−?\d+)\)', r' \1 və \2 ', s)
+    if 'nisbət' in s or 'tənasüb' in s or 'miqyas' in s:
+        s = re.sub(r'(?<![\d,])(\d+) : (?=\d)', lambda m: dat(m.group(1)) + ' ', s)
     s = re.sub(r'(\d+),(\d\d) manat(\w*)', lambda m: (('%s manat %s qəpik' % (m.group(1), int(m.group(2)))) if m.group(1) != '0' else '%d qəpik' % int(m.group(2))) + front(m.group(3)), s)
     s = re.sub(r'neçə km/saat(\w*)', lambda m: 'saatda neçə kilometr' + front(m.group(1)), s)
     s = re.sub(r'(\d+(?:,\d+)?)%(?:-(\w+))?', lambda m: m.group(1) + ' faiz' + front(re.sub(r'^[nsy](?=[aəıiouöüe])', '', m.group(2) or '')), s)  # 15%-i → 15 faizi
@@ -62,6 +83,7 @@ def speakable(t):
     s = s.replace(' · ', ' vur ').replace(' − ', ' çıx ').replace(' + ', ' üstəgəl ').replace(' = ', ' bərabərdir ')
     s = s.replace(' ≈ ', ' təqribən ').replace(' > ', ' böyükdür ').replace(' < ', ' kiçikdir ')
     s = re.sub(r'(?<=[\w)]) : (?=[\w(])', ' böl ', s)
+    s = s.replace('−', 'mənfi ')
     s = s.replace('(', '').replace(')', '')
     return re.sub(r'\s+', ' ', s).strip()
 

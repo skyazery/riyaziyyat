@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>5-ci sinif riyaziyyat · 2-ci hissə</title>
+<meta name="description" content="3-cü sinif üçün şəkilli və səsli riyaziyyat tapşırıqları (2-ci hissə, 26 mövzu).">
+<meta property="og:title" content="3-cü sinif riyaziyyat (2-ci hissə) – şəkilli və səsli tapşırıqlar">
+<meta property="og:description" content="26 mövzu, 260 şəkilli tapşırıq, səsli izah və yoxlama testi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../sagird.js"></script>
+</head>
+<body>
+<div class="wrap" id="app"><p class="muted" style="text-align:center;padding:40px">Yüklənir...</p></div>
+<div class="bar" id="bar" hidden><div class="in" id="barIn"></div></div>
+<canvas class="confetti" id="cf"></canvas>
+<script>
+const BOOK={id:'5-2',praise:'../audio/',first:224,last:243,key:'riyaziyyat-5-2-progress',logo:'📗',
+  title:'5-ci sinif riyaziyyat',sub:'Mövzu 224–243 · şəkilli və səsli tapşırıqlar',part:'2',partName:'2-ci hissə',
+  sections:[['Dəyişəni olan ifadələr',224,225],['Tənliklər və bərabərsizliklər',226,229],['Bucaqlar',230,231],['Sahə və üçbucaqlar',232,235],['Fəza fiqurları',236,240],['Statistika',241,243]],
+  icons:{224:'🔤',225:'🧹',226:'⚖️',227:'🧩',228:'↔️',229:'🔗',230:'📐',231:'✂️',232:'🔺',233:'🏠',234:'🛤️',235:'🔻',236:'📦',237:'🧀',238:'🧊',239:'🟩',240:'🥛',241:'📊',242:'🥧',243:'📈'},
+  /* səviyyə testi: hər bölmədən 2 tapşırıq [mövzu, tapşırığın sırası (0-dan)] */
+  lvq:[[[224,0],[225,0]],[[226,4],[229,1]],[[231,0],[230,0]],[[232,0],[233,0]],[[236,0],[238,0]],[[241,0],[242,1]]],
+  allText:'İstədiyi mövzunu təkrar edə bilər. Hazır olanda yoxlama testini edin.',
+  footer:'Mövzular Azərbaycan Respublikasının «Riyaziyyat 5» dərsliyinin (2-ci hissə) ardıcıllığı ilə hazırlanıb.',
+  other:[{id:'6-1',href:'../6-1/',label:'📘 6-cı sinif, 1-ci hissə: Mövzu 244–266 →',text:'Qüvvət, nisbət və tənasüb, tam ədədlər, koordinatlar',next:true},
+    {id:'5-1',href:'../5-1/',label:'📙 ← 5-ci sinif, 1-ci hissə: Mövzu 191–223',text:'Natural ədədlər, adi kəsrlər, onluq kəsrlər, faiz'}]};
+const KITAB=BOOK.id;
+</script>
+<script src="../app.js"></script>
+</body>
+</html>

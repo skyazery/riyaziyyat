@@ -1,0 +1,393 @@
+<!doctype html><html lang="az"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Riyaziyyat Yoxlama Testi · 6-cı sinif, 1-ci hissə</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>const KITAB='6-1';</script>
+<script src="../sagird.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
+<style>
+/* Layout: sunny classroom. Sticky header (stars + progress), fox teacher card, one task card, sticky bottom bar. */
+:root{
+  --bg:#FFFBF0; --bg2:#FFF4D6; --card:#FFFFFF; --edge:#F5DE96; --edge-soft:#FBEFC6;
+  --ink:#1F2433; --muted:#6B6F80; --chip:#FFF0C2; --chip-ink:#9A5B00;
+  --primary:#5145E6; --primary-ink:#FFFFFF; --primary-soft:#ECEAFF;
+  --coral:#E35D7F; --good:#2F9E5B; --good-soft:#E3F7EA; --warn:#D9822B; --warn-soft:#FFF1E0; --bad:#D64545;
+  --paper:#FFFFFF; --shadow:0 8px 24px rgba(160,120,20,.10);
+  --font:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17161F; --bg2:#1E1C28; --card:#23212F; --edge:#4A4126; --edge-soft:#38321F;
+  --ink:#F3F1EA; --muted:#A9A6B8; --chip:#3D3418; --chip-ink:#FFD27A;
+  --primary:#8C83FF; --primary-ink:#14122A; --primary-soft:#2C2950;
+  --coral:#FF8AA6; --good:#5BD38A; --good-soft:#1C3527; --warn:#FFB066; --warn-soft:#3A2A18; --bad:#FF7B7B;
+  --paper:#FFFFFF; --shadow:0 8px 24px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17161F; --bg2:#1E1C28; --card:#23212F; --edge:#4A4126; --edge-soft:#38321F;
+  --ink:#F3F1EA; --muted:#A9A6B8; --chip:#3D3418; --chip-ink:#FFD27A;
+  --primary:#8C83FF; --primary-ink:#14122A; --primary-soft:#2C2950;
+  --coral:#FF8AA6; --good:#5BD38A; --good-soft:#1C3527; --warn:#FFB066; --warn-soft:#3A2A18; --bad:#FF7B7B;
+  --paper:#FFFFFF; --shadow:0 8px 24px rgba(0,0,0,.35); color-scheme:dark}
+html,body{min-height:100%}
+body{background:radial-gradient(1200px 500px at 50% -120px,var(--bg2),var(--bg));background-color:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:680px;margin:0 auto;padding-block:14px 120px;display:flex;flex-direction:column;gap:14px}
+h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.card{background:var(--card);border:2px solid var(--edge);border-radius:26px;box-shadow:var(--shadow);padding:18px}
+.muted{color:var(--muted)}
+/* header */
+.hdr{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#FFD25E,#F6A623);display:grid;place-items:center;font-size:24px;flex:none}
+.brand{flex:1;min-width:0}
+.brand b{display:block;font-size:18px;font-weight:900;line-height:1.1}
+.brand span{font-size:12.5px;font-weight:800;color:var(--chip-ink)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 12px;font-weight:900;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill.star{background:var(--chip);color:var(--chip-ink);border:2px solid var(--edge)}
+.pill.q{background:var(--primary-soft);color:var(--primary)}
+.prog{display:flex;flex-direction:column;gap:6px}
+.prog .lbl{display:flex;justify-content:space-between;font-weight:800;font-size:14px;color:var(--muted)}
+.track{height:12px;border-radius:999px;background:var(--edge-soft);overflow:hidden;border:1px solid var(--edge)}
+.track i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#38C172,#F6C343);transition:width .4s}
+/* teacher card */
+.teach{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;position:relative;overflow:hidden}
+.teach::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:var(--bg2);z-index:0}
+.teach>*{position:relative;z-index:1}
+.fox{width:84px;height:84px;border-radius:24px;background:linear-gradient(145deg,#FFD25E,#F6A623);border:4px solid #FFF3C4;display:grid;place-items:center;font-size:44px;box-shadow:0 6px 0 #E8A015}
+.fox.talk{animation:bob .6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-3deg)}}
+.tag{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.tag b{background:var(--chip);color:var(--chip-ink);border-radius:999px;padding:3px 12px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
+.tag span{font-size:13px;color:var(--muted);font-weight:700}
+.teach h2{font-size:clamp(21px,5.4vw,26px);font-weight:900}
+.voice{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.vbtn{border:0;border-radius:18px;padding:12px 20px;font-weight:900;font-size:17px;background:var(--primary);color:var(--primary-ink);min-height:52px;box-shadow:0 4px 0 color-mix(in srgb,var(--primary) 70%,#000)}
+.vbtn.stop{background:var(--coral);box-shadow:0 4px 0 color-mix(in srgb,var(--coral) 70%,#000);color:#fff}
+.auto{border:2px solid color-mix(in srgb,var(--good) 40%,transparent);background:var(--good-soft);color:var(--good);border-radius:16px;padding:8px 14px;font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:8px}
+.auto i{width:9px;height:9px;border-radius:50%;background:currentColor}
+.auto.off{background:var(--card);color:var(--muted);border-color:var(--edge)}
+/* task card */
+.task{display:flex;flex-direction:column;gap:16px}
+.paper{background:var(--paper);border-radius:20px;padding:12px;display:flex;justify-content:center;border:2px solid var(--edge-soft)}
+.paper img{max-width:100%;height:auto;max-height:260px;object-fit:contain}
+.opts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center}
+.opt{background:var(--paper);border:3px solid #E3E6EF;border-radius:22px;padding:10px;min-width:80px;min-height:80px;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+.opt:active{transform:scale(.97)}
+.opt img{max-height:140px;max-width:min(36vw,240px);height:auto}
+.opt.sel{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.opt.right{border-color:var(--good);background:#EAF9EF}
+.opt.wrong{border-color:var(--bad)}
+.prefix{width:58px;max-width:100%}
+.count{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;background:var(--paper);border-radius:20px;padding:12px;border:2px solid var(--edge-soft)}
+.count button{position:relative;aspect-ratio:1;border:0;background:#FFF7E3;border-radius:16px;font-size:clamp(30px,9vw,44px);display:grid;place-items:center}
+.count button.on{background:#FFE7A3}
+.count button em{position:absolute;top:-6px;right:-6px;min-width:26px;height:26px;border-radius:13px;background:var(--primary);color:#fff;font-style:normal;font-size:14px;font-weight:900;display:grid;place-items:center}
+.hintc{font-size:14px;font-weight:800;color:var(--muted);text-align:center}
+.eq{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 10px;font-size:36px;font-weight:900;font-variant-numeric:tabular-nums}
+.eq .br{flex-basis:100%;height:0}
+.eq .op{color:var(--primary)}
+.slot{min-width:72px;height:72px;border-radius:18px;border:4px dashed var(--primary);background:var(--card);color:var(--ink);font-size:36px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;padding:0 8px}
+.slot.active{border-style:solid;border-color:#F0A020;box-shadow:0 0 0 4px var(--chip)}
+.slot.filled{border-style:solid}
+.slot.right{border-color:var(--good);background:var(--good-soft)}
+.slot.wrong{border-color:var(--bad)}
+.fixed{min-width:60px;height:72px;border-radius:18px;background:var(--primary-soft);display:inline-flex;align-items:center;justify-content:center;padding:0 10px}
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pad button{height:58px;border-radius:16px;border:2px solid #E3E6EF;background:var(--card);font-size:26px;font-weight:900;box-shadow:0 3px 0 #E3E6EF}
+.pad button.del{grid-column:span 5;font-size:16px;height:46px}
+.signs{display:flex;gap:12px;justify-content:center}
+.signs button{width:84px;height:72px;border-radius:18px;border:2px solid #E3E6EF;background:var(--card);font-size:38px;font-weight:900;box-shadow:0 3px 0 #E3E6EF}
+.cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cards button{width:72px;height:84px;border-radius:18px;border:3px solid var(--primary);background:var(--primary-soft);font-size:36px;font-weight:900}
+.cards button:disabled{opacity:.25}
+.undo{align-self:center;border:2px solid var(--edge);background:var(--card);border-radius:14px;padding:8px 16px;font-weight:800}
+.help{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:2px dashed var(--edge-soft);padding-top:14px}
+.help button{border:2px solid var(--edge);background:var(--chip);color:var(--chip-ink);border-radius:999px;padding:7px 14px;font-weight:900;font-size:14px}
+.help p{flex:1;min-width:180px;background:#FFFAE8;border:1px solid var(--edge);border-radius:14px;padding:8px 12px;font-size:14px;font-weight:700;color:#5C4A12}
+.fb{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px 14px;font-weight:900;font-size:18px}
+.fb.ok{background:var(--good-soft);color:var(--good)}
+.fb.no{background:var(--warn-soft);color:var(--warn)}
+.fb span{font-size:30px}
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-top:1px solid var(--edge)}
+.bar .in{max-width:680px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.bbtn{border:0;border-radius:18px;padding:14px 18px;font-weight:900;font-size:17px;min-height:56px}
+.bbtn.back{background:var(--card);border:2px solid var(--edge);color:var(--muted)}
+.bbtn.main{flex:1;background:var(--primary);color:var(--primary-ink);box-shadow:0 4px 0 color-mix(in srgb,var(--primary) 70%,#000)}
+.bbtn.go{background:var(--good);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--good) 70%,#000)}
+.bbtn:disabled{opacity:.45;box-shadow:none;cursor:default}
+.qn{font-weight:900;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* start */
+.start{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:26px 18px}
+.start h1{font-size:clamp(30px,8vw,42px);font-weight:900}
+.start .fox{width:104px;height:104px;font-size:56px}
+.field{display:flex;flex-direction:column;gap:6px;width:100%;text-align:left}
+.field label{font-weight:900}
+.field input{font:inherit;font-size:22px;font-weight:800;padding:14px 16px;border-radius:18px;border:2px solid var(--edge);background:var(--card);color:var(--ink);width:100%;box-sizing:border-box}
+.areas{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;width:100%}
+.areas div{background:var(--bg2);border:1px solid var(--edge);border-radius:14px;padding:8px 10px;font-weight:800;font-size:13.5px;text-align:left}
+.big{box-sizing:border-box;width:100%;border:0;border-radius:20px;padding:16px;font-weight:900;font-size:20px;background:var(--primary);color:var(--primary-ink);box-shadow:0 5px 0 color-mix(in srgb,var(--primary) 70%,#000)}
+.note{font-size:13px;color:var(--muted)}
+/* report */
+.rhead{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.trophy{font-size:56px;line-height:1}
+.ring{width:132px;height:132px}
+.ring text{font-family:var(--font);font-weight:900;fill:var(--ink)}
+.stars{font-size:26px;letter-spacing:2px}
+.chip{display:inline-block;border-radius:999px;padding:4px 12px;font-weight:900;font-size:13.5px;white-space:nowrap}
+.lv0{background:var(--good-soft);color:var(--good)}
+.lv1{background:var(--primary-soft);color:var(--primary)}
+.lv2{background:var(--warn-soft);color:var(--warn)}
+.lv3{background:color-mix(in srgb,var(--bad) 15%,transparent);color:var(--bad)}
+.area{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding-block:14px;border-top:2px dashed var(--edge-soft)}
+.area:first-of-type{border-top:0;padding-top:4px}
+.area h3{font-size:17px;font-weight:900}
+.dots{grid-column:1/-1;display:flex;gap:6px}
+.dots i{flex:1;height:12px;border-radius:6px;background:var(--edge-soft)}
+.dots i.on{background:var(--good)}
+.area p{grid-column:1/-1;font-size:15px}
+.home{grid-column:1/-1;font-size:14.5px;background:var(--bg2);border:1px solid var(--edge);border-radius:14px;padding:10px 12px}
+.wrong{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.wrong span{background:var(--bg2);border:1px solid var(--edge);border-radius:12px;padding:5px 10px;font-size:14px;font-weight:800}
+.share{display:flex;flex-direction:column;gap:10px}
+.wa{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:#25D366;color:#073B1C;border-radius:18px;padding:15px;font-weight:900;font-size:18px;box-shadow:0 4px 0 #1A9E4C}
+.sec{border:2px solid var(--edge);background:var(--card);border-radius:18px;padding:13px;font-weight:900}
+textarea{font:inherit;font-size:14px;width:100%;box-sizing:border-box;min-height:170px;border-radius:14px;border:2px solid var(--edge);background:var(--card);color:var(--ink);padding:10px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:20}
+@media (prefers-reduced-motion:reduce){.fox.talk{animation:none}.track i{transition:none}}
+@media (prefers-reduced-motion:no-preference){.pop{animation:pop .28s ease-out}@keyframes pop{from{transform:translateY(6px);opacity:.5}to{transform:none;opacity:1}}}
+
+/* kitab başlığı: 1-ci hissə göy, 2-ci hissə yaşıl */
+.hdr.bk{border:0;color:#fff;background:linear-gradient(135deg,var(--bk1),var(--bk2));box-shadow:0 6px 0 var(--bk3),var(--shadow);padding:14px 16px;gap:14px}
+.bk-1-1{--bk1:#2F6FE4;--bk2:#5B9BFF;--bk3:#1F4FB0;--bkink:#2F6FE4}
+.bk-1-2{--bk1:#139067;--bk2:#3CCB8E;--bk3:#0B6A4B;--bkink:#139067}
+.bk-2-1{--bk1:#E8590C;--bk2:#FF922B;--bk3:#B8430A;--bkink:#D9480F}
+.bk-6-1{--bk1:#9C36B5;--bk2:#DA77F2;--bk3:#7B2A8E;--bkink:#9C36B5}
+.hdr.bk .part{flex:none;width:58px;height:58px;border-radius:18px;background:#fff;color:var(--bkink);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.hdr.bk .part b{font-size:30px;font-weight:900}
+.hdr.bk .part span{font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.hdr.bk .brand b{font-size:19px;color:#fff}
+.hdr.bk .brand span{display:block;color:#fff;opacity:.92}
+.hdr.bk .brand i{display:table;font-style:normal;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:1px 9px;margin:4px 0 3px;font-size:13px;font-weight:900;letter-spacing:.04em}
+.hdr.bk .pill.star{background:rgba(255,255,255,.95);border-color:transparent;color:var(--bkink)}
+</style>
+
+<div class="wrap" id="app"></div>
+<div class="bar" id="bar" hidden><div class="in" id="barIn"></div></div>
+<canvas class="confetti" id="cf"></canvas>
+
+<script>
+const DATA = {"items": [{"area": "A", "skill": "Qüvvət", "ins": "Hesablayın: 3⁴.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["3⁴", "=", {"s": "num"}], "answer": [81], "mode": "num", "disp": "81", "hint": "3 · 3 · 3 · 3.", "audio": "1758748429"}, {"area": "A", "skill": "Sadə ədədlər", "ins": "Hansı ədəd sadədir?", "img": null, "kind": "choice", "options": ["data:image/webp;base64,UklGRjgEAABXRUJQVlA4ICwEAACQGwCdASqCAHYAPm0wlUekIqIhI5INOIANiWMA05peSb21tEd7Rtvb5gP4B/UPWO9AHnAdQ36AHSw/uD+0fs96rZ1N7Xf8/IqdkFkT/N8YGlQmV+P36v9gow4kBFbhEE26vwUDMX+dhdVwuJ+McIgew+IAJtDEavaE5dVoflbTqpi6sjVPr2af1RaH0F9wPQEvKIverArySd5t9LdpZpp5ZPwVDgEY50WA/WU2LJEgG4pqaledj/b1lNrp9EmGsN//PvtshUOXtzNa238enZ13nZd6hr9xxQgsvxdy2pnPSfFIlimgAP78qCbeSCiO0ASZJlU2yjBU4xPucHdf30yP9BwtfWKl1YO4ZUh4kaVvXkhkU34ToGvP8Dn6GXBLj5eGbHqHNa/e00pwhu/QZC7XIHMhWxmyLJFdYO1elhqQd8xWtc2lXdy4ugPipwe9X6mD8Sv72m1s7qM0qsQ38oBw9gX85JLcnVzwI6vV7A4dgVRHa+/aqPfWXv9QjOEo44ZpJKBa5JFTmH9xOmulREcjTv+O8A9sT1/ekHfuxjtPbqlBcgEgqC/TPglfMaBq6mXhms4+r/hn+Kuhq3INBWjt5eYmRK67T/cwU/f6tdW1DSFRXwAgTc4iorb/qqCErRp3yH//5t0P/ooh3V+DYqjgk6r/9NL/868y/tnu67trGqzrsmvnqUYA4f+x3PE30vbOHAtHgrk5m1BjslbaXh1PCMq9apgtBdNS8waVOKu9MTscji3s120ae89OJCDwiZpF3NaiQVYYuTjMxlOpDGzygnO3aZ2awyGTtTBYwIP8/wAzvGsXvzbalOp3Ri42oOZcSymBNpYL3c5fF2fGqYs3Zj2zRrnLFtBaegZpP8D+CR96OHaEfrhf2tm9ZWQIZT6Z47LJts2+B41/xKWYxuv/s4JJRA1xpabZ3b4Rz7F8hOg8tvz6cAGHylQ3Zwbv/+azw/3sbP/og5oi1Cd5zNko0QkYS+YqV/rv9k9bWx/mk+MaAooi1iFnQM1QimYnbTDMuVZKhqNHfF6oLUm5H+mKHESrE61DQrkRV6FNUex3mnvUG9ccDpYa8rPZ6MZUChLLCGkiGmKTCCP6bJrE/BamW6SxkbLpr65M2Uwa7Gl4kTNI411ALN1g9T5p59rFSj5ipXCF+mCkc/1xPgTZ/9J6/99GaAAYIZzXYSvBxdNp4o2aX07+W7Hr2+UxvB0azOcOqgVgJZNX7FXk0DAS8xqR7rSgSC7evgVObqHzYdL0w2QW0Z8M3H5NiSw2UzxH1Doxa/lM/8ZzuRsM/9Jy9f2j109+Scr9T2plKVbX3P62x30IOUzU4umCQEKvxBPNAH1slla5Ft/Kez520m0NtaEj0k2DewpzjBZ3anhey3HQCAAySEQGxO6A+wiJevZI9EBsmvTCJygAAAAAAAA=", "data:image/webp;base64,UklGRmQEAABXRUJQVlA4IFgEAACQHACdASqCAHYAPm0wlUekIqIhIzJNSIANiWMA0yJj509I72e7ePzAfwD+oesd6APOA6hv0AOlh/cH9o/Z71WXyb/bu1v/AWRD8FRRzlNML/P8YGlEmX+P36r9gv9azDxEIbKBORv7ok+pch+AGpSa0qLVYT3s8+WsMvijccsvE7UMUGMnB6+nQsm4+lHTlGV4V5p6lD8+vfqxLqdggvhpBh0GKZTIgL7IlHPQlYJTgU7mXGx3SNskTRNcJyL+2kbY85iSt9vJ6OIBLmD9ODZNbzw6M8FS9l52Xeob868K2+u+qwcLHPaPantblcAA/vyoIhKpxL76TN6LQT4QnBhgFlnLiuJSwFAfomrn1Nffp/xgszkVnvXktoVhnGn+QeYp89HHaWao6hU9LoaKH7d1BEue1Et1g2Nlqm5DMtguDpJpbJWeYllkDE+CNjulFKMUNFIPer9TB+JX97TMRAY7Lryh/+UA4ewL+cksF3MLIxB3wcpeOeVahl227a8jX5EBemAVwE1QxtWCaySKnMP7idDQciI5Gnf8drARFaA0MAX+7F7U/vYSKXkdpxH7g8tQ5jQNSNysqyZ/wf6aXiroZhGBQIb6q6FUmofmJF5GQ/w+jov3Up4Dvs5psk8EFKQvevi1JREPTW//7yzWdXkCa2yTbw5PnBHfo4V/kDrAVrLEyealfwgYpqFaBe184fgj+1nYjOfNlGD4Q4XUgmK5ocAn0gDfy2u1mKTAR9WYKH7qj6GYdAezFFWJ0ANFwOawAgbpP7UPJDKX4i97swVJub5Ij3PrPp/mrZlJZIdeKm0PgkHMBuyA3ZA2BIU6fDtuWhCsf6B9Zub3Dgf/BOf+7S050GSo7NEb1pFnU4Mjv4XNqdQFQVcj23U94/mPEWFDjpRwQ3vuns0wohbxEAHyUmOB92F5Ir9S8WSTSIJ9/P1oFMjbR1rZzMQCeNb3EXO4TymNf8SlmWnq/6XxmBDje+dPsIG6g92+X/QeYH5y8wQxpBpyBDjl//5rPD/exqZplPRZxZmoc08GQnbGTUXFp+hXP2pOd2VyfvBmin3TkbDdYfxxfFFju41xlLIln8mRYo2HrHBrF8JXWmvyR9n4OiYhjYBZn2Lvo7BpzYmYIDbKTt3pjqCShqZ9iEk2Tljg9mHQwlDJhFNj06cdnBmcfXXdQNiDwTsVUBhoCU13wgolFfN6fB/xPd0YNKQD6eMB2iR8MDLwo0Z/qvYmqyV2q1O7imVNeQw4G8NNFVj1imcIumixEJpdsidfIwM/EtS0rsVeTRSc3HmNSPdATnErgO4zVM64YyhJB0oIFXgtlprTktU6+s7PDgAm4Pr+Uz/uQEmu7fHqwA6K0eunvtyv9Tfqy+IrvnXLQiTDIuRjmgIdBAUozc6wxFr9VJoXJLK/sAA9u6hUek92LYKpxt2ghvkp+Mzu1PCqV9LK2bHRMgzWTh9QUUN409fjKeIVsbEE/lAAAAAAAA==", "data:image/webp;base64,UklGRjYEAABXRUJQVlA4ICoEAABQGwCdASqCAHYAPm0ylUekIqIhIzJM6IANiWMA0uZiyfWtvEd7Ttvf5gP03/XT3hfQB5wHUN+gB0r/7gejrqr3l/qC15/g13vymGAGlfmV+OX6i9GUuLMoCsZ2zplwzEEYlaFhVWxw5vmrzIJhFAtGX8LBcz7EmAOhlkF4tQfjbxrF+4vjSS31FvJDe86mSC1rFmuh5FXUJ6S+SJfLKWdFYx8AN3D9yNdTm1P76zX3/OoMl1MIlP17OuauDGdzfKUhT0Ia4X8tLcmm470x0Qf/n9drITYG1Q+FoO/8XjiXd7sQAAD+/Kgfctdm81XEv4udtRLv49ncyIcTZmD4QwoA7siMF4Bx8yzWfu8GG1rGnTGnZ9dmNfxRvkNRcXrFAP7h2yGxvkeU1mjCXU5LqOy4JUV6bGFcJJp3RanImVw5uvEDEeCPnv+q4Vt7MkLHAsZl9JWR7TquOGMSAi7IW9lUmV9+cjZS1Zw+N3ExIr+E5RdbBoBOdJfF90DgTkpkcPgw1nDd1TDdfgz+1eO/1NyBJE1/WZYX8AJj/7llUsIqWC1/DpYmHsDy0nmMH6k9Ezt9P9z/LH8VJ6F8FiNu40c/G/jV8D8Kg3ko0V7Fhjp+dEpl+fpxSfNH0v+7Ulry7qEuZ2BXCM4ZJlXW+uh4W1fowdix1EA8zJO1tvCMJHsP0F12Lh6A9ItxRe5Bz9DwWSDMY8EaFzm7dNorOIpkEz7kx6zGwOnKSgN5GnNHr3pVxJLcVgSm9xbrWUO+fOzbp7TuJfDjXkHUdUyH3KkxQ6t+h30Ni/fx1O+hUGRP2w9NnQL/TdwvqFCDFLp7WzM27uQ+ia6ym9ubNsZQKlonKgjEPG3Afig74+IHvzDJyArkyO+8v5eId3xxwrLvJ2cpN7qL9PbdUg9Ec0ORQG2kAMWkiK4grvzOcIgU3befBOVWBfO9xe2sM2Z06jYFZQbid9jH+0BOoC72+Nfs5Yz5tGku8KAbNF3IdsBTy2dwqZD8I0MZtMXfg/3WBW4X2v6af8q3/6ZqMpRvd81dZ7X/zWeH+9o52h2rVS3NgqId3d1VlVZIwLSx3tF38zNNMLPik+kBM2L4vI+1dJGp3E/fxwKTf6MYHPggzX80REf9CUdwSGM+xJEXiTwB3oY6n16zckUJquhDQMBHIB2IDJfasjBKiO/1aYJUXsHoy+i2k3BzRHYB6A7dOUL3bczPstohIL9jgquYnFDdMn8bXF2KljoLgu5jGKG/XTeO4qNPz/yxiyCA413RT7M7FASlslEcSNM9HpIR1oDMv3hoITfgjn+CfX59n9B5+kqEjPUwurMVm6jXGlQn2kd8HvqB2kdbW2jUc2jTX+XwefCZSLRr7p7XHoiZfCi6lAtDhYOXOaLEx1tvLzTbtNpPjFybfRBdSQSjWyYMAAAAAAAA"], "prefix": null, "tokens": null, "answer": 1, "mode": "num", "disp": "13", "hint": "Sadə ədədin yalnız iki böləni var: 1 və özü.", "audio": "6a6562925a"}, {"area": "A", "skill": "ƏBOB", "ins": "ƏBOB(18, 24) neçədir?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["ƏBOB(18, 24)", "=", {"s": "num"}], "answer": [6], "mode": "num", "disp": "6", "hint": "Hər iki ədədi bölən ən böyük ədəd.", "audio": "04c42a9db8"}, {"area": "A", "skill": "ƏKOB", "ins": "ƏKOB(6, 9) neçədir?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["ƏKOB(6, 9)", "=", {"s": "num"}], "answer": [18], "mode": "num", "disp": "18", "hint": "6-ya və 9-a bölünən ən kiçik ədəd.", "audio": "2a73f6f550"}, {"area": "B", "skill": "Nisbətin ixtisarı", "ins": "20 : 35 nisbətini ixtisar edin.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["20 : 35", "=", {"s": "num"}, ":", {"s": "num"}], "answer": [4, 7], "mode": "num", "disp": "4 : 7", "hint": "Hər iki həddi 5-ə bölün.", "audio": "6198c5afff"}, {"area": "B", "skill": "Verilən nisbətdə bölmə", "ins": "45 ədədini 4 : 5 nisbətində bölün. Kiçik hissə neçədir?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": [{"s": "num"}], "answer": [20], "mode": "num", "disp": "20", "hint": "45 : 9 = 5, 4 · 5.", "audio": "f287b80ea0"}, {"area": "B", "skill": "Tənasüb", "ins": "Tənasübdə x-i tapın: x : 6 = 10 : 15.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["x : 6 = 10 : 15", "x =", {"s": "num"}], "answer": [4], "mode": "num", "disp": "4", "hint": "x · 15 = 6 · 10.", "audio": "a215460780"}, {"area": "B", "skill": "Miqyas", "ins": "Xəritənin miqyası 1 : 200 000-dir. Xəritədə 4 sm həqiqətdə neçə km-dir?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": [{"s": "num"}, "km"], "answer": [8], "mode": "num", "disp": "8", "hint": "1 sm = 2 km.", "audio": "28d821e398"}, {"area": "C", "skill": "Düz mütənasiblik", "ins": "3 kq alma 7,5 manatdır. 6 kq alma neçə manatdır?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": [{"s": "num"}, "manat"], "answer": [15], "mode": "num", "disp": "15", "hint": "Kütlə 2 dəfə artır – qiymət də.", "audio": "4620f48d95"}, {"area": "C", "skill": "Tərs mütənasiblik", "ins": "6 fəhlə işi 4 günə görür. 3 fəhlə neçə günə görər?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": [{"s": "num"}, "gün"], "answer": [8], "mode": "num", "disp": "8", "hint": "Fəhlə 2 dəfə az – gün 2 dəfə çox.", "audio": "e7c4631938"}, {"area": "C", "skill": "Nisbətin faizlə ifadəsi", "ins": "30 şagirddən 12-si qızdır. Qızlar neçə faizdir?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": [{"s": "num"}, "%"], "answer": [40], "mode": "num", "disp": "40%", "hint": "12 : 30 = 0,4.", "audio": "b3a0d37497"}, {"area": "C", "skill": "Dəyişmənin faizlə ifadəsi", "ins": "Qiymət 40 manatdan 50 manata qalxdı. Neçə faiz artdı?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": [{"s": "num"}, "%"], "answer": [25], "mode": "num", "disp": "25%", "hint": "10 : 40 = 0,25.", "audio": "56e5add42e"}, {"area": "D", "skill": "Müqayisə", "ins": "Ən kiçik ədədi seçin.", "img": null, "kind": "choice", "options": ["data:image/webp;base64,UklGRswDAABXRUJQVlA4IMADAABwGACdASqKAHYAPm0ylUckIyIhIlmc4IANiWMA0PqgYc5xrbp+MB6wvoA84DqOfQA6WH9wf2A9oDVV/J02LWAy09I7Onf1P/S+2D2v/TOo8GXHtWyLBd9SJRNGDSBrHkRhTNIXPPdnwiRvI6VjPRFYJjLkqM6J/epJivfGs+DABX33oC0YJxTlD2uNgqL697fyrKD8HG1OPJozaElhOwhsKC6ZQDIWh41G1MG6LSQ7C6qPixiDu13GZEJ+QFlgQCeBtb23FZLgUY5lmQAA/vyoFfUX/PTYd5VK7fIzLZpgkVw+VRAVnLAJk2G+0uozN9UijFYcabhaFntgz1j7HjjW1zhTT776CpsuFXahb8woaKfaHhs4OceG6Q3BcC2GcRowAYndCKOEGPqftIi7mlIe5Ivb3B6/9qYPxK/v49ZC6u3H7lLn/J/WhZd/OSY7gSA68BGoKxLJhT88TOteQjm/Ax/7zMswgeMKKEGfAllyGlEX7sRJBKVoE4mX48BpHL+FG9/wMXCtYfBIuY1uP+me5fgySztKs89HEs6/pmwED9yy6SWbk442b9slin3kASfwP7Gccw3gXRoU548jCbsddCOwQmYl8ZPlKUAt2QUaGkPP020RpX3W+elq1K6/q7L/gx4Vpq2ipbfI/ADjCRbjTlIMH+QslVhK/i6scw14PWg3cAKb1MT7QMRsWQHUL0aakI32m9nv00tkyYKrYoi1rBwXCQXL9gW4coL7WLwaZ/5/T/25/ZmCcx35f++/7MwYowhSQKXMXuwd/S3TPze11qXMvxN3c+stBmanFPjxL9chUw9SfS62qQ76n4ho4ac/93nBUNmpfuURfJCFW3hcZooQqUK5qmRYkVRz3f4/TxpzloQiAuIHmVoHPpFvOW81U+tXdQpfdf/UNpu3kpgUQxaf+r+ks4k21ifGygwM/V0gI7VRqrCFdkJD+U3M15RP8k7f6jLUZQ71Ovod7T1uu3vzk7hM5/jojDJp/JTSL32JACHLGOgNQlyMFNyDWi2B9H5XMCckniSyMuS9z1PrnHWbM8gq6NpqgURczZOAALoPR0lVis2wKY7R7k0I1mgq3Bs1lye05/Y+aOY1eTd8s6by1cvUaolrw/fzqzC5MWhNVGLV2avYCDRPhd7LOOG9f3UDw1Ahn5F/acj66euFsc69RpSlW1/UdNWwIkwIfsTG7Lc1TSqiN3U5h32RHhhbYCzZFipMmjnDmTRiywi77Hdr+n9IhLD70w0eO5JrF/fFrnp1RSk3EzQAAAAAAAA=", "data:image/webp;base64,UklGRgoEAABXRUJQVlA4IP4DAABQGQCdASqKAHYAPm0wlUckIqIhJHTcoIANiWMA0L6q4fZzjba+MB6wvoA84DqOfQA6V/9wf1m9ofVUPLXUFx7PbOJ2d5uAlSczzx4/TXozl37lpX6+wIXIQeDVn6kPhO3TxhXBz7evo3Pm8BLODnadDqk40/L0srWKueI7x+9xcGZn/Oc+5/Z3vtaehn+1xfpLnnC1Dqls+iPPOMLEr8i/3fwacaeyFQh0XQa0BJSMj+9EK34qaAn392y1qMMj80Fu9n2xzILZAb/xkyzjFbt8lYQAAP78qBRWbYR2UY8TkO3yMzq6YPbSjLSZVg0UjgKuHRHbTueVEkM4TQ583Bl1Qiw8CGQxufZwlq7nzIKH2hX62MIJTWKW/R0jKxd+z0iFJGh/c2ZFL/JPqVTfamHXv4I19yyIPyB7t7g9fE1MH4lZH8fJxFC1igSXv/k/qVs6fnI83KrrO4r9R92Fkwp+eGAzCobczn+uvPlSNw69JatkJNa5KvrHT6ObEw/ckPhqIWSvfPOhxbOVel8iyM/LSeY3yf+mfmcKzBaTa+V+bwEJPywY01JP/HsQLAm9TGGueMN8YAOH17/I89fAQ3uTEODfW4p1+VsY/RHthPb+9PGrL5oxUITvkUFI+NeZ2AK6zd9WqH2X+Dq8VgJIPhFbwqU88pwEDe2ln1UQ25wrVEPzer7YxB7UPHYISaJ50Vws4eryXfaVJqUM2O1d4k1EoCOVQJVhXsc+0z5fj8HmxaLGBYgx6ldJZVgnjdrP5/T/25/Zo//gMNLr/of9mj/+MEGRg0Joo24lzSy+vHiTc+HeC/mzK989HftdpnXq1j3IH/B1UtYdl5Xqc7F5Xnn21A6JRznjAiC+i/MofTdTD3/t1OAUHJS3kx+KFOQRirIugLvngubWEsEhRZmh/MAVMpxthaN3sSF1sILtxbp+tspUgnlJ6wUr7bJifWwBy1waFJvGdtofg+relbJTG5mzRaPWc0vgKZZ+akG3vj3KMAQ19c7Z16eeDOaxfdVDVKayQuNhxpyFK1YodBrLARCkanrBzF/R8ayPEkofcNB5MG329SfHMT9P4mBBFE6sF77JswBiTWCo0vF3nn+eGeDnuJWTNvrnN+I/1/QezbCN3uRiaqgAE6IsUc15oJSEzbFUwSSCxEMuNmt12K+X5I+JWfzG9Y7/JdfWCwOZbM93pxfDWqr6hWFKH4Z8vZAtk/vvHc/2b5c6oQXdB7p/3UvPDTxOtXqJDOzvpyTXlKVbX3MpZLKIIKJd3xoRyALffVGv3PQP4d0E+esPIoSrz9+3nnXF53pSLYL7iuSDZaVwVUuq/MwQsOSBQtxtaVInyxQv1crvVkUdULAAAAAAAA==", "data:image/webp;base64,UklGRo4DAABXRUJQVlA4IIIDAABQFgCdASpbAHYAPm0ylUckIyIhJLSc2IANiUAaDjECAX+7YYD9a/WG9AHmzdRz6AHSsftT+2HtQarYxn9F6//fBlNQ60xfyB/VXAI/W415gG591TylGZU3+dkXhTNIXjyMB5m5eh0smPgGC5f+ASTSuACMcc7Xb6Sl0FHm1IKDQxLoi/K79U0OgC1OtC7lZ+6PqovLz4wB0ztHNfTO0IOEtjjROUJfRy7lCpg77cxQuaNkMwr9mc5znIgAAP78qBk9RPydNwGXwRAGEY4d6yoqRU294ffu3l8UYcQcimHviD4ZAbfhfSrtIg3chFjQ4W3lJvXyb47ibPY9CiTn9eETsOt3zqfN50zHmaRFpDN1QP4a/mHC2BFZ5VqD379x33WVvupDzvB67+GZfSTT/+uMpYIRlgBOsziCO9fvZ0O7AoRcO2E4PfTg5Sb8SJw5syEVR9wrlHIG1tXuyrujS/sWcMdOlU1VWR0NF5vq4hzf7UTC1fm6+61//1avd2sde62olV4aBP9b48GeZzFJd3Sq2NHHhXmJr5jwuK6Me3rFnsf+01/SM5gX8+zPGu1gvNYLlAmyIdRdR4LklZwaKWO79+EQNTPBRP4yOU7MrjI73eyPl3x3cmVzm6dF8tkiOfYUCPe/HPxb9QdIAsQfafm2rgDQo5SzGzax8nSoaImKnwPW0EN0b2MPaTsgNC2mQC0/vfvrRhcVk5TVJuwLq2Pt60QTr4w0NYjwIQgJ86VgQs7rZZcHSi/b3rLIZYkF7M1cUvIX01KhaPkrPsnarOfjr0oice/vI3fjJmBXef78Om0gG68nPfCesj30iUzTV3u1CG9TZZrlNQ7zekQaspcIkLtimtLwwSuaBvi3aX9nuUV9t2HQFuuoCT3V1hWs6Dy19vmpYbfHd+IhBsJvlF0X3BcD6gtWHLONVAV8aS/8ZQaNVAK++MK8OrZmyPRjOh7hjfIoTeVGM+KRlH1HMg3REVzlji3uPfNcsiuidLMrB4P6xJiJU0ME21eFZOoNkkc2hj3rR+CZUgatJ5CvczK0xiz4A1JcKDUx/TosJ6+/gTx5ffETDIjHRU+NP0rGUsCZI1f7zrioyKLFw/RxsFzGtDq9jGzi2n0p98DSwc6W5pZ0Xq/amcHW7kbhO4SjZECZPs86dJOsU798Go6VoIw713HI2CEReDH9X/KegAAAAAAA"], "prefix": null, "tokens": null, "answer": 1, "mode": "num", "disp": "−9", "hint": "Mütləq qiyməti böyük olan mənfi ədəd kiçikdir.", "audio": "772c820536"}, {"area": "D", "skill": "Mütləq qiymət", "ins": "|−14| neçədir?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["|−14|", "=", {"s": "num"}], "answer": [14], "mode": "num", "disp": "14", "hint": "Mütləq qiymət – sıfıra qədər məsafə.", "audio": "ea8b2619b7"}, {"area": "D", "skill": "Toplama", "ins": "Hesablayın: −8 + 15.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["−8 + 15", "=", {"s": "num"}], "answer": [7], "mode": "num", "disp": "7", "hint": "15 − 8, böyüyün işarəsi müsbətdir.", "audio": "aca8e8f46b"}, {"area": "D", "skill": "Vurma", "ins": "−6 · (−7) hasili neçədir?", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["−6 · (−7)", "=", {"s": "num"}], "answer": [42], "mode": "num", "disp": "42", "hint": "Eyni işarəli ədədlərin hasili müsbətdir.", "audio": "4575388ceb"}, {"area": "E", "skill": "Nöqtənin koordinatları", "ins": "A nöqtəsinin koordinatlarını seçin.", "img": "data:image/webp;base64,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", "kind": "choice", "options": ["data:image/webp;base64,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", "data:image/webp;base64,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", "data:image/webp;base64,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"], "prefix": null, "tokens": null, "answer": 0, "mode": "num", "disp": "(−3; 2)", "hint": "Əvvəl x (sağa-sola), sonra y (yuxarı-aşağı).", "audio": "94a80b0d20"}, {"area": "E", "skill": "Rüblər", "ins": "(4; −1) nöqtəsi hansı rübdədir?", "img": null, "kind": "choice", "options": ["data:image/webp;base64,UklGRoYCAABXRUJQVlA4IHoCAACQEACdASpJAHYAPm0ylUekIyIhJBZsyIANiUAaKEi8s1BX0X7a3xTfVr/ED3Pbx16AHSwftP+1XtY6sJcCglNvD0tEHxhJb202ox8rQsjcKZpCc6+TcGmBJ3V5n6s/ZFFgBnkNnRLvjARkt2GMbqd9StsN//nv/HroAY+odxYsXy+P6dgTDHbcMzDoMAAA/vyoIvz8bF543XOHnS4Q2Gpof/I8ZqRNSNz9fruM81LF3n905sW3dnF61xb2nYdr+cS8acy/wO/5zNUYKyREqk9qNhpkFHibi7bMHWg+OxAGu1oDkHQVoBaibSOeyATswib3PweP5q5+3wfRDqAaS5ivZ+tosD7DOpQ375bjxzMhnz2ZkbIN+5n/YV5lJ93axWpOlm2qtxdrK1mv7tYXWqBy7tW7tOcXK4QKgRawVZIzLOxbJH6Gk1FLGYs49/FhRPC05JRub0Cr7s/vCaQUit7PfR/jJ6WG8L3Vrz1FqKmOfLIrnEsmh+U7wdjaf32EFvcVH5bepa6UI2LON5UeMJenhW0ifqqCp/vg7WNIlc0yhm/gFFkbuzLml9er7CcF0q++tq9D5lpfPZ6ukeeA1aEdNqVQ8teCPHlsn/wz6lGqenbUo5k0YTf6+L6FE8Fpi93GEGaYu/ZmaCBukhTMTaw0ZXTSGPYHGrlE9dudIC3hLNHSM2qfaQZaTT6u0athem1p7X6HiZGhZGb5jd2ZmT+T31ESCoR0g1bILjmur+/nwq5WopEXxFbVS+B/3oi7D3VrwpNOdkoJ4q3ma8OBSc1SZd8J1LCSfISuQs9nEh84EbS7t3zucpQ2ahi4VltEEep4o5rRQAAAAAAA", "data:image/webp;base64,UklGRtICAABXRUJQVlA4IMYCAABQEgCdASpeAHYAPm0ylEckIyIhIrgN+IANiUAaEcqc7IYv3A8wH7Aesj6AN4i/YD2APLO9mn9tPSu1VmovmZePKJ4yfulwiSkyVisbi0BrHkDj/TDrGX2L/+rVydcQ8t/vJuUs1CR2X4SDPBIEDggWQOx5aRrRUnedBoVDygGQVhlkwey2cnPW4VFbCxB0DXYgpz2qNM9gWtsKAAD+/KgWXYIgDtVgSVwVjYd3iJnbc80OtPRTru3V5wdhMFQhXgtgBo1ODntPN/f7t6VvXkvoWfLLvS04dutVUobdKejkgJ/6/djTvKL6RW5Swvn14AkrYxeUG0vnCtIjjEyPnr+YTf93+qu/jIB8XzvPcHvxYfv6S4n6/Z+MDpeD+sveXGIMj8QigbeAzENf//ITgad/56RECoPN9qc6S8ppPnhYXRmzcx87HN7Q0OZ9y3GWM00p/w9ZTIkxPx7jd3swtzQpJ89/pWoHvCu3nYmq3Kz0nXE2IWh1tpF733f6l3InvRfpoZVrk4wzheCFE4DuKA1XeIbaXqxofO/c3bZvE2crqM1TfjIX+Kf9hEvj39xw//xyJE/mh9TKWq7GK7cl+2A5FfsczJs9SX898P+HrdfPxZDxLLQ3GsqnMZEloYpw55h2jT6h563mfG2Jy4F3ckUCBJMcfiix+7//neRh/9s3r1cFshHLfr1l4h+moMBvZ94G5NvbZid4tPWGKFZa1KIpjOVTcAQA8QE42Cl+W/o2E4z2A6n1uqNYx1s8G8LC9XhxJ2GLYf2CC29vxQSle680Ji72sAJrXEYf/5YpHfLkUOPqip/EaeU0Ccrj9ru2oi8Eb/jSPMeKVQX5Va/7LBDxgMAsNP5iOy5uShgivh4skKIvDEZcq1sSH00ML+yrrnBpqhduBalqYk0/47klHw86csyGggo0c9i4LX/sNNlpfXgcAAAAAA==", "data:image/webp;base64,UklGRjIDAABXRUJQVlA4ICYDAACwFQCdASpzAHYAPm0ylUekIqIhIxK9GIANiWMA0wmz7bvZ3tyfMB+t37Ae7z6APNm6jz0AOlZ/bX9pPaG1Y/wpNdVkKAEMl8g70AScN97j2yff8lDtCwuq4XE/Dsjz9+i73dSwECTQevCGESNvAvTRrj50IkC+26Lx8eeapNUE26yxbfDdXkL5VIEJN4PEa8o1ZR7mQNYO59wZWRpJtZaGQ3+BgfH9UwCjVgWjTuOjAdvc7OB08AD+/KgxKJzN54uqemu1XQirtMFv3Zxw94qk2/D1PDT+Dkzz6fODcNrS1gJ6ZShNOq0406W0LPlWIsfY8fbn3tGbywA5IFOJfa8iwanhkyfEqOVlvJ7KZdB9VHk2xJ0VPgF0Il1WYcWP2khd0tChERNQludt+PxKHf7THsSh73N3uXeE7LRq/OQmanw0k4lI8oYFNeXY2IVzSYkzrLQPzIwgPKG8t/3yQA/MMH1j/bQTv86GZsNR9Y5Tk/vpSo9wgDWzlM7xsqjqCekWKf9dZKqfKLxD7dY2TxQzpn2nH8Vtp8PpReCeGAK2vZRq/mxXMN8b32gGCQV1pRSYmSkShLlBX+0uKia7SxLb1LZ5dqD7nxE8l7J/t7/z7/Rt5z7ODT32Fd91a73wxSU3oGXuqG0UWv/pn6D5resbHslWe/d5NYtQwxgTjH7vseKW8Onq7sAGGbbvj6FpFL2d1HySfy/C22VHtWhkHNo7VNymD/AKINKXAomLbJbNZZbkCSjIq0cfqWXKpYThz3R//MTQ//2mLOo5T49Dt7NV8BwV7PZSi75/sc895WhqHtbRWuz+Q507PPvHMZnFV9s34Z/nNiFRyMyjXlm0uhgADGFXABE/MSTTG1P976pgT1TO+eUvOKHBQlkgkMnETboF0QXlxc22ISqmxeB7+dNs8Vv0NWH/Ra4Hmn2tr2/3H/oMa2H1YCF9NWRNfz06rAbYDtb4iu+h1VsUbrnNk3iuDuqvVsb1wBOj1cDvHClQ6GbVSgudUorMCMxuxPm+QlkThDFva0B/4QJGYHMt6PynEq5OVCUTZv2bAJUHsbdqmmAAAAAAAA==", "data:image/webp;base64,UklGRiYEAABXRUJQVlA4IBoEAADQGACdASp1AHYAPm0ylUekIqIhIxK9GIANiWMA0a6u4VZ1zbu+YD9bv2A9570AbxL6AHlgey3+3f7K+1jqq/jP+4dpteJvgymGBXcScQNIB6BOd76ZLGzKA1CXvmNsGtYm04CGwpmkL1ptdWSsffr388u4VWfrI8VrmlNwYd8IfmvpLyC7o5CcOwGN0Hqx4t79F5pISEsKhf6IwRH+VQ8S6pnMlFsWYINi37WRwBEZn/PbyJIIyqWnDXz9zkUM/xR5+8A/3mVlN9/BjHtYtgAA/vyoGCCnc6birokqR6bB5eDhK89pr2jYTVuxfCa26LT3rEb/BXQaKe6Zpc2JNvcNU6BnyuWcWbwFLW1lyYhOILW+A+KevSzBk7Uj89sMuI50bFWlcvuN6cQsVt9q7fc2dSyV/BIz2I6rICv5s1FQ1MH4lLH9FAGVGsQHSrmvLjODZ+cihg80JaybQvKVVNZuibCAUU0L1zcMYT071ypvWrmztV61v3SfFEZafKdlwpcbTK865wVhXxkFXtlJ4OS2mc504u+lCKyaRaHCOeFZ8ndL09sY85lPNY1SCWWIX3v+siiMjlmpLfQxS//YUSNN0W0lYElUXTt32oFAjBSH0Fj+hpeKZFNaz+55tpSl13hdCV6uWFT9eiWFN//UF/+h4+9u69t3/PQTr6oyYg/R1t8fS6HYWD2yOvU3/FwgWTyDqhdD0AbB4sBfTP3lWSp11fH1hPM86ocDt0Z730dbp/7d/s5tDW/Xd+uvFwuIuSUGvdDDkdJT4MU32pp0wfBOI1u8e9fQsldP7GdjYVHbcQ01wLODBsuPqAr5UF9IC+2ihxtmPaT1wPgbZjTfzlPOmpQnPY9YdeSqP0G+jCFbbmdkgXEDTTeutNhaVlYTwtzbi73FIWegjz3UFf9sJ/pEaIPYKNj5h2e7ZnWfrK/Po9BD1e7EUWa4udFiVC1s4i3GaXAt9h5NBeFsPYQDGn2d1NYUopH26Ar+0ohgl7pAaEY80pLmLzhUOInVM5VIdKRZawm6lC2NZ+ADmQFkicqJn/PdmuxnMROc+lNgy/4Lykdlvilcn5u4FEjCAZi7r20aSNreR1KkCXFSdDzIKJg0REvAP6O/zzrV+uHZj/EaKKcMO8hp2rU2mnwz2jiXyXHUYvC2ktELxgAF05zBlrBo5Sp5Sa2pk9BGcNJEiq3XJ3P/MjUO7xikcXrp6zVqmjVMtAxqVFbHI9joymOZu7/Lwm1hjy0YMjNjXcr2zeQ3x1MVJrR7ksJs9328fk+mheo0pSra/qPnRLrdR7ZGfgXnOIUedUUakGbV8ye2yn3m5wlkUrJ/WcYFU45C0+owRomLECqT8wEjVO7ZPBQS3BW6XTzqrxQNEapSJmL+Np86m1L3D3sAAAAAAAA="], "prefix": null, "tokens": null, "answer": 3, "mode": "num", "disp": "IV", "hint": "x müsbət, y mənfi – IV rüb.", "audio": "1ac1e64142"}, {"area": "E", "skill": "Məsafə", "ins": "A(−2; 3) və B(4; 3) nöqtələri arasındakı məsafəni tapın.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["AB =", {"s": "num"}], "answer": [6], "mode": "num", "disp": "6", "hint": "|4 − (−2)| = 6.", "audio": "42532d6d08"}, {"area": "E", "skill": "Simmetriya", "ins": "B(5; 2) nöqtəsinə y oxuna nəzərən simmetrik nöqtəni seçin.", "img": null, "kind": "choice", "options": ["data:image/webp;base64,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", "data:image/webp;base64,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", "data:image/webp;base64,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"], "prefix": null, "tokens": null, "answer": 1, "mode": "num", "disp": "(−5; 2)", "hint": "Absisin işarəsi dəyişir.", "audio": "def0efc5f2"}], "areas": [{"code": "A", "name": "Qüvvət, ƏBOB və ƏKOB", "topics": [244, 245, 246, 247], "home": "Konfet və ya meyvələri bərabər paketlərə bölərkən ƏBOB-u, iki avtobusun nə vaxt birlikdə gələcəyini hesablayarkən ƏKOB-u tapın."}, {"code": "B", "name": "Nisbət və tənasüb", "topics": [248, 249, 250, 251, 252], "home": "Xəritədə iki şəhər arasındakı məsafəni xətkeşlə ölçüb miqyasa görə həqiqi məsafəni tapın."}, {"code": "C", "name": "Mütənasiblik və faiz", "topics": [253, 254, 255, 256], "home": "Reseptdəki ərzağı qonaqların sayına görə artırın; endirim yazılarında neçə faiz endirim olduğunu hesablayın."}, {"code": "D", "name": "Tam ədədlər", "topics": [257, 258, 259, 260, 261, 262, 263], "home": "Hava proqnozunda mənfi temperaturları müqayisə edin: «Səhər −3°, günorta 5° – neçə dərəcə isindi?»"}, {"code": "E", "name": "Koordinat sistemi", "topics": [264, 265, 266], "home": "Dama taxtası və ya dəftər vərəqində koordinat oyunu oynayın: nöqtəni koordinatı ilə tapın."}], "levels": [{"min": 4, "name": "Mükəmməl", "text": "Bu bacarığı tam mənimsəyib. Növbəti mövzulara keçməyə hazırdır."}, {"min": 3, "name": "Yaxşı", "text": "Əsasən bacarır, kiçik səhvlər var. Səhv olan tapşırığı birlikdə yenidən həll edin."}, {"min": 2, "name": "İnkişaf edir", "text": "Bəzi hissələri bacarır. Mövzu {t} üzrə tapşırıqları təkrar edin."}, {"min": 0, "name": "Dəstək lazımdır", "text": "Bu bacarıq hələ formalaşmayıb. Mövzu {t} əvvəldən, əşyalar və şəkillərlə təkrar edilməlidir."}], "overall": [{"min": 18, "name": "Əla", "text": "Uşaq 6-cı sinfin 1-ci hissəsini çox yaxşı mənimsəyib."}, {"min": 14, "name": "Yaxşı", "text": "Uşaq mövzuların çoxunu mənimsəyib. Zəif sahələri qısa təkrarla möhkəmləndirin."}, {"min": 10, "name": "Orta", "text": "Uşaq bəzi mövzularda çətinlik çəkir. «İnkişaf edir» və «Dəstək lazımdır» olan sahələri 1–2 həftə təkrar edin."}, {"min": 0, "name": "Əlavə dəstək lazımdır", "text": "Uşağa əlavə köməklik lazımdır. Müəllimlə birlikdə zəif sahələr üzrə fərdi plan hazırlayın."}]};
+const KOD=sagirdKodu();
+const KEY='az-math-test-6-1-v1-'+(KOD||'x');
+const app=document.getElementById('app'), bar=document.getElementById('bar'), barIn=document.getElementById('barIn');
+let S=fresh();S.stage='loading';
+function fresh(){return{stage:'start',name:'',i:0,ans:{},checked:{},hints:{},sound:true,sent:false,date:null}}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function h(tag,attrs={},...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==='class')e.className=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(k,v===true?'':v)}for(const k of kids.flat()){if(k==null||k===false)continue;e.append(k.nodeType?k:document.createTextNode(k))}return e}
+
+/* ---------- sound ---------- */
+let player=null, foxEl=null, vbtnEl=null;
+function setTalking(on){if(foxEl)foxEl.classList.toggle('talk',on);if(vbtnEl){vbtnEl.classList.toggle('stop',on);vbtnEl.textContent=on?'⏸ Dayandırın':'🔊 Dinləyin'}}
+function play(src){try{stop();player=new Audio(src);player.onended=player.onpause=()=>setTalking(false);setTalking(true);const p=player.play();if(p&&p.catch)p.catch(()=>setTalking(false))}catch(e){}}
+function stop(){try{if(player){player.onpause=null;player.pause()}}catch(e){}setTalking(false)}
+let ac=null;
+function chime(ok){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;(ok?[523,659,784]:[392,330]).forEach((f,k)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+k*.12);g.gain.exponentialRampToValueAtTime(.18,t+k*.12+.02);g.gain.exponentialRampToValueAtTime(.0001,t+k*.12+.3);o.connect(g).connect(ac.destination);o.start(t+k*.12);o.stop(t+k*.12+.32)})}catch(e){}}
+
+/* ---------- confetti ---------- */
+function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.getElementById('cf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#F6C343','#5145E6','#38C172','#E35D7F','#3BA6F5'];const P=Array.from({length:70},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.45,vx:(Math.random()-.5)*9,vy:-Math.random()*11-4,s:6+Math.random()*6,c:cols[Math.random()*5|0],r:Math.random()*6}));let n=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++n<70)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
+
+/* ---------- scoring ---------- */
+function correct(k){const it=DATA.items[k],a=S.ans[k];if(a==null)return false;return it.kind==='choice'?a===it.answer:it.answer.every((v,j)=>String(a[j])===String(v))}
+const stars=()=>Object.keys(S.checked).filter(k=>S.checked[k]&&correct(+k)).length;
+
+function header(){
+  const done=Object.keys(S.checked).length, total=DATA.items.length;
+  return [h('div',{class:'card hdr bk bk-6-1'},h('div',{class:'part','aria-hidden':'true'},h('b',{},'1'),h('span',{},'hissə')),
+      h('div',{class:'brand'},h('b',{},'6-cı sinif riyaziyyat'),h('i',{},'1-ci hissə'),h('span',{},'Yoxlama testi · səsli tapşırıqlar')),
+      h('span',{class:'pill star','aria-label':'Ulduzlar'},'⭐ '+stars())),
+    h('div',{class:'prog'},h('div',{class:'lbl'},h('span',{},'Sual '+(S.i+1)+' / '+total),h('span',{},Math.round(done/total*100)+'% tamamlandı')),
+      h('div',{class:'track'},h('i',{style:'width:'+Math.max(4,done/total*100)+'%'})))];
+}
+
+function render(){stop();app.replaceChildren();bar.hidden=true;({start,quiz,report,loading,nolink,sending,neterr})[S.stage]();window.scrollTo(0,0)}
+
+/* ---------- start ---------- */
+function start(){
+  app.append(h('div',{class:'card start'},
+    h('div',{class:'fox','aria-hidden':'true'},'🦊'),
+    h('a',{href:'index.html?s='+KOD,style:'align-self:flex-start;font-weight:900;color:var(--muted);text-decoration:none'},'← Ana səhifə'),h('div',{class:'tag'},h('b',{},'Riyaziyyat'),h('span',{},'6-cı sinif · 1-ci hissə')),
+    h('h1',{},'Yoxlama testi'),
+    h('p',{style:'font-size:22px;font-weight:900'},'Salam, '+S.name+'! 👋'),
+    h('p',{class:'muted'},'Mən Tülkü müəlliməm. 20 şəkilli tapşırığı birlikdə həll edək. Hər tapşırığı səslə oxuyacağam.'),
+    h('div',{class:'areas'},DATA.areas.map(a=>h('div',{},a.code+'. '+a.name))),
+    h('div',{class:'home',style:'text-align:left'},'⚠️ Bu test yalnız bir dəfə edilir. Bütün mövzuları bitirəndən sonra, sakit bir vaxtda başlayın.'),
+    h('button',{class:'big',onclick(){const n=S.name;S=fresh();S.name=n;S.stage='quiz';save();render()}},'Başlayaq! 🚀'),
+    h('p',{class:'note'},'Valideyn üçün: cavabı deməyin, uşaq ekrana özü toxunsun. Test bitəndə nəticə avtomatik müəllimə göndərilir və hesabat burada görünür.')));
+}
+function msgCard(icon,title,text,btn){app.append(h('div',{class:'card start'},h('div',{class:'fox','aria-hidden':'true'},icon),h('h1',{style:'font-size:28px'},title),h('p',{class:'muted'},text),btn||null))}
+function loading(){msgCard('🦊','Yüklənir...','Bir az gözləyin.')}
+function nolink(){msgCard('🔒','Şəxsi link lazımdır','Yoxlama testi yalnız müəllimin WhatsApp ilə göndərdiyi şəxsi linklə açılır. Həmin linki açın və ya müəllimə yazın.',h('a',{class:'big',href:'index.html',style:'text-decoration:none'},'← Tapşırıqlara qayıdın'))}
+function sending(){msgCard('📨','Nəticə göndərilir...','Bir az gözləyin, internetə qoşulmanı bağlamayın.')}
+function neterr(){msgCard('📶','Göndərilmədi','İnternet bağlantısını yoxlayın və yenidən cəhd edin. Cavablar bu telefonda saxlanılıb.',h('button',{class:'big',onclick(){if(S.retryBoot){S.retryBoot=false;S.stage='loading';boot()}else submit()}},'🔄 Yenidən cəhd edin'))}
+async function submit(){
+  S.stage='sending';save();render();
+  try{
+    const hints=Object.keys(S.hints).map(Number);
+    const r=await testiGonder(KOD,S.ans,hints);
+    if(!r||!r.ok)throw new Error(r&&r.error);
+    useServer(r);
+  }catch(e){S.stage='neterr';save();render()}
+}
+function useServer(r){
+  const res=r.result||{};
+  S.name=r.name||S.name;S.ans=res.ans||{};S.hints={};(res.hints||[]).forEach(k=>S.hints[k]=true);
+  S.checked={};DATA.items.forEach((_,k)=>S.checked[k]=true);
+  S.date=res.date||null;S.sent=true;S.stage='report';save();render();
+}
+async function boot(){
+  if(!KOD||!API_URL){S.stage='nolink';render();return}
+  const local=load();
+  render();
+  try{
+    const r=await sagirdMelumati(KOD);
+    if(!r.ok){S.stage='nolink';render();return}
+    sagirdAdiYaddas(KOD,r.name);
+    if(r.done&&r.result){useServer(r);return}
+    if(local&&!local.sent){S=local;S.name=r.name;if(S.stage==='sending'||S.stage==='neterr'||S.stage==='report'){submit();return}}
+    else{S=fresh();S.name=r.name}
+    if(!['start','quiz'].includes(S.stage))S.stage='start';
+    save();render();
+  }catch(e){
+    // internet yoxdursa: başlanmış test davam edə bilər, göndərmə sonra olacaq
+    if(local&&!local.sent&&local.stage==='quiz'){S=local;render()}
+    else{S.stage='neterr';S.retryBoot=true;render()}
+  }
+}
+/* ---------- quiz ---------- */
+function quiz(){
+  const it=DATA.items[S.i], n=S.i+1, total=DATA.items.length, locked=!!S.checked[S.i];
+  let a=S.ans[S.i]; if(a===undefined){a=it.kind==='choice'?null:it.answer.map(()=>null);S.ans[S.i]=a}
+  let active=it.kind==='choice'?0:Math.max(0,a.indexOf(null));
+  const filled=()=>it.kind==='choice'?a!==null:a.every(v=>v!==null&&v!=='');
+
+  // teacher card
+  foxEl=h('div',{class:'fox','aria-hidden':'true'},'🦊');
+  vbtnEl=h('button',{class:'vbtn',onclick(){player&&!player.paused?stop():play(it.audio)}},'🔊 Dinləyin');
+  const auto=h('button',{class:'auto'+(S.sound?'':' off'),onclick(){S.sound=!S.sound;save();auto.className='auto'+(S.sound?'':' off');auto.lastChild.textContent=S.sound?'Avtomatik səs: açıq':'Avtomatik səs: bağlı';if(!S.sound)stop()}},h('i'),S.sound?'Avtomatik səs: açıq':'Avtomatik səs: bağlı');
+  const teach=h('div',{class:'card teach'},foxEl,h('div',{class:'tag'},h('b',{},'Müəllim oxuyur'),h('span',{},'Tapşırıq '+n)),h('h2',{},it.ins),h('div',{class:'voice'},vbtnEl,auto));
+
+  // task card
+  const task=h('div',{class:'card task pop'});
+  const paint=[];
+  if(it.count){
+    const tapped=[];const grid=h('div',{class:'count'});
+    for(let k=0;k<it.count.n;k++){const b=h('button',{'aria-label':'alma',onclick(){if(b.classList.contains('on'))return;tapped.push(k);b.classList.add('on');b.append(h('em',{},String(tapped.length)))}},it.count.e);grid.append(b)}
+    task.append(h('p',{class:'hintc'},'Hər almaya toxun – nömrələnəcək:'),grid);
+  }else if(it.img) task.append(h('div',{class:'paper'},h('img',{src:it.img,alt:''})));
+
+  const mark=()=>paint.forEach(f=>f());
+  if(it.kind==='choice'){
+    const opts=h('div',{class:'opts'});
+    if(it.prefix)opts.append(h('img',{class:'prefix',src:it.prefix,alt:''}));
+    const btns=it.options.map((src,k)=>h('button',{class:'opt','aria-label':(k+1)+'-ci variant',disabled:locked,onclick(){a=k;S.ans[S.i]=a;save();mark();update()}},h('img',{src,alt:''})));
+    btns.forEach(b=>opts.append(b));
+    paint.push(()=>btns.forEach((b,k)=>{b.className='opt'+(a===k?' sel':'')+(locked&&k===it.answer?' right':'')+(locked&&a===k&&k!==it.answer?' wrong':'')}));
+    task.append(opts);
+  }else{
+    const eq=h('div',{class:'eq'}),slots=[];let si=0;
+    it.tokens.forEach(t=>{
+      if(t==='br'){eq.append(h('span',{class:'br'}));return}
+      if(t&&typeof t==='object'){const idx=si++;const s=h('button',{class:'slot','aria-label':'cavab xanası',disabled:locked,onclick(){if(it.mode!=='card'){active=idx;mark()}}});slots.push(s);eq.append(s);return}
+      eq.append(['+','−','='].includes(t)?h('span',{class:'op'},t):h('span',{class:'fixed'},String(t)));
+    });
+    paint.push(()=>slots.forEach((s,k)=>{s.textContent=a[k]??'';let c='slot';if(a[k]!==null&&a[k]!=='')c+=' filled';if(!locked&&k===active&&it.mode!=='card')c+=' active';if(locked)c+=String(a[k])===String(it.answer[k])?' right':' wrong';s.className=c}));
+    task.append(eq);
+    if(!locked){
+      const set=v=>{a[active]=v;S.ans[S.i]=a;save();mark();update()};
+      if(it.mode==='num'){
+        const pad=h('div',{class:'pad'});
+        [1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{'aria-label':String(d),onclick(){const cur=a[active]==null?'':String(a[active]);let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>7)v=String(d);set(Number(v))}},String(d))));
+        pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Sil'));
+        task.append(pad);
+        if(slots.length>1)task.append(h('p',{class:'hintc'},'Xanaya toxun, sonra ədədi seç.'));
+      }else if(it.mode==='sign'){
+        task.append(h('div',{class:'signs'},['>','<','='].map(sg=>h('button',{'aria-label':sg,onclick(){set(sg);if(active<slots.length-1){active++;mark()}}},sg))),h('p',{class:'hintc'},'Xanaya toxun, sonra işarəni seç.'));
+      }else if(it.mode==='card'){
+        const cards=h('div',{class:'cards'});
+        const draw=()=>cards.replaceChildren(...it.cards.map(c=>h('button',{disabled:a.includes(c),onclick(){const k=a.indexOf(null);if(k>=0){a[k]=c;S.ans[S.i]=a;save();mark();draw();update()}}},String(c))));
+        draw();
+        task.append(cards,h('button',{class:'undo',onclick(){const k=a.map(v=>v!==null).lastIndexOf(true);if(k>=0){a[k]=null;save();mark();draw();update()}}},'⌫ Geri al'));
+      }
+    }
+  }
+  mark();
+
+  // feedback + help
+  if(locked){const ok=correct(S.i);task.append(h('div',{class:'fb '+(ok?'ok':'no')},h('span',{},ok?'🌟':'💪'),ok?'Əla! Düzgün cavab!':'Yaxşı cəhd! Gəlin, növbəti suala keçək.'))}
+  const hintP=h('p',{hidden:!S.hints[S.i]},'💡 '+it.hint);
+  task.append(h('div',{class:'help'},h('button',{onclick(){S.hints[S.i]=true;save();hintP.hidden=false}},'❓ Kömək lazımdır?'),hintP));
+
+  app.append(...header(),teach,task);
+
+  // bottom bar
+  const back=h('button',{class:'bbtn back',disabled:S.i===0,'aria-label':'Əvvəlki sual',onclick(){S.i--;save();render()}},'←');
+  const main=h('button',{class:'bbtn main'});
+  function update(){
+    if(!locked){main.textContent='Cavabı yoxlayın ✓';main.disabled=!filled();main.className='bbtn main';main.onclick=()=>{S.checked[S.i]=true;save();const ok=correct(S.i);chime(ok);if(ok)confetti();render()}}
+    else{main.disabled=false;main.className='bbtn main go';main.textContent=S.i<total-1?'Növbəti sual →':'Nəticəyə baxın 🏆';main.onclick=()=>{if(S.i<total-1){S.i++;save();render()}else submit()}}
+  }
+  update();
+  barIn.replaceChildren(back,h('span',{class:'qn'},n+' / '+total),main);bar.hidden=false;
+  if(S.sound&&!locked&&it.audio)setTimeout(()=>play(it.audio),300);
+}
+
+/* ---------- report ---------- */
+function level(sc){return DATA.levels.findIndex(l=>sc>=l.min)}
+function result(){
+  const per=DATA.areas.map(ar=>{const ks=DATA.items.map((it,k)=>it.area===ar.code?k:-1).filter(k=>k>=0);const sc=ks.filter(correct).length;return{ar,sc,lv:level(sc)}});
+  const total=per.reduce((s,p)=>s+p.sc,0);
+  return{per,total,wrong:DATA.items.map((_,k)=>k).filter(k=>!correct(k)),ov:DATA.overall.find(o=>total>=o.min),hints:Object.keys(S.hints).length};
+}
+function today(){if(S.date)return S.date;const d=new Date();return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear()}
+function summary(r){
+  const L=['Riyaziyyat · 6-cı sinif · 1-ci hissə – Yoxlama testi','Şagird: '+S.name,'Tarix: '+today(),'Ümumi bal: '+r.total+'/20 ('+r.ov.name+')',''];
+  r.per.forEach(p=>L.push(p.ar.code+'. '+p.ar.name+': '+p.sc+'/4 – '+DATA.levels[p.lv].name));
+  L.push('',r.wrong.length?'Səhv tapşırıqlar: '+r.wrong.map(k=>k+1).join(', '):'Bütün tapşırıqlar düzgündür!');
+  L.push('Kömək istifadə olunan tapşırıqlar: '+r.hints);
+  return L.join('\n');
+}
+function ring(t){const C=2*Math.PI*52,f=t/20;return `<svg class="ring" viewBox="0 0 132 132" role="img" aria-label="${t} / 20"><circle cx="66" cy="66" r="52" fill="none" stroke="var(--edge-soft)" stroke-width="14"/><circle cx="66" cy="66" r="52" fill="none" stroke="var(--good)" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C*f} ${C}" transform="rotate(-90 66 66)"/><text x="66" y="66" text-anchor="middle" font-size="38">${t}</text><text x="66" y="90" text-anchor="middle" font-size="15" style="fill:var(--muted)">/ 20</text></svg>`}
+function report(){
+  const r=result(), oi=DATA.overall.indexOf(r.ov);
+  const rg=h('div');rg.innerHTML=ring(r.total);
+  const st=Math.round(r.total/4);
+  app.append(
+    h('div',{class:'card rhead pop'},h('div',{class:'trophy','aria-hidden':'true'},r.total>=14?'🏆':'🌱'),
+      h('div',{class:'tag'},h('b',{},'Valideyn üçün hesabat'),h('span',{},today())),
+      h('h1',{style:'font-size:32px;font-weight:900'},S.name),rg.firstChild,
+      h('div',{class:'stars','aria-label':st+' ulduz'},'★'.repeat(st)+'☆'.repeat(5-st)),
+      h('span',{class:'chip lv'+Math.min(3,oi)},r.ov.name),h('p',{},r.ov.text)),
+    (()=>{const c=h('div',{class:'card'},h('h2',{style:'font-size:21px;font-weight:900;margin-bottom:8px'},'Sahələr üzrə nəticə'));
+      r.per.forEach(p=>{const L=DATA.levels[p.lv];c.append(h('div',{class:'area'},h('h3',{},p.ar.code+'. '+p.ar.name),h('span',{class:'chip lv'+p.lv},p.sc+'/4 · '+L.name),
+        h('div',{class:'dots'},[0,1,2,3].map(k=>h('i',{class:k<p.sc?'on':''}))),h('p',{},L.text.replace('{t}',p.ar.topics.join(', '))),
+        p.sc<4?h('div',{class:'home'},h('b',{},'🏠 Evdə: '),p.ar.home):null))});return c})(),
+    h('div',{class:'card'},h('h2',{style:'font-size:21px;font-weight:900'},r.wrong.length?'Səhv olan tapşırıqlar':'Bütün cavablar düzgündür! 🎉'),
+      r.wrong.length?h('div',{class:'wrong'},r.wrong.map(k=>h('span',{},(k+1)+'. '+DATA.items[k].skill+' → '+DATA.items[k].disp))):null,
+      h('p',{class:'note',style:'margin-top:10px'},'Kömək düyməsi istifadə olunan tapşırıqlar: '+r.hints)),
+    h('div',{class:'card share'},h('h2',{style:'font-size:21px;font-weight:900'},'✅ Nəticə müəllimə göndərildi'),
+      h('p',{class:'muted'},'Bu hesabatı istənilən vaxt eyni linklə yenidən aça bilərsiniz.'),
+      h('a',{class:'sec',href:'index.html?s='+KOD,style:'text-align:center;text-decoration:none'},'← Tapşırıqlara qayıdın')));
+  if(r.total>=14)setTimeout(confetti,300);
+}
+function shareCard(txt){
+  const ta=h('textarea',{id:'sum',readonly:true},txt);
+  const cp=h('button',{class:'sec',onclick(){navigator.clipboard.writeText(txt).then(()=>{cp.textContent='Kopyalandı ✓'},()=>{ta.focus();ta.select();cp.textContent='Mətn seçildi – kopyalayın'})}},'📋 Mətni kopyalayın');
+  return h('div',{class:'card share'},h('h2',{style:'font-size:21px;font-weight:900'},'Müəllimə göndərin'),
+    h('p',{class:'muted'},'Nəticəni WhatsApp ilə müəllimə göndərin. Düymə açılmasa, mətni kopyalayıb WhatsApp-a yapışdırın.'),
+    h('a',{class:'wa',href:'https://wa.me/?text='+encodeURIComponent(txt),target:'_blank',rel:'noopener'},'💬 WhatsApp-da göndər'),cp,ta);
+}
+boot();
+</script>
+</body></html>

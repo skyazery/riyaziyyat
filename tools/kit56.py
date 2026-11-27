@@ -333,3 +333,335 @@ def story(emojis, toks=None, size=80):
 def sup(base, p):
     """7² kimi"""
     return str(base) + {2: '²', 3: '³'}[p]
+
+
+# ---------------------------------------------------------------- həndəsə (5-2)
+def _arc_lbl(d, cx, cy, r, a0, a1, lab, color=RED, fs=30):
+    """bucaq qövsü (dərəcə, saat əqrəbinin əksinə, ekranda y aşağı) və yazı"""
+    d.arc([(cx - r) * S, (cy - r) * S, (cx + r) * S, (cy + r) * S], -a1, -a0, fill=color, width=4 * S)
+    if lab:
+        m = math.radians((a0 + a1) / 2)
+        rr = r + 30
+        d.text(((cx + rr * math.cos(m)) * S, (cy - rr * math.sin(m)) * S), lab, font=font(fs * S), fill=color, anchor='mm')
+
+
+def ang(deg, lab=None, L=230, color=BLUE):
+    """bucaq: təpə solda, bir şüa üfüqi"""
+    W, H = L + 120, int(max(90, L * math.sin(math.radians(min(deg, 90))) + 90)) if deg <= 90 else L + 60
+    cx = 60 if deg <= 90 else 60 + int(L * 0.6)
+    W = max(W, cx + L + 30)
+    cy = H - 40
+    im, d = vec(W, H)
+    d.line([cx * S, cy * S, (cx + L) * S, cy * S], fill=color, width=6 * S)
+    ex, ey = cx + L * math.cos(math.radians(deg)), cy - L * math.sin(math.radians(deg))
+    d.line([cx * S, cy * S, ex * S, ey * S], fill=color, width=6 * S)
+    if deg == 90:
+        q = 22
+        d.line([(cx + q) * S, cy * S, (cx + q) * S, (cy - q) * S, cx * S, (cy - q) * S], fill=RED, width=4 * S)
+        if lab:
+            d.text(((cx + 60) * S, (cy - 60) * S), lab, font=font(30 * S), fill=RED, anchor='mm')
+    else:
+        _arc_lbl(d, cx, cy, 50, 0, deg, lab)
+    d.ellipse([(cx - 6) * S, (cy - 6) * S, (cx + 6) * S, (cy + 6) * S], fill=INK)
+    return done(im)
+
+
+def adj(deg, lab1, lab2, L=230):
+    """qonşu bucaqlar: düz xətt və ortadan çıxan şüa; lab1 sağdakı (deg), lab2 soldakı"""
+    W, H = 2 * L + 80, int(L * 0.85) + 60
+    cx, cy = W // 2, H - 40
+    im, d = vec(W, H)
+    d.line([(cx - L) * S, cy * S, (cx + L) * S, cy * S], fill=BLUE, width=6 * S)
+    ex, ey = cx + L * 0.9 * math.cos(math.radians(deg)), cy - L * 0.9 * math.sin(math.radians(deg))
+    d.line([cx * S, cy * S, ex * S, ey * S], fill=BLUE, width=6 * S)
+    _arc_lbl(d, cx, cy, 46, 0, deg, lab1, RED)
+    _arc_lbl(d, cx, cy, 62, deg, 180, lab2, (46, 125, 50))
+    d.ellipse([(cx - 6) * S, (cy - 6) * S, (cx + 6) * S, (cy + 6) * S], fill=INK)
+    return done(im)
+
+
+def cross(deg, labs, L=200):
+    """iki düz xəttin kəsişməsi; labs = 4 bucağın yazısı (sağdan başlayaraq saat əqrəbinin əksinə)"""
+    W, H = 2 * L + 80, int(2 * L * 0.75) + 40
+    cx, cy = W // 2, H // 2
+    im, d = vec(W, H)
+    for a, col in ((0, BLUE), (deg, PURPLE)):
+        dx, dy = L * math.cos(math.radians(a)), L * math.sin(math.radians(a))
+        k = 1 if a == 0 else 0.75
+        d.line([(cx - dx * k) * S, (cy + dy * k) * S, (cx + dx * k) * S, (cy - dy * k) * S], fill=col, width=6 * S)
+    bounds = [0, deg, 180, 180 + deg, 360]
+    cols = [RED, (46, 125, 50), RED, (46, 125, 50)]
+    for i, lab in enumerate(labs):
+        if lab:
+            _arc_lbl(d, cx, cy, 40 + 8 * (i % 2), bounds[i], bounds[i + 1], lab, cols[i])
+    return done(im)
+
+
+def poly_l(pts, labs=(), unit=40, color=(187, 222, 251), holes=(), fs=28, extra=()):
+    """çoxbucaqlı (vahidlərlə: x sağa, y aşağı); labs = [(x, y, yazı)]; holes = ağ çoxbucaqlılar; extra = [(nöqtələr, rəng)]"""
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    W, H = int(max(xs) * unit) + 160, int(max(ys) * unit) + 110
+    im, d = vec(W, H)
+    T_ = lambda p: ((80 + p[0] * unit) * S, (50 + p[1] * unit) * S)
+    d.polygon([T_(p) for p in pts], fill=color, outline=INK, width=5 * S)
+    for pp, col in extra:
+        d.polygon([T_(p) for p in pp], fill=col, outline=INK, width=4 * S)
+    for h_ in holes:
+        d.polygon([T_(p) for p in h_], fill=WHITE, outline=INK, width=4 * S)
+    for x, y, s_ in labs:
+        d.text(T_((x, y)), s_, font=font(fs * S), fill=BLUE, anchor='mm')
+    return done(im)
+
+
+def rtri(a, b, la, lb, unit=34, color=(255, 236, 179)):
+    """düzbucaqlı üçbucaq: katetlər a (üfüqi), b (şaquli)"""
+    pts = [(0, 0), (0, b), (a, b)]
+    im = poly_l(pts, [(-50 / unit, b / 2, lb), (a / 2, b + 26 / unit, la)], unit, color)
+    return im
+
+
+def prism3(la, lb, lh, unit=1.0, color=(255, 224, 178)):
+    """oturacağı düzbucaqlı üçbucaq olan prizma"""
+    W, H = 460, 330
+    im, d = vec(W, H)
+    A, B, C = (90, 280), (300, 280), (90, 170)      # ön üçbucaq (düz bucaq A-da)
+    dx, dy = 110, -110
+    A2, B2, C2 = [(x + dx, y + dy) for x, y in (A, B, C)]
+    P = lambda *q: [(x * S, y * S) for x, y in q]
+    side = tuple(int(c * 0.85) for c in color)
+    d.polygon(P(B, B2, C2, C), fill=side, outline=INK, width=4 * S)
+    d.polygon(P(C, C2, A2, A), fill=tuple(min(255, int(c * 1.05)) for c in color), outline=INK, width=4 * S)
+    d.polygon(P(A, B, C), fill=color, outline=INK, width=5 * S)
+    d.line(P(A, A2), fill=GREY, width=3 * S)
+    d.line(P(A2, B2), fill=GREY, width=3 * S)
+    d.line([(A[0] + 16) * S, A[1] * S, (A[0] + 16) * S, (A[1] - 16) * S, A[0] * S, (A[1] - 16) * S], fill=INK, width=3 * S)
+    f_ = font(26 * S)
+    d.text(((A[0] + B[0]) / 2 * S, (A[1] + 24) * S), la, font=f_, fill=BLUE, anchor='mm')
+    d.text(((A[0] - 12) * S, (A[1] + C[1]) / 2 * S), lb, font=f_, fill=BLUE, anchor='rm')
+    d.text(((B[0] + B2[0]) / 2 * S + 18 * S, (B[1] + B2[1]) / 2 * S + 10 * S), lh, font=f_, fill=BLUE, anchor='lm')
+    return done(im)
+
+
+# ---------------------------------------------------------------- 6-cı sinif: tam ədədlər, nisbət, koordinatlar
+SUPD = str.maketrans('0123456789', '⁰¹²³⁴⁵⁶⁷⁸⁹')
+
+
+def pw(base, p):
+    """2⁵ kimi qüvvət yazısı"""
+    return str(base) + str(p).translate(SUPD)
+
+
+def ms(v):
+    """mənfi işarəni tipoqrafik edir: -5 → −5"""
+    return str(v).replace('-', '−')
+
+
+def zans(t, ins, v, stem):
+    """tam ədəd cavabı (mənfi ola bilər): klaviaturada − düyməsi var"""
+    t.num(ins, [v], stem, disp=ms(v))
+    ck(t, neg=1)
+
+
+def zcalc(t, ins, expr_, v, size=60):
+    zans(t, ins, v, FX(expr_, '=', BOX, size=size))
+
+
+def crd(t, ins, xy, stem):
+    """koordinat cavabı (x; y)"""
+    t.num(ins, list(xy), stem, disp='(%s; %s)' % (ms(xy[0]), ms(xy[1])))
+    ck(t, sep=';', pre='(', suf=')', neg=1)
+
+
+def rat(t, ins, ab, stem, sep=':'):
+    t.num(ins, list(ab), stem, disp=(' %s ' % sep).join(str(v) for v in ab))
+    ck(t, sep=sep)
+
+
+def zline(a, b, marks=(), unit=None, w=860, size=28):
+    """tam ədədlər oxu a..b; marks = [(ədəd, 'A' / BOX)]"""
+    n = b - a
+    unit = unit or (w - 80) / n
+    W = int(n * unit + 80)
+    im, d = vec(W, 150)
+    y = 75
+    d.line([(20 * S, y * S), ((W - 14) * S, y * S)], fill=INK, width=4 * S)
+    d.polygon([((W - 4) * S, y * S), ((W - 22) * S, (y - 9) * S), ((W - 22) * S, (y + 9) * S)], fill=INK)
+    for k in range(n + 1):
+        x = 40 + k * unit
+        v = a + k
+        d.line([(x * S, (y - 10) * S), (x * S, (y + 10) * S)], fill=INK, width=(5 if v == 0 else 3) * S)
+        d.text((x * S, (y + 36) * S), ms(v), font=font(size * S), fill=RED if v < 0 else INK, anchor='mm')
+    im = done(im)
+    dd = ImageDraw.Draw(im)
+    for v, lab in marks:
+        x = 40 + (v - a) * unit
+        dd.ellipse([x - 9, y - 9, x + 9, y + 9], fill=BLUE)
+        if lab is BOX:
+            im.alpha_composite(box(46, 46, width=4, radius=10), (int(x - 23), 4))
+        elif lab:
+            tl = txt(lab, 32, BLUE)
+            im.alpha_composite(tl, (int(x - tl.width / 2), 6))
+    return im
+
+
+def cgrid(n=5, pts=(), cell=34, poly_=None, color=(187, 222, 251)):
+    """dörd rüblü koordinat müstəvisi −n..n; pts = [(x, y, 'A')]"""
+    W = 2 * n * cell + 56
+    im, d = vec(W, W)
+    O = W / 2
+    P = lambda x, y: ((O + x * cell) * S, (O - y * cell) * S)
+    if poly_:
+        d.polygon([P(x, y) for x, y in poly_], fill=color, outline=BLUE, width=4 * S)
+    for k in range(-n, n + 1):
+        d.line([P(k, -n), P(k, n)], fill=(207, 216, 220), width=2 * S)
+        d.line([P(-n, k), P(n, k)], fill=(207, 216, 220), width=2 * S)
+    d.line([P(-n - 0.6, 0), P(n + 0.6, 0)], fill=INK, width=4 * S)
+    d.line([P(0, -n - 0.6), P(0, n + 0.6)], fill=INK, width=4 * S)
+    f_ = font(20 * S)
+    for k in range(-n, n + 1):
+        if k:
+            d.text((P(k, 0)[0], P(k, 0)[1] + 16 * S), ms(k), font=f_, fill=GREY, anchor='mm')
+            d.text((P(0, k)[0] - 16 * S, P(0, k)[1]), ms(k), font=f_, fill=GREY, anchor='mm')
+    d.text((P(n + 0.6, 0)[0], P(n + 0.6, 0)[1] - 18 * S), 'x', font=font(26 * S), fill=INK, anchor='mm')
+    d.text((P(0, n + 0.6)[0] + 18 * S, P(0, n + 0.6)[1]), 'y', font=font(26 * S), fill=INK, anchor='mm')
+    d.text((P(0, 0)[0] - 14 * S, P(0, 0)[1] + 16 * S), '0', font=f_, fill=GREY, anchor='mm')
+    for x, y, lab in pts:
+        cx, cy = P(x, y)
+        r = 8 * S
+        d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=RED)
+        if lab:
+            d.text((cx + 18 * S, cy - 18 * S), lab, font=font(28 * S), fill=RED, anchor='mm')
+    return done(im)
+
+
+# ---------------------------------------------------------------- 6-2: Venn, paralel xətlər, üçbucaq elementləri, dairə, silindr
+def venn(a, ab, b, la='A', lb='B', out=None, W=520, H=300):
+    im, d = vec(W, H)
+    d.rounded_rectangle([4 * S, 4 * S, (W - 4) * S, (H - 4) * S], 18 * S, outline=GREY, width=3 * S)
+    r = 105
+    c1, c2, cy = W / 2 - 62, W / 2 + 62, H / 2 + 14
+    for cx, col in ((c1, (255, 167, 38, 90)), (c2, (66, 165, 245, 90))):
+        d.ellipse([(cx - r) * S, (cy - r) * S, (cx + r) * S, (cy + r) * S], fill=col, outline=INK, width=4 * S)
+    f_ = font(34 * S)
+    for x, v in ((c1 - 55, a), (W / 2, ab), (c2 + 55, b)):
+        d.text((x * S, cy * S), str(v), font=f_, fill=INK, anchor='mm')
+    d.text(((c1 - 60) * S, 26 * S), la, font=font(26 * S), fill=(230, 81, 0), anchor='mm')
+    d.text(((c2 + 60) * S, 26 * S), lb, font=font(26 * S), fill=(21, 101, 192), anchor='mm')
+    if out is not None:
+        d.text(((W - 16) * S, (H - 26) * S), str(out), font=font(26 * S), fill=INK, anchor='rm')
+    return done(im)
+
+
+def trans(deg, labs, L=230):
+    """iki paralel düz xətt (a, b) və kəsən; deg = 1-ci bucaq. labs: {1..8: yazı}. 1 sağ-yuxarı, 2 sol-yuxarı, 3 sol-aşağı, 4 sağ-aşağı (yuxarı kəsişmə); 5–8 aşağı kəsişmədə eyni qayda ilə"""
+    W, H = 2 * L + 120, 360
+    im, d = vec(W, H)
+    y1, y2 = 110, 250
+    cx = W / 2
+    for y, nm in ((y1, 'a'), (y2, 'b')):
+        d.line([(30 * S, y * S), ((W - 30) * S, y * S)], fill=BLUE, width=5 * S)
+        d.text(((W - 20) * S, (y - 18) * S), nm, font=font(26 * S), fill=BLUE, anchor='mm')
+    k = 1 / math.tan(math.radians(deg))
+    xm = (y2 - y1) / 2
+    x1, x2 = cx + xm * k, cx - xm * k
+    ext = 90
+    dx = ext * k
+    d.line([((x1 + dx) * S, (y1 - ext) * S), ((x2 - dx) * S, (y2 + ext) * S)], fill=PURPLE, width=5 * S)
+    for (px, py), base in (((x1, y1), 0), ((x2, y2), 4)):
+        bounds = [(0, deg), (deg, 180), (180, 180 + deg), (180 + deg, 360)]
+        for i, (a0, a1) in enumerate(bounds):
+            lab = labs.get(base + i + 1)
+            if lab:
+                _arc_lbl(d, px, py, 30, a0, a1, lab, RED if lab != '?' else (46, 125, 50), 26)
+    return done(im)
+
+
+def tri_el(kind, size=230):
+    """üçbucaq ABC və A-dan çəkilmiş median / tənbölən / hündürlük"""
+    A, B, C = (0.38, 0.05), (0.0, 0.95), (1.0, 0.95)
+    im, d = vec(size + 120, size + 90)
+    P = lambda p: ((p[0] * size + 60) * S, (p[1] * size + 40) * S)
+    d.polygon([P(A), P(B), P(C)], fill=(255, 243, 224), outline=INK, width=4 * S)
+    if kind == 'median':
+        M = ((B[0] + C[0]) / 2, B[1])
+        for xx in ((B[0] + M[0]) / 2, (M[0] + C[0]) / 2):
+            d.line([P((xx, B[1] - 0.04)), P((xx, B[1] + 0.04))], fill=RED, width=3 * S)
+    elif kind == 'height':
+        M = (A[0], B[1])
+        q = 0.05
+        d.line([P((M[0] + q, M[1])), P((M[0] + q, M[1] - q)), P((M[0], M[1] - q))], fill=RED, width=3 * S)
+    else:
+        a_ = math.atan2(B[1] - A[1], B[0] - A[0]); c_ = math.atan2(C[1] - A[1], C[0] - A[0])
+        m_ = (a_ + c_) / 2
+        tt = (B[1] - A[1]) / math.sin(m_)
+        M = (A[0] + tt * math.cos(m_), B[1])
+        for a0, a1 in ((a_, m_), (m_, c_)):
+            d.arc([P((A[0] - 0.09, A[1] - 0.09)), P((A[0] + 0.09, A[1] + 0.09))], math.degrees(min(a0, a1)), math.degrees(max(a0, a1)), fill=RED, width=3 * S)
+    d.line([P(A), P(M)], fill=RED, width=4 * S)
+    f_ = font(26 * S)
+    for p, nm, dx, dy in ((A, 'A', 0, -0.06), (B, 'B', -0.05, 0.03), (C, 'C', 0.05, 0.03), (M, 'M', 0, 0.08)):
+        d.text(P((p[0] + dx, p[1] + dy)), nm, font=f_, fill=INK, anchor='mm')
+    return done(im)
+
+
+def tri_h(la, lh, unit=30, a=8, h=5, off=2.5):
+    """üçbucaq: oturacaq a, hündürlük h (qırıq xətt)"""
+    pts = [(0, h), (a, h), (off, 0)]
+    im = poly_l(pts, [(a / 2, h + 26 / unit, la), (off + 40 / unit, h / 2, lh)], unit, (255, 236, 179))
+    dd = ImageDraw.Draw(im)
+    x = 80 + off * unit
+    for y in range(int(50), int(50 + h * unit), 14):
+        dd.line([x, y, x, y + 7], fill=RED, width=3)
+    return im
+
+
+def para(la, lh, unit=30, a=8, h=4, sh=2):
+    pts = [(sh, 0), (a + sh, 0), (a, h), (0, h)]
+    im = poly_l(pts, [(a / 2, h + 26 / unit, la), (sh + 40 / unit, h / 2, lh)], unit, (200, 230, 201))
+    dd = ImageDraw.Draw(im)
+    x = 80 + sh * unit
+    for y in range(50, int(50 + h * unit), 14):
+        dd.line([x, y, x, y + 7], fill=RED, width=3)
+    return im
+
+
+def rhomb(l1, l2, unit=26, d1=8, d2=6):
+    pts = [(d1 / 2, 0), (d1, d2 / 2), (d1 / 2, d2), (0, d2 / 2)]
+    im = poly_l(pts, [(d1 / 2 + 0.9, d2 / 2 - 0.5, l1), (d1 / 2 + 0.7, d2 * 0.78, l2)], unit, (248, 187, 208))
+    dd = ImageDraw.Draw(im)
+    T_ = lambda p: (80 + p[0] * unit, 50 + p[1] * unit)
+    dd.line([T_((0, d2 / 2)), T_((d1, d2 / 2))], fill=RED, width=3)
+    dd.line([T_((d1 / 2, 0)), T_((d1 / 2, d2))], fill=RED, width=3)
+    return im
+
+
+def circ(lab, kind='r', R=110):
+    W = 2 * R + 60
+    im, d = vec(W, W)
+    c = W / 2
+    d.ellipse([(c - R) * S, (c - R) * S, (c + R) * S, (c + R) * S], fill=(225, 245, 254), outline=INK, width=5 * S)
+    d.ellipse([(c - 5) * S, (c - 5) * S, (c + 5) * S, (c + 5) * S], fill=INK)
+    x0 = c if kind == 'r' else c - R
+    d.line([(x0 * S, c * S), ((c + R) * S, c * S)], fill=RED, width=4 * S)
+    d.text((((x0 + c + R) / 2) * S, (c - 22) * S), lab, font=font(28 * S), fill=RED, anchor='mm')
+    return done(im)
+
+
+def cyl(lr, lh, w=180, h=200, e=34):
+    W, H = w + 140, h + 2 * e + 40
+    im, d = vec(W, H)
+    x0, y0 = 40, 20 + e
+    col = (178, 223, 219)
+    d.rectangle([x0 * S, y0 * S, (x0 + w) * S, (y0 + h) * S], fill=col)
+    d.ellipse([x0 * S, (y0 + h - e) * S, (x0 + w) * S, (y0 + h + e) * S], fill=col, outline=INK, width=4 * S)
+    d.rectangle([(x0 + 2) * S, (y0 + h - e) * S, (x0 + w - 2) * S, (y0 + h) * S], fill=col)
+    d.line([(x0 * S, y0 * S), (x0 * S, (y0 + h) * S)], fill=INK, width=4 * S)
+    d.line([((x0 + w) * S, y0 * S), ((x0 + w) * S, (y0 + h) * S)], fill=INK, width=4 * S)
+    d.arc([x0 * S, (y0 + h - e) * S, (x0 + w) * S, (y0 + h + e) * S], 0, 180, fill=INK, width=4 * S)
+    d.ellipse([x0 * S, (y0 - e) * S, (x0 + w) * S, (y0 + e) * S], fill=(224, 242, 241), outline=INK, width=4 * S)
+    cx = x0 + w / 2
+    d.line([(cx * S, y0 * S), ((x0 + w) * S, y0 * S)], fill=RED, width=4 * S)
+    d.text(((cx + w / 4) * S, (y0 - 16) * S), lr, font=font(26 * S), fill=RED, anchor='mm')
+    d.text(((x0 + w + 12) * S, (y0 + h / 2) * S), lh, font=font(26 * S), fill=BLUE, anchor='lm')
+    return done(im)

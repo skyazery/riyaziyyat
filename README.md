@@ -37,6 +37,13 @@ Bütün hissələr eyni kodu işlədir: `app.js`, `app.css`, `sagird.js`. Kitab�
 - `3-1/test.html`, `3-2/test.html` – 20 tapşırıqlı yoxlama testləri; `muellim.html` – cavablar və qiymətləndirmə
 - Mənbə: `tools/bookgen.py` (ümumi çəkmə köməkçiləri), `tools/content31.py`, `tools/content32.py`, `tools/testcommon.py`, `tools/test31.py`, `tools/test32.py`, `tools/build_test3.py 3-1|3-2`, `tools/build_muellim3.py 3-1|3-2`
 
+## 4-cü, 5-ci və 6-cı siniflər (`4-1/` … `6-2/`)
+
+- `4-1` (143–170), `4-2` (171–190), `5-1` (191–223), `5-2` (224–243), `6-1` (244–266), `6-2` (267–289); hər mövzuda 10 tapşırıq, hər kitabda `test.html` və `muellim.html`
+- Mənbə: `tools/content41.py`, `content42.py`, `content51.py`, `content52.py`, `content61.py`, `content62.py`; 5–6-cı sinif köməkçiləri `tools/kit56.py` (kəsr, onluq kəsr, faiz, mənfi ədəd, koordinat cavabları və həndəsə şəkilləri)
+- Testlər: `tools/test41.py` … `tools/test62.py`, səhifələr `tools/build_test4.py`, `tools/build_test56.py`, `tools/build_muellim4.py`, `tools/build_muellim56.py`
+- Səs üçün riyazi işarələr `tools/speak.py` ilə sözə çevrilir (kəsr, onluq kəsr, faiz, mənfi ədəd, qüvvət, nisbət)
+
 ## Mətnlər və səslər
 
 - Bütün tapşırıq mətnləri hörmətli formadadır (yazın, sayın, toxunun …). Yeni mətn əlavə edəndə `python3 tools/formal.py --apply` çevirir.
