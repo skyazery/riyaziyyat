@@ -302,7 +302,7 @@ function problemView(p,k){
     const locked=solved||st.shown[k];
     const eq=h('div',{class:'eq'+(c.mode==='sign'&&c.pairs.some(pr=>pr.join('').length>10)?' small':'')});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;fresh=true;paint()}});return s});
     if(c.mode==='sign')c.pairs.forEach(([x,y],j)=>{if(j)eq.append(h('span',{class:'br'}));eq.append(h('span',{class:'fixed'},x),slots[j],h('span',{class:'fixed'},y))});
-    else slots.forEach(s=>eq.append(s));
+    else slots.forEach((s,j)=>{if(j&&c.sep)eq.append(h('span',{class:'op'},c.sep));eq.append(s)}); // c.sep: onluq kəsr üçün ',' və ya kəsr üçün '/'
     const paint=()=>slots.forEach((s,j)=>{s.textContent=grp(a[j]);let cl='slot';if(a[j]!==null)cl+=' filled';if(String(a[j]??'').length>5)cl+=' long';if(!locked&&j===active)cl+=' active';if(locked)cl+=String(a[j])===String(c.slots[j])?' right':' wrong';s.className=cl});
     task.append(h('p',{class:'paperhint'},c.slots.length>1?'Cavabları soldan sağa yazın:':'Cavabı yazın:'),eq);
     const set=v=>{if(v===null)fresh=false;a[active]=v;if(v!==null&&active<a.length-1&&c.mode==='sign')active++;paint();upd()};

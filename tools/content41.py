@@ -607,7 +607,7 @@ t.choice('İti bucaqlara toxunun.', [angle_img(30, 140), angle_img(120, 140), an
 t.num('Düz bucaq neçə dərəcədir?', [90], hstack([angle_img(90, 180), arrow(), box(), txt('°', 60, GREY)], 12))
 t.num('Açıq bucaq neçə dərəcədir?', [180], hstack([angle_img(180, 180), arrow(), box(), txt('°', 60, GREY)], 12))
 t.num('Düz bucağı iki bərabər hissəyə böldük. Hər hissə neçə dərəcədir?', [45], hstack([expr2(['90°', ':', '2', '='], 60), box(), txt('°', 60, GREY)], 12))
-t.num('Saat 3:00-da əqrəblər arasındakı bucaq neçə dərəcədir?', [90], hstack([em('🕒', 120), arrow(), box(), txt('°', 60, GREY)], 12))
+t.num('Saat 3-də əqrəblər arasındakı bucaq neçə dərəcədir?', [90], hstack([em('🕒', 120), arrow(), box(), txt('°', 60, GREY)], 12))
 t.choice('Ən böyük bucaq hansıdır? Dairəyə alın.', [angle_img(70, 150), angle_img(150, 150), angle_img(100, 150)], 1)
 t.num('Açıq bucaqdan 60°-lik bucağı ayırdıq. Qalan bucaq neçə dərəcədir?', [120], hstack([expr2(['180°', '−', '60°', '='], 60), box(), txt('°', 60, GREY)], 12))
 
