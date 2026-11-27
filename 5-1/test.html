@@ -1,0 +1,393 @@
+<!doctype html><html lang="az"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Riyaziyyat Yoxlama Testi · 5-ci sinif, 1-ci hissə</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>const KITAB='5-1';</script>
+<script src="../sagird.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
+<style>
+/* Layout: sunny classroom. Sticky header (stars + progress), fox teacher card, one task card, sticky bottom bar. */
+:root{
+  --bg:#FFFBF0; --bg2:#FFF4D6; --card:#FFFFFF; --edge:#F5DE96; --edge-soft:#FBEFC6;
+  --ink:#1F2433; --muted:#6B6F80; --chip:#FFF0C2; --chip-ink:#9A5B00;
+  --primary:#5145E6; --primary-ink:#FFFFFF; --primary-soft:#ECEAFF;
+  --coral:#E35D7F; --good:#2F9E5B; --good-soft:#E3F7EA; --warn:#D9822B; --warn-soft:#FFF1E0; --bad:#D64545;
+  --paper:#FFFFFF; --shadow:0 8px 24px rgba(160,120,20,.10);
+  --font:"Nunito",ui-rounded,"Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17161F; --bg2:#1E1C28; --card:#23212F; --edge:#4A4126; --edge-soft:#38321F;
+  --ink:#F3F1EA; --muted:#A9A6B8; --chip:#3D3418; --chip-ink:#FFD27A;
+  --primary:#8C83FF; --primary-ink:#14122A; --primary-soft:#2C2950;
+  --coral:#FF8AA6; --good:#5BD38A; --good-soft:#1C3527; --warn:#FFB066; --warn-soft:#3A2A18; --bad:#FF7B7B;
+  --paper:#FFFFFF; --shadow:0 8px 24px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17161F; --bg2:#1E1C28; --card:#23212F; --edge:#4A4126; --edge-soft:#38321F;
+  --ink:#F3F1EA; --muted:#A9A6B8; --chip:#3D3418; --chip-ink:#FFD27A;
+  --primary:#8C83FF; --primary-ink:#14122A; --primary-soft:#2C2950;
+  --coral:#FF8AA6; --good:#5BD38A; --good-soft:#1C3527; --warn:#FFB066; --warn-soft:#3A2A18; --bad:#FF7B7B;
+  --paper:#FFFFFF; --shadow:0 8px 24px rgba(0,0,0,.35); color-scheme:dark}
+html,body{min-height:100%}
+body{background:radial-gradient(1200px 500px at 50% -120px,var(--bg2),var(--bg));background-color:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:680px;margin:0 auto;padding-block:14px 120px;display:flex;flex-direction:column;gap:14px}
+h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.card{background:var(--card);border:2px solid var(--edge);border-radius:26px;box-shadow:var(--shadow);padding:18px}
+.muted{color:var(--muted)}
+/* header */
+.hdr{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#FFD25E,#F6A623);display:grid;place-items:center;font-size:24px;flex:none}
+.brand{flex:1;min-width:0}
+.brand b{display:block;font-size:18px;font-weight:900;line-height:1.1}
+.brand span{font-size:12.5px;font-weight:800;color:var(--chip-ink)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 12px;font-weight:900;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill.star{background:var(--chip);color:var(--chip-ink);border:2px solid var(--edge)}
+.pill.q{background:var(--primary-soft);color:var(--primary)}
+.prog{display:flex;flex-direction:column;gap:6px}
+.prog .lbl{display:flex;justify-content:space-between;font-weight:800;font-size:14px;color:var(--muted)}
+.track{height:12px;border-radius:999px;background:var(--edge-soft);overflow:hidden;border:1px solid var(--edge)}
+.track i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#38C172,#F6C343);transition:width .4s}
+/* teacher card */
+.teach{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;position:relative;overflow:hidden}
+.teach::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:var(--bg2);z-index:0}
+.teach>*{position:relative;z-index:1}
+.fox{width:84px;height:84px;border-radius:24px;background:linear-gradient(145deg,#FFD25E,#F6A623);border:4px solid #FFF3C4;display:grid;place-items:center;font-size:44px;box-shadow:0 6px 0 #E8A015}
+.fox.talk{animation:bob .6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-3deg)}}
+.tag{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.tag b{background:var(--chip);color:var(--chip-ink);border-radius:999px;padding:3px 12px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:900}
+.tag span{font-size:13px;color:var(--muted);font-weight:700}
+.teach h2{font-size:clamp(21px,5.4vw,26px);font-weight:900}
+.voice{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.vbtn{border:0;border-radius:18px;padding:12px 20px;font-weight:900;font-size:17px;background:var(--primary);color:var(--primary-ink);min-height:52px;box-shadow:0 4px 0 color-mix(in srgb,var(--primary) 70%,#000)}
+.vbtn.stop{background:var(--coral);box-shadow:0 4px 0 color-mix(in srgb,var(--coral) 70%,#000);color:#fff}
+.auto{border:2px solid color-mix(in srgb,var(--good) 40%,transparent);background:var(--good-soft);color:var(--good);border-radius:16px;padding:8px 14px;font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:8px}
+.auto i{width:9px;height:9px;border-radius:50%;background:currentColor}
+.auto.off{background:var(--card);color:var(--muted);border-color:var(--edge)}
+/* task card */
+.task{display:flex;flex-direction:column;gap:16px}
+.paper{background:var(--paper);border-radius:20px;padding:12px;display:flex;justify-content:center;border:2px solid var(--edge-soft)}
+.paper img{max-width:100%;height:auto;max-height:260px;object-fit:contain}
+.opts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center}
+.opt{background:var(--paper);border:3px solid #E3E6EF;border-radius:22px;padding:10px;min-width:80px;min-height:80px;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+.opt:active{transform:scale(.97)}
+.opt img{max-height:140px;max-width:min(36vw,240px);height:auto}
+.opt.sel{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.opt.right{border-color:var(--good);background:#EAF9EF}
+.opt.wrong{border-color:var(--bad)}
+.prefix{width:58px;max-width:100%}
+.count{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;background:var(--paper);border-radius:20px;padding:12px;border:2px solid var(--edge-soft)}
+.count button{position:relative;aspect-ratio:1;border:0;background:#FFF7E3;border-radius:16px;font-size:clamp(30px,9vw,44px);display:grid;place-items:center}
+.count button.on{background:#FFE7A3}
+.count button em{position:absolute;top:-6px;right:-6px;min-width:26px;height:26px;border-radius:13px;background:var(--primary);color:#fff;font-style:normal;font-size:14px;font-weight:900;display:grid;place-items:center}
+.hintc{font-size:14px;font-weight:800;color:var(--muted);text-align:center}
+.eq{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 10px;font-size:36px;font-weight:900;font-variant-numeric:tabular-nums}
+.eq .br{flex-basis:100%;height:0}
+.eq .op{color:var(--primary)}
+.slot{min-width:72px;height:72px;border-radius:18px;border:4px dashed var(--primary);background:var(--card);color:var(--ink);font-size:36px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;padding:0 8px}
+.slot.active{border-style:solid;border-color:#F0A020;box-shadow:0 0 0 4px var(--chip)}
+.slot.filled{border-style:solid}
+.slot.right{border-color:var(--good);background:var(--good-soft)}
+.slot.wrong{border-color:var(--bad)}
+.fixed{min-width:60px;height:72px;border-radius:18px;background:var(--primary-soft);display:inline-flex;align-items:center;justify-content:center;padding:0 10px}
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pad button{height:58px;border-radius:16px;border:2px solid #E3E6EF;background:var(--card);font-size:26px;font-weight:900;box-shadow:0 3px 0 #E3E6EF}
+.pad button.del{grid-column:span 5;font-size:16px;height:46px}
+.signs{display:flex;gap:12px;justify-content:center}
+.signs button{width:84px;height:72px;border-radius:18px;border:2px solid #E3E6EF;background:var(--card);font-size:38px;font-weight:900;box-shadow:0 3px 0 #E3E6EF}
+.cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cards button{width:72px;height:84px;border-radius:18px;border:3px solid var(--primary);background:var(--primary-soft);font-size:36px;font-weight:900}
+.cards button:disabled{opacity:.25}
+.undo{align-self:center;border:2px solid var(--edge);background:var(--card);border-radius:14px;padding:8px 16px;font-weight:800}
+.help{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:2px dashed var(--edge-soft);padding-top:14px}
+.help button{border:2px solid var(--edge);background:var(--chip);color:var(--chip-ink);border-radius:999px;padding:7px 14px;font-weight:900;font-size:14px}
+.help p{flex:1;min-width:180px;background:#FFFAE8;border:1px solid var(--edge);border-radius:14px;padding:8px 12px;font-size:14px;font-weight:700;color:#5C4A12}
+.fb{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px 14px;font-weight:900;font-size:18px}
+.fb.ok{background:var(--good-soft);color:var(--good)}
+.fb.no{background:var(--warn-soft);color:var(--warn)}
+.fb span{font-size:30px}
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-top:1px solid var(--edge)}
+.bar .in{max-width:680px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.bbtn{border:0;border-radius:18px;padding:14px 18px;font-weight:900;font-size:17px;min-height:56px}
+.bbtn.back{background:var(--card);border:2px solid var(--edge);color:var(--muted)}
+.bbtn.main{flex:1;background:var(--primary);color:var(--primary-ink);box-shadow:0 4px 0 color-mix(in srgb,var(--primary) 70%,#000)}
+.bbtn.go{background:var(--good);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--good) 70%,#000)}
+.bbtn:disabled{opacity:.45;box-shadow:none;cursor:default}
+.qn{font-weight:900;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* start */
+.start{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:26px 18px}
+.start h1{font-size:clamp(30px,8vw,42px);font-weight:900}
+.start .fox{width:104px;height:104px;font-size:56px}
+.field{display:flex;flex-direction:column;gap:6px;width:100%;text-align:left}
+.field label{font-weight:900}
+.field input{font:inherit;font-size:22px;font-weight:800;padding:14px 16px;border-radius:18px;border:2px solid var(--edge);background:var(--card);color:var(--ink);width:100%;box-sizing:border-box}
+.areas{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;width:100%}
+.areas div{background:var(--bg2);border:1px solid var(--edge);border-radius:14px;padding:8px 10px;font-weight:800;font-size:13.5px;text-align:left}
+.big{box-sizing:border-box;width:100%;border:0;border-radius:20px;padding:16px;font-weight:900;font-size:20px;background:var(--primary);color:var(--primary-ink);box-shadow:0 5px 0 color-mix(in srgb,var(--primary) 70%,#000)}
+.note{font-size:13px;color:var(--muted)}
+/* report */
+.rhead{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.trophy{font-size:56px;line-height:1}
+.ring{width:132px;height:132px}
+.ring text{font-family:var(--font);font-weight:900;fill:var(--ink)}
+.stars{font-size:26px;letter-spacing:2px}
+.chip{display:inline-block;border-radius:999px;padding:4px 12px;font-weight:900;font-size:13.5px;white-space:nowrap}
+.lv0{background:var(--good-soft);color:var(--good)}
+.lv1{background:var(--primary-soft);color:var(--primary)}
+.lv2{background:var(--warn-soft);color:var(--warn)}
+.lv3{background:color-mix(in srgb,var(--bad) 15%,transparent);color:var(--bad)}
+.area{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding-block:14px;border-top:2px dashed var(--edge-soft)}
+.area:first-of-type{border-top:0;padding-top:4px}
+.area h3{font-size:17px;font-weight:900}
+.dots{grid-column:1/-1;display:flex;gap:6px}
+.dots i{flex:1;height:12px;border-radius:6px;background:var(--edge-soft)}
+.dots i.on{background:var(--good)}
+.area p{grid-column:1/-1;font-size:15px}
+.home{grid-column:1/-1;font-size:14.5px;background:var(--bg2);border:1px solid var(--edge);border-radius:14px;padding:10px 12px}
+.wrong{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.wrong span{background:var(--bg2);border:1px solid var(--edge);border-radius:12px;padding:5px 10px;font-size:14px;font-weight:800}
+.share{display:flex;flex-direction:column;gap:10px}
+.wa{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:#25D366;color:#073B1C;border-radius:18px;padding:15px;font-weight:900;font-size:18px;box-shadow:0 4px 0 #1A9E4C}
+.sec{border:2px solid var(--edge);background:var(--card);border-radius:18px;padding:13px;font-weight:900}
+textarea{font:inherit;font-size:14px;width:100%;box-sizing:border-box;min-height:170px;border-radius:14px;border:2px solid var(--edge);background:var(--card);color:var(--ink);padding:10px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:20}
+@media (prefers-reduced-motion:reduce){.fox.talk{animation:none}.track i{transition:none}}
+@media (prefers-reduced-motion:no-preference){.pop{animation:pop .28s ease-out}@keyframes pop{from{transform:translateY(6px);opacity:.5}to{transform:none;opacity:1}}}
+
+/* kitab başlığı: 1-ci hissə göy, 2-ci hissə yaşıl */
+.hdr.bk{border:0;color:#fff;background:linear-gradient(135deg,var(--bk1),var(--bk2));box-shadow:0 6px 0 var(--bk3),var(--shadow);padding:14px 16px;gap:14px}
+.bk-1-1{--bk1:#2F6FE4;--bk2:#5B9BFF;--bk3:#1F4FB0;--bkink:#2F6FE4}
+.bk-1-2{--bk1:#139067;--bk2:#3CCB8E;--bk3:#0B6A4B;--bkink:#139067}
+.bk-2-1{--bk1:#E8590C;--bk2:#FF922B;--bk3:#B8430A;--bkink:#D9480F}
+.bk-5-1{--bk1:#E8590C;--bk2:#FFA94D;--bk3:#B8450A;--bkink:#D9480F}
+.hdr.bk .part{flex:none;width:58px;height:58px;border-radius:18px;background:#fff;color:var(--bkink);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.hdr.bk .part b{font-size:30px;font-weight:900}
+.hdr.bk .part span{font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.hdr.bk .brand b{font-size:19px;color:#fff}
+.hdr.bk .brand span{display:block;color:#fff;opacity:.92}
+.hdr.bk .brand i{display:table;font-style:normal;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:1px 9px;margin:4px 0 3px;font-size:13px;font-weight:900;letter-spacing:.04em}
+.hdr.bk .pill.star{background:rgba(255,255,255,.95);border-color:transparent;color:var(--bkink)}
+</style>
+
+<div class="wrap" id="app"></div>
+<div class="bar" id="bar" hidden><div class="in" id="barIn"></div></div>
+<canvas class="confetti" id="cf"></canvas>
+
+<script>
+const DATA = {"items": [{"area": "A", "skill": "Çoxrəqəmli ədədlər", "ins": "Ədədi rəqəmlərlə yazın: üç milyon iki yüz min qırx.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": [{"s": "num"}], "answer": [3200040], "mode": "num", "disp": "3 200 040", "hint": "Milyonlar, minliklər və təkliklər sinfini ayrıca yazın: 3 | 200 | 040.", "audio": "7629b60f2d"}, {"area": "A", "skill": "Yuvarlaqlaşdırma", "ins": "45 682 ədədini minliklərə qədər yuvarlaqlaşdırın.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["45 682", "≈", {"s": "num"}], "answer": [46000], "mode": "num", "disp": "46 000", "hint": "Yüzlüklər rəqəmi 6-dır, 5-dən böyükdür: minliklər 1 artır.", "audio": "37ecc86a2a"}, {"area": "A", "skill": "Əməllərin ardıcıllığı", "ins": "İfadənin qiymətini tapın: 60 − 4 · 3².", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["60 − 4 · 3²", "=", {"s": "num"}], "answer": [24], "mode": "num", "disp": "24", "hint": "Əvvəl qüvvət, sonra vurma, sonra çıxma: 60 − 4 · 9.", "audio": "ee34db99b6"}, {"area": "A", "skill": "Bölənlər", "ins": "Hansı ədəd 9-a bölünür?", "img": null, "kind": "choice", "options": ["data:image/webp;base64,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", "data:image/webp;base64,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", "data:image/webp;base64,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"], "prefix": null, "tokens": null, "answer": 0, "mode": "num", "disp": "4 518", "hint": "Rəqəmlərin cəmi 9-a bölünməlidir.", "audio": "e2c0b53510"}, {"area": "B", "skill": "Qarışıq ədəd", "ins": "17/5 kəsrini qarışıq ədəd şəklində yazın.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["17/5", "=", {"s": "num"}, {"s": "num"}, "/ 5"], "answer": [3, 2], "mode": "num", "disp": "3 2/5", "hint": "17 : 5 = 3 (qalıq 2).", "audio": "68c56691e8"}, {"area": "B", "skill": "İxtisar", "ins": "18/24 kəsrini ixtisar edin.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["18/24", "=", {"s": "num"}, "/", {"s": "num"}], "answer": [3, 4], "mode": "num", "disp": "3/4", "hint": "Surət və məxrəci 6-ya bölün.", "audio": "40ad1e86c8"}, {"area": "B", "skill": "Kəsrlərin toplanması", "ins": "Hesablayın: 1/4 + 2/3.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["1/4 + 2/3", "=", {"s": "num"}, "/", {"s": "num"}], "answer": [11, 12], "mode": "num", "disp": "11/12", "hint": "Ortaq məxrəc 12: 3/12 + 8/12.", "audio": "37c713d557"}, {"area": "B", "skill": "Qarışıq ədədlərin çıxılması", "ins": "Hesablayın: 5 1/3 − 2 2/3.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["5 1/3 − 2 2/3", "=", {"s": "num"}, {"s": "num"}, "/", {"s": "num"}], "answer": [2, 2, 3], "mode": "num", "disp": "2 2/3", "hint": "5 1/3 = 4 4/3. 4 4/3 − 2 2/3 = 2 2/3.", "audio": "5fb37d345f"}, {"area": "C", "skill": "Kəsrlərin vurulması", "ins": "Hesablayın: 3/5 · 10/9.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["3/5 · 10/9", "=", {"s": "num"}, "/", {"s": "num"}], "answer": [2, 3], "mode": "num", "disp": "2/3", "hint": "Əvvəl ixtisar edin: 3 ilə 9-u, 5 ilə 10-u.", "audio": "6b054d8ef8"}, {"area": "C", "skill": "Kəsrlərin bölünməsi", "ins": "Hesablayın: 5/6 : 5/12.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["5/6 : 5/12", "=", {"s": "num"}], "answer": [2], "mode": "num", "disp": "2", "hint": "Bölənin tərs kəsrinə vurun: 5/6 · 12/5.", "audio": "7af25efbd8"}, {"area": "C", "skill": "Ədədin hissəsi", "ins": "48 ədədinin 3/8 hissəsini tapın.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["48", "·", "3/8", "=", {"s": "num"}], "answer": [18], "mode": "num", "disp": "18", "hint": "48 : 8 · 3.", "audio": "561ce31745"}, {"area": "C", "skill": "Hissəsinə görə ədəd", "ins": "2/7 hissəsi 10 olan ədədi tapın.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["10", ":", "2/7", "=", {"s": "num"}], "answer": [35], "mode": "num", "disp": "35", "hint": "10 : 2 · 7.", "audio": "b55cc3de23"}, {"area": "D", "skill": "Onluq kəsrlərin müqayisəsi", "ins": "Ən böyük ədədi seçin.", "img": null, "kind": "choice", "options": ["data:image/webp;base64,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", "data:image/webp;base64,UklGRmwFAABXRUJQVlA4IGAFAADwHwCdASqXAHYAPm0wlUekIqIhI7HNEIANiWMA0im88nOEWdV3AfO0ehHeafQA6VP9tv2K9pzVUPHP9u7Zf8fXof6rhN2pt0Iy1xIaUeZV4/fpv2C/K79kH7KmsMgIndrTg0pTQ71YDIfAw6g3E/EO1pwZ9bn+4Ldg0gwqfMAdDXYLxag/G/rWL9xl4JPYo6RKddTIkrxUCQz/gAuU3jL6riBERGaS+HnVo0A240m+xyZoTUzEMsUVL6NQE10hTEfArRlhygDKfhnCBI8m3nzbUk7vVtE94SBHVPUu8no6EYWsm5DqbtnVtCE+g+eXevB6JAvgWxvG7McKp+GiSNxLz7LMT/NPqAAA/vyoGP26RymcgTQdvnRFCPTCzvIGQ9SxuJDYLAN1u0A0Anm6TxUq1qcD7nriKUJ7slX0LIVo6zycjk9z9xu18mw/uI1bqQfNyH+3apxItlZy5BxSi2MeQ9NM6XEESuDPl/qfazfm1EbesF2fu+ff0PDk+My+JMr/ae4HjY6FUB7//k96LzGPrj531uEqTn6a3scth/+Hbqef4Oprr4EQNsNmzwVSfO5nyF9L8SHqtjHIcYAhfShei/jKxCzpXGPsI3dyi2v07XNyrzZy9hn00taPvWr9l0p4gOWRH7embfh4ULizQYGvh8Ek0Bc3WvfhUHMJPBNP/C/dZzAlUL6B6R6X75y5/Ba0la3wvhMBO56N9MxsNLw00VyFPCb9HCWP8JbRDy8dNS14cL9UyPqGmsgBTOTZ5/NBY/NZmH/qzzeI+M8sQ8KxeI+VhPi6cuNECZoHnX1zoH/PW0qi+VeIbZ4INX/4XJU31xC0lbavrOs9zT3V5ROoNmR6WoVZaIsrDT+o8xbRvyUt5jpoBeK+yV3e1a1wpLkGf0wAf/dgQgxmLRtb+o+y7avNMY/saXK1kMPQxzufddKvfFK8OPriwWacAIym+2RuJvA7VwBXiIYYwu4gF84V7jaFH0EKHffEEarOr9jB0Xl0iIv6XXeTVZCIKELqlkGWmPh/weHmi5OmGraOYJs/nsupxbTVgXVuhVnqxBcPFD7mtgXdW0K4tVpjGzT1MjDW82lh6d5hJm6EPlfYQ9Y2O7DUZSxMrx/AXIlEnSUa1UcL0l/hInAXe2FfNTD8yM8b9LVuH/unSvb1pM4FqRW5LYP8a8ThgJ6BLqqBzCcNnKlkkPgSfBSf7iePA8GXbo3p5B8CD8c2jRylaAuO6qMwN945xJ2dxMp/Ig0+oAmS288SWPlPKZm+Lv2kmTH1hPMGidH/+tZ4f72IKfecXhJQIMAUNRL5LdPJyA884+Z8LYaKg0n1c7KBS7MAMV1kKnt5w7N+P9UCTSh55hNaaE6tzPO63xtYUlDYqWrxzQZqAKbqZSN66abVp1zMNANkNIWDXb+H3Xafjjga7kn2LthnWDgptKCIXjorK78THHBQ5f7EZl9CzFOqFISf6pmWUpg5ctWHl40P7uf9d2wSRyIgaj4mvqy5izGJ6zGRW0DXjarJnPMCcqmbfeAzmjL0h7Hdv1tFfo9pJCkVct2B5s5ZY3ok2atTGIJY51RUjNY7K10I/1Nt3Av9kaJa3P5WMp7SN/SbY2OeJZbDHWn1RtXkkVa8gf+hBscdrfcaCcNKGC6Cc2tDZR9jidbFajTaqn6hoDAhWs25r4qVjJELvN5Yw2pFP8vI0QU1SuEMYzoR9ZJC2D0nOuGNztJzT1wx2QlIj7xbwvOIYe8sAJraJ8Skr7fw+wCouBGqFXiYvAH05ZXRNOsoV9WW6CoqGgSWo2TBiI8du54/O+MU6y7BeOfJ36X9NwALYIbvmAAAAAAAAA==", "data:image/webp;base64,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"], "prefix": null, "tokens": null, "answer": 1, "mode": "num", "disp": "2,6", "hint": "Tam hissələr bərabərdir, ondabirləri müqayisə edin.", "audio": "b976a073aa"}, {"area": "D", "skill": "Onluq kəsrlərin toplanması", "ins": "Hesablayın: 4,75 + 2,6.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["4,75 + 2,6", "=", {"s": "num"}, ",", {"s": "num"}], "answer": [7, 35], "mode": "num", "disp": "7,35", "hint": "Vergülü vergülün altında yazın.", "audio": "8cc0dbc074"}, {"area": "D", "skill": "Onluq kəsrlərin vurulması", "ins": "Hesablayın: 1,2 · 0,5.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["1,2 · 0,5", "=", {"s": "num"}, ",", {"s": "num"}], "answer": [0, 6], "mode": "num", "disp": "0,6", "hint": "12 · 5 = 60, vergüldən sonra 2 rəqəm: 0,60.", "audio": "9db63b85b4"}, {"area": "D", "skill": "Onluq kəsrə bölmə", "ins": "Hesablayın: 3,6 : 0,4.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["3,6 : 0,4", "=", {"s": "num"}], "answer": [9], "mode": "num", "disp": "9", "hint": "Hər ikisində vergülü 1 rəqəm sağa keçirin: 36 : 4.", "audio": "20f64b4c9e"}, {"area": "E", "skill": "Faiz və kəsr", "ins": "3/5 kəsrini faizlə ifadə edin.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["3/5", "=", {"s": "num"}, "%"], "answer": [60], "mode": "num", "disp": "60%", "hint": "3/5 = 60/100.", "audio": "8d0a42ff21"}, {"area": "E", "skill": "Ədədin faizi", "ins": "250 ədədinin 20%-ni tapın.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["20%", "·", "250", "=", {"s": "num"}], "answer": [50], "mode": "num", "disp": "50", "hint": "250 · 0,2.", "audio": "2de9b14375"}, {"area": "E", "skill": "Faizinə görə ədəd", "ins": "30%-i 12 olan ədədi tapın.", "img": null, "kind": "slots", "options": null, "prefix": null, "tokens": ["30% → 12", "100% →", {"s": "num"}], "answer": [40], "mode": "num", "disp": "40", "hint": "12 : 30 · 100.", "audio": "d59d3888d9"}, {"area": "E", "skill": "Faizlə azaltma", "ins": "Qiyməti 60 manat olan ayaqqabıya 25% endirim edildi. Yeni qiymət nə qədərdir?", "img": "data:image/webp;base64,UklGRlQGAABXRUJQVlA4IEgGAACQIQCdASrIAHQAPm02lkgkIyIhJZcZYIANiU3cLlFZnid+Y/pPon2d+2/h7gvzN9mPmPqAeYB+m/Se8wH7Ues//o/Vd/tPUA/uf/A6wj0APLb9kr+3/9L0uYtcYMOAb5oRzk0K0ho3lASYlq9JIzMzMzMw2z0u5pQ73vALunnaaWiVlEB0yBCRLO/IAFKSUpo9oSTrJtACqIl2n6qMes0ql5ejRM3YK8nVjrLWMViv1t3gRC2uXkMdaCBjOdpM9YGILBW0WEpvvjqplm6YdQdWLJ9c9S7Nrofn9BiNa3BWGgGHrsAgBcFTKWHyIYKurrqRf5drjymfr2Nw8cFSmvvwVn2dcdG0Hr4ij1WjH/JWnRRavSPAAP7/cOAEjnaf6DzrYju3TgOS/hPJnqhdjjCPQJKawAzxfr8Fbrb6+Yr8rp50GncL44dZ7EXNJjG2fty7jn7jFlKiI8F2FrRNbFqe672Zr3YDEGoyZo8TNG5XCgm5B3/T/Q9oILuFMNoD23l3gv02krpofJX031TilRDc233St5q9c+jjJFefTzPrUmQgkbDn7ydRtZUvI935lEOgg+f2GkJpKRF9t95ayHRzds0PDOpoXviuezLiN61agBZyd4Bj3WexKMMFx24bs7jbhMFvC+owWvVgTsZPJcM4JHlBbP9J2pOAIYpv9oZHfiLXRAx9JRQ7+9V5n1x9mnw339wsEP1tekt8JWxxwjGWlUn/zOSeDnop3lk7zgu/S3+/5kw1YKxNVeA3U2VeydGt5uPf7Y9PSak4HkELrOqYyt6AtjaP7ffzDj3Evn9JHW6wzOQ6odzvPy9C7V0GbF8/GArpgDfBjFH40Kw8rRCPbDWOzyIPxF7cWUMfJJgx3kPAFoac/6jVple6x/80zfz+fdxT1ndRLitLlq5+es19soiwnVMulykZ1PBjr3z+e0lzT5M9hKkHHfMQ2qNdJ+pWHJOEPlYUYfrY6/Ht8S97TmdxMNIjwDbDb358hZ9PS/jESzxA+g5/2jQXARNq0nReaWeYOdneuT5lYmWV787ZmruXjiCA8bJ57vGYHwr5N/8DxXfCgqfE0/yyFkyI1AMDiUWcQo0PvCVUQ/V62FdTQj81JFD7E4a1AqLOfyRx0SnsSLt3sRXkmxZR30CQGW+yBVmFn57WQd/8XrHnj6cY/ioNUddMzB/7REVpmNflFHOtZPgiUrwSvMLHmWhcHyOpjHklST1h3tOS41yaM1Q2R4/bgZbv062ek7+MIbltmwnqSDKuyriI5XFpLuqp6PSV2jJalnblorVud6bEWE3+R9+omQBCg8x9+Pmn3UjZzXHrfxJyn07ht5j9j1GF4nflH1hp5I+xUjUJihWdk6VrO3pIQ2MrhPRv4nyfD2TIFfzvX+EKoF8CyR4aZ5K3rr1oc259rtzilElDm/IzJKxRBlVhTz61nmspLERA3EFAopkxdabPFRVbLn0jh2aWXMHMbJV+lj7gbtulr+M3WQ9SEjldZXtAYgPIyy/Zds5wXZau6XO4Ab/H0bLPsbyOViLOvdPTuIZ3AwdXdnDqQih2xLecISK1xywMzpBi9Ne5wMNDoS31ScztjReA81plC9FL/G8/g+BM+73+HRtpt/8Xn4VlM9An/fp19HNPOQJb1kvqqRH2lFQ0vuwMw9ENm1o6jNNphFaaIFWw4RV2bVbsySPn7uU6G2BY4aF6Se+zD7a260slJES7F0qDjhawohP6WWXB7ivjcrKR7mrOUvdT60jRm9zcD61l20sDrhincOSkO8aOJzT5SOcsbjQ0xkRXMzVOZuRs54glKW1zrGEVk5rCN+/dYk5XwIk3K/wAFBCp9ySx1Pw920x0pJtI+kcaySenq+ARso0PHK4j6kbPb3QIWgdlY2+dF4WGCo+jvkDNXYSIWSY2Mc26vpXDlS9KbIGG083jNN+2dOurtQB0M1CCC4X4G8jChI0UUfxD+N3bE7ZXcwE9tVpvhemp2fa3+L4pGyrxx1YmrEQ33NT7QGodz0VkU/M+ydYq3qdj5I9XxA6gWyRCrX8BBAXWhkdoLAgnxZEpPiT7yHyqRvO+Li/P1Xk6SZ+WuRvfklcPQ1KDjHVeB3M2tUOgAwhQZSVRB8m45C2qL2m3jCbyaWVeWaAAAAAAAAA=", "kind": "slots", "options": null, "prefix": null, "tokens": [{"s": "num"}, "manat"], "answer": [45], "mode": "num", "disp": "45", "hint": "60-ın 25%-i 15 manatdır: 60 − 15.", "audio": "30b473b58a"}], "areas": [{"code": "A", "name": "Natural ədədlər", "topics": [191, 192, 193, 194, 195, 196, 197, 198], "home": "Qəzetdə və ya internetdə böyük ədədləri (əhali, məsafə) birlikdə oxuyun və minliklərə qədər yuvarlaqlaşdırın."}, {"code": "B", "name": "Adi kəsrlər", "topics": [199, 200, 201, 202, 203], "home": "Yemək hazırlayanda reseptdəki 1/2, 3/4 stəkan kimi ölçüləri toplayın: «Cəmi neçə stəkan oldu?»"}, {"code": "C", "name": "Kəsrlərin vurulması və bölünməsi", "topics": [204, 205, 206, 207, 208], "home": "Uşaqdan soruşun: «24 konfetin 3/4 hissəsi neçədir?», «Pulunun yarısı 5 manatdırsa, nə qədər pulun var?»"}, {"code": "D", "name": "Onluq kəsrlər", "topics": [209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219], "home": "Mağazada qiymətləri (2,45 manat) toplayın və 3 dənəsinin qiymətini hesablatdırın."}, {"code": "E", "name": "Faiz", "topics": [220, 221, 222, 223], "home": "Endirim yazılarına baxın: «20% endirimlə bu neçə manat olar?»"}], "levels": [{"min": 4, "name": "Mükəmməl", "text": "Bu bacarığı tam mənimsəyib. Növbəti mövzulara keçməyə hazırdır."}, {"min": 3, "name": "Yaxşı", "text": "Əsasən bacarır, kiçik səhvlər var. Səhv olan tapşırığı birlikdə yenidən həll edin."}, {"min": 2, "name": "İnkişaf edir", "text": "Bəzi hissələri bacarır. Mövzu {t} üzrə tapşırıqları təkrar edin."}, {"min": 0, "name": "Dəstək lazımdır", "text": "Bu bacarıq hələ formalaşmayıb. Mövzu {t} əvvəldən, əşyalar və şəkillərlə təkrar edilməlidir."}], "overall": [{"min": 18, "name": "Əla", "text": "Uşaq 5-ci sinfin 1-ci hissəsini çox yaxşı mənimsəyib."}, {"min": 14, "name": "Yaxşı", "text": "Uşaq mövzuların çoxunu mənimsəyib. Zəif sahələri qısa təkrarla möhkəmləndirin."}, {"min": 10, "name": "Orta", "text": "Uşaq bəzi mövzularda çətinlik çəkir. «İnkişaf edir» və «Dəstək lazımdır» olan sahələri 1–2 həftə təkrar edin."}, {"min": 0, "name": "Əlavə dəstək lazımdır", "text": "Uşağa əlavə köməklik lazımdır. Müəllimlə birlikdə zəif sahələr üzrə fərdi plan hazırlayın."}]};
+const KOD=sagirdKodu();
+const KEY='az-math-test-5-1-v1-'+(KOD||'x');
+const app=document.getElementById('app'), bar=document.getElementById('bar'), barIn=document.getElementById('barIn');
+let S=fresh();S.stage='loading';
+function fresh(){return{stage:'start',name:'',i:0,ans:{},checked:{},hints:{},sound:true,sent:false,date:null}}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function h(tag,attrs={},...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==='class')e.className=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(k,v===true?'':v)}for(const k of kids.flat()){if(k==null||k===false)continue;e.append(k.nodeType?k:document.createTextNode(k))}return e}
+
+/* ---------- sound ---------- */
+let player=null, foxEl=null, vbtnEl=null;
+function setTalking(on){if(foxEl)foxEl.classList.toggle('talk',on);if(vbtnEl){vbtnEl.classList.toggle('stop',on);vbtnEl.textContent=on?'⏸ Dayandırın':'🔊 Dinləyin'}}
+function play(src){try{stop();player=new Audio(src);player.onended=player.onpause=()=>setTalking(false);setTalking(true);const p=player.play();if(p&&p.catch)p.catch(()=>setTalking(false))}catch(e){}}
+function stop(){try{if(player){player.onpause=null;player.pause()}}catch(e){}setTalking(false)}
+let ac=null;
+function chime(ok){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;(ok?[523,659,784]:[392,330]).forEach((f,k)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+k*.12);g.gain.exponentialRampToValueAtTime(.18,t+k*.12+.02);g.gain.exponentialRampToValueAtTime(.0001,t+k*.12+.3);o.connect(g).connect(ac.destination);o.start(t+k*.12);o.stop(t+k*.12+.32)})}catch(e){}}
+
+/* ---------- confetti ---------- */
+function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.getElementById('cf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#F6C343','#5145E6','#38C172','#E35D7F','#3BA6F5'];const P=Array.from({length:70},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.45,vx:(Math.random()-.5)*9,vy:-Math.random()*11-4,s:6+Math.random()*6,c:cols[Math.random()*5|0],r:Math.random()*6}));let n=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++n<70)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
+
+/* ---------- scoring ---------- */
+function correct(k){const it=DATA.items[k],a=S.ans[k];if(a==null)return false;return it.kind==='choice'?a===it.answer:it.answer.every((v,j)=>String(a[j])===String(v))}
+const stars=()=>Object.keys(S.checked).filter(k=>S.checked[k]&&correct(+k)).length;
+
+function header(){
+  const done=Object.keys(S.checked).length, total=DATA.items.length;
+  return [h('div',{class:'card hdr bk bk-5-1'},h('div',{class:'part','aria-hidden':'true'},h('b',{},'1'),h('span',{},'hissə')),
+      h('div',{class:'brand'},h('b',{},'5-ci sinif riyaziyyat'),h('i',{},'1-ci hissə'),h('span',{},'Yoxlama testi · səsli tapşırıqlar')),
+      h('span',{class:'pill star','aria-label':'Ulduzlar'},'⭐ '+stars())),
+    h('div',{class:'prog'},h('div',{class:'lbl'},h('span',{},'Sual '+(S.i+1)+' / '+total),h('span',{},Math.round(done/total*100)+'% tamamlandı')),
+      h('div',{class:'track'},h('i',{style:'width:'+Math.max(4,done/total*100)+'%'})))];
+}
+
+function render(){stop();app.replaceChildren();bar.hidden=true;({start,quiz,report,loading,nolink,sending,neterr})[S.stage]();window.scrollTo(0,0)}
+
+/* ---------- start ---------- */
+function start(){
+  app.append(h('div',{class:'card start'},
+    h('div',{class:'fox','aria-hidden':'true'},'🦊'),
+    h('a',{href:'index.html?s='+KOD,style:'align-self:flex-start;font-weight:900;color:var(--muted);text-decoration:none'},'← Ana səhifə'),h('div',{class:'tag'},h('b',{},'Riyaziyyat'),h('span',{},'5-ci sinif · 1-ci hissə')),
+    h('h1',{},'Yoxlama testi'),
+    h('p',{style:'font-size:22px;font-weight:900'},'Salam, '+S.name+'! 👋'),
+    h('p',{class:'muted'},'Mən Tülkü müəlliməm. 20 şəkilli tapşırığı birlikdə həll edək. Hər tapşırığı səslə oxuyacağam.'),
+    h('div',{class:'areas'},DATA.areas.map(a=>h('div',{},a.code+'. '+a.name))),
+    h('div',{class:'home',style:'text-align:left'},'⚠️ Bu test yalnız bir dəfə edilir. Bütün mövzuları bitirəndən sonra, sakit bir vaxtda başlayın.'),
+    h('button',{class:'big',onclick(){const n=S.name;S=fresh();S.name=n;S.stage='quiz';save();render()}},'Başlayaq! 🚀'),
+    h('p',{class:'note'},'Valideyn üçün: cavabı deməyin, uşaq ekrana özü toxunsun. Test bitəndə nəticə avtomatik müəllimə göndərilir və hesabat burada görünür.')));
+}
+function msgCard(icon,title,text,btn){app.append(h('div',{class:'card start'},h('div',{class:'fox','aria-hidden':'true'},icon),h('h1',{style:'font-size:28px'},title),h('p',{class:'muted'},text),btn||null))}
+function loading(){msgCard('🦊','Yüklənir...','Bir az gözləyin.')}
+function nolink(){msgCard('🔒','Şəxsi link lazımdır','Yoxlama testi yalnız müəllimin WhatsApp ilə göndərdiyi şəxsi linklə açılır. Həmin linki açın və ya müəllimə yazın.',h('a',{class:'big',href:'index.html',style:'text-decoration:none'},'← Tapşırıqlara qayıdın'))}
+function sending(){msgCard('📨','Nəticə göndərilir...','Bir az gözləyin, internetə qoşulmanı bağlamayın.')}
+function neterr(){msgCard('📶','Göndərilmədi','İnternet bağlantısını yoxlayın və yenidən cəhd edin. Cavablar bu telefonda saxlanılıb.',h('button',{class:'big',onclick(){if(S.retryBoot){S.retryBoot=false;S.stage='loading';boot()}else submit()}},'🔄 Yenidən cəhd edin'))}
+async function submit(){
+  S.stage='sending';save();render();
+  try{
+    const hints=Object.keys(S.hints).map(Number);
+    const r=await testiGonder(KOD,S.ans,hints);
+    if(!r||!r.ok)throw new Error(r&&r.error);
+    useServer(r);
+  }catch(e){S.stage='neterr';save();render()}
+}
+function useServer(r){
+  const res=r.result||{};
+  S.name=r.name||S.name;S.ans=res.ans||{};S.hints={};(res.hints||[]).forEach(k=>S.hints[k]=true);
+  S.checked={};DATA.items.forEach((_,k)=>S.checked[k]=true);
+  S.date=res.date||null;S.sent=true;S.stage='report';save();render();
+}
+async function boot(){
+  if(!KOD||!API_URL){S.stage='nolink';render();return}
+  const local=load();
+  render();
+  try{
+    const r=await sagirdMelumati(KOD);
+    if(!r.ok){S.stage='nolink';render();return}
+    sagirdAdiYaddas(KOD,r.name);
+    if(r.done&&r.result){useServer(r);return}
+    if(local&&!local.sent){S=local;S.name=r.name;if(S.stage==='sending'||S.stage==='neterr'||S.stage==='report'){submit();return}}
+    else{S=fresh();S.name=r.name}
+    if(!['start','quiz'].includes(S.stage))S.stage='start';
+    save();render();
+  }catch(e){
+    // internet yoxdursa: başlanmış test davam edə bilər, göndərmə sonra olacaq
+    if(local&&!local.sent&&local.stage==='quiz'){S=local;render()}
+    else{S.stage='neterr';S.retryBoot=true;render()}
+  }
+}
+/* ---------- quiz ---------- */
+function quiz(){
+  const it=DATA.items[S.i], n=S.i+1, total=DATA.items.length, locked=!!S.checked[S.i];
+  let a=S.ans[S.i]; if(a===undefined){a=it.kind==='choice'?null:it.answer.map(()=>null);S.ans[S.i]=a}
+  let active=it.kind==='choice'?0:Math.max(0,a.indexOf(null));
+  const filled=()=>it.kind==='choice'?a!==null:a.every(v=>v!==null&&v!=='');
+
+  // teacher card
+  foxEl=h('div',{class:'fox','aria-hidden':'true'},'🦊');
+  vbtnEl=h('button',{class:'vbtn',onclick(){player&&!player.paused?stop():play(it.audio)}},'🔊 Dinləyin');
+  const auto=h('button',{class:'auto'+(S.sound?'':' off'),onclick(){S.sound=!S.sound;save();auto.className='auto'+(S.sound?'':' off');auto.lastChild.textContent=S.sound?'Avtomatik səs: açıq':'Avtomatik səs: bağlı';if(!S.sound)stop()}},h('i'),S.sound?'Avtomatik səs: açıq':'Avtomatik səs: bağlı');
+  const teach=h('div',{class:'card teach'},foxEl,h('div',{class:'tag'},h('b',{},'Müəllim oxuyur'),h('span',{},'Tapşırıq '+n)),h('h2',{},it.ins),h('div',{class:'voice'},vbtnEl,auto));
+
+  // task card
+  const task=h('div',{class:'card task pop'});
+  const paint=[];
+  if(it.count){
+    const tapped=[];const grid=h('div',{class:'count'});
+    for(let k=0;k<it.count.n;k++){const b=h('button',{'aria-label':'alma',onclick(){if(b.classList.contains('on'))return;tapped.push(k);b.classList.add('on');b.append(h('em',{},String(tapped.length)))}},it.count.e);grid.append(b)}
+    task.append(h('p',{class:'hintc'},'Hər almaya toxun – nömrələnəcək:'),grid);
+  }else if(it.img) task.append(h('div',{class:'paper'},h('img',{src:it.img,alt:''})));
+
+  const mark=()=>paint.forEach(f=>f());
+  if(it.kind==='choice'){
+    const opts=h('div',{class:'opts'});
+    if(it.prefix)opts.append(h('img',{class:'prefix',src:it.prefix,alt:''}));
+    const btns=it.options.map((src,k)=>h('button',{class:'opt','aria-label':(k+1)+'-ci variant',disabled:locked,onclick(){a=k;S.ans[S.i]=a;save();mark();update()}},h('img',{src,alt:''})));
+    btns.forEach(b=>opts.append(b));
+    paint.push(()=>btns.forEach((b,k)=>{b.className='opt'+(a===k?' sel':'')+(locked&&k===it.answer?' right':'')+(locked&&a===k&&k!==it.answer?' wrong':'')}));
+    task.append(opts);
+  }else{
+    const eq=h('div',{class:'eq'}),slots=[];let si=0;
+    it.tokens.forEach(t=>{
+      if(t==='br'){eq.append(h('span',{class:'br'}));return}
+      if(t&&typeof t==='object'){const idx=si++;const s=h('button',{class:'slot','aria-label':'cavab xanası',disabled:locked,onclick(){if(it.mode!=='card'){active=idx;mark()}}});slots.push(s);eq.append(s);return}
+      eq.append(['+','−','='].includes(t)?h('span',{class:'op'},t):h('span',{class:'fixed'},String(t)));
+    });
+    paint.push(()=>slots.forEach((s,k)=>{s.textContent=a[k]??'';let c='slot';if(a[k]!==null&&a[k]!=='')c+=' filled';if(!locked&&k===active&&it.mode!=='card')c+=' active';if(locked)c+=String(a[k])===String(it.answer[k])?' right':' wrong';s.className=c}));
+    task.append(eq);
+    if(!locked){
+      const set=v=>{a[active]=v;S.ans[S.i]=a;save();mark();update()};
+      if(it.mode==='num'){
+        const pad=h('div',{class:'pad'});
+        [1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{'aria-label':String(d),onclick(){const cur=a[active]==null?'':String(a[active]);let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>7)v=String(d);set(Number(v))}},String(d))));
+        pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Sil'));
+        task.append(pad);
+        if(slots.length>1)task.append(h('p',{class:'hintc'},'Xanaya toxun, sonra ədədi seç.'));
+      }else if(it.mode==='sign'){
+        task.append(h('div',{class:'signs'},['>','<','='].map(sg=>h('button',{'aria-label':sg,onclick(){set(sg);if(active<slots.length-1){active++;mark()}}},sg))),h('p',{class:'hintc'},'Xanaya toxun, sonra işarəni seç.'));
+      }else if(it.mode==='card'){
+        const cards=h('div',{class:'cards'});
+        const draw=()=>cards.replaceChildren(...it.cards.map(c=>h('button',{disabled:a.includes(c),onclick(){const k=a.indexOf(null);if(k>=0){a[k]=c;S.ans[S.i]=a;save();mark();draw();update()}}},String(c))));
+        draw();
+        task.append(cards,h('button',{class:'undo',onclick(){const k=a.map(v=>v!==null).lastIndexOf(true);if(k>=0){a[k]=null;save();mark();draw();update()}}},'⌫ Geri al'));
+      }
+    }
+  }
+  mark();
+
+  // feedback + help
+  if(locked){const ok=correct(S.i);task.append(h('div',{class:'fb '+(ok?'ok':'no')},h('span',{},ok?'🌟':'💪'),ok?'Əla! Düzgün cavab!':'Yaxşı cəhd! Gəlin, növbəti suala keçək.'))}
+  const hintP=h('p',{hidden:!S.hints[S.i]},'💡 '+it.hint);
+  task.append(h('div',{class:'help'},h('button',{onclick(){S.hints[S.i]=true;save();hintP.hidden=false}},'❓ Kömək lazımdır?'),hintP));
+
+  app.append(...header(),teach,task);
+
+  // bottom bar
+  const back=h('button',{class:'bbtn back',disabled:S.i===0,'aria-label':'Əvvəlki sual',onclick(){S.i--;save();render()}},'←');
+  const main=h('button',{class:'bbtn main'});
+  function update(){
+    if(!locked){main.textContent='Cavabı yoxlayın ✓';main.disabled=!filled();main.className='bbtn main';main.onclick=()=>{S.checked[S.i]=true;save();const ok=correct(S.i);chime(ok);if(ok)confetti();render()}}
+    else{main.disabled=false;main.className='bbtn main go';main.textContent=S.i<total-1?'Növbəti sual →':'Nəticəyə baxın 🏆';main.onclick=()=>{if(S.i<total-1){S.i++;save();render()}else submit()}}
+  }
+  update();
+  barIn.replaceChildren(back,h('span',{class:'qn'},n+' / '+total),main);bar.hidden=false;
+  if(S.sound&&!locked&&it.audio)setTimeout(()=>play(it.audio),300);
+}
+
+/* ---------- report ---------- */
+function level(sc){return DATA.levels.findIndex(l=>sc>=l.min)}
+function result(){
+  const per=DATA.areas.map(ar=>{const ks=DATA.items.map((it,k)=>it.area===ar.code?k:-1).filter(k=>k>=0);const sc=ks.filter(correct).length;return{ar,sc,lv:level(sc)}});
+  const total=per.reduce((s,p)=>s+p.sc,0);
+  return{per,total,wrong:DATA.items.map((_,k)=>k).filter(k=>!correct(k)),ov:DATA.overall.find(o=>total>=o.min),hints:Object.keys(S.hints).length};
+}
+function today(){if(S.date)return S.date;const d=new Date();return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear()}
+function summary(r){
+  const L=['Riyaziyyat · 5-ci sinif · 1-ci hissə – Yoxlama testi','Şagird: '+S.name,'Tarix: '+today(),'Ümumi bal: '+r.total+'/20 ('+r.ov.name+')',''];
+  r.per.forEach(p=>L.push(p.ar.code+'. '+p.ar.name+': '+p.sc+'/4 – '+DATA.levels[p.lv].name));
+  L.push('',r.wrong.length?'Səhv tapşırıqlar: '+r.wrong.map(k=>k+1).join(', '):'Bütün tapşırıqlar düzgündür!');
+  L.push('Kömək istifadə olunan tapşırıqlar: '+r.hints);
+  return L.join('\n');
+}
+function ring(t){const C=2*Math.PI*52,f=t/20;return `<svg class="ring" viewBox="0 0 132 132" role="img" aria-label="${t} / 20"><circle cx="66" cy="66" r="52" fill="none" stroke="var(--edge-soft)" stroke-width="14"/><circle cx="66" cy="66" r="52" fill="none" stroke="var(--good)" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C*f} ${C}" transform="rotate(-90 66 66)"/><text x="66" y="66" text-anchor="middle" font-size="38">${t}</text><text x="66" y="90" text-anchor="middle" font-size="15" style="fill:var(--muted)">/ 20</text></svg>`}
+function report(){
+  const r=result(), oi=DATA.overall.indexOf(r.ov);
+  const rg=h('div');rg.innerHTML=ring(r.total);
+  const st=Math.round(r.total/4);
+  app.append(
+    h('div',{class:'card rhead pop'},h('div',{class:'trophy','aria-hidden':'true'},r.total>=14?'🏆':'🌱'),
+      h('div',{class:'tag'},h('b',{},'Valideyn üçün hesabat'),h('span',{},today())),
+      h('h1',{style:'font-size:32px;font-weight:900'},S.name),rg.firstChild,
+      h('div',{class:'stars','aria-label':st+' ulduz'},'★'.repeat(st)+'☆'.repeat(5-st)),
+      h('span',{class:'chip lv'+Math.min(3,oi)},r.ov.name),h('p',{},r.ov.text)),
+    (()=>{const c=h('div',{class:'card'},h('h2',{style:'font-size:21px;font-weight:900;margin-bottom:8px'},'Sahələr üzrə nəticə'));
+      r.per.forEach(p=>{const L=DATA.levels[p.lv];c.append(h('div',{class:'area'},h('h3',{},p.ar.code+'. '+p.ar.name),h('span',{class:'chip lv'+p.lv},p.sc+'/4 · '+L.name),
+        h('div',{class:'dots'},[0,1,2,3].map(k=>h('i',{class:k<p.sc?'on':''}))),h('p',{},L.text.replace('{t}',p.ar.topics.join(', '))),
+        p.sc<4?h('div',{class:'home'},h('b',{},'🏠 Evdə: '),p.ar.home):null))});return c})(),
+    h('div',{class:'card'},h('h2',{style:'font-size:21px;font-weight:900'},r.wrong.length?'Səhv olan tapşırıqlar':'Bütün cavablar düzgündür! 🎉'),
+      r.wrong.length?h('div',{class:'wrong'},r.wrong.map(k=>h('span',{},(k+1)+'. '+DATA.items[k].skill+' → '+DATA.items[k].disp))):null,
+      h('p',{class:'note',style:'margin-top:10px'},'Kömək düyməsi istifadə olunan tapşırıqlar: '+r.hints)),
+    h('div',{class:'card share'},h('h2',{style:'font-size:21px;font-weight:900'},'✅ Nəticə müəllimə göndərildi'),
+      h('p',{class:'muted'},'Bu hesabatı istənilən vaxt eyni linklə yenidən aça bilərsiniz.'),
+      h('a',{class:'sec',href:'index.html?s='+KOD,style:'text-align:center;text-decoration:none'},'← Tapşırıqlara qayıdın')));
+  if(r.total>=14)setTimeout(confetti,300);
+}
+function shareCard(txt){
+  const ta=h('textarea',{id:'sum',readonly:true},txt);
+  const cp=h('button',{class:'sec',onclick(){navigator.clipboard.writeText(txt).then(()=>{cp.textContent='Kopyalandı ✓'},()=>{ta.focus();ta.select();cp.textContent='Mətn seçildi – kopyalayın'})}},'📋 Mətni kopyalayın');
+  return h('div',{class:'card share'},h('h2',{style:'font-size:21px;font-weight:900'},'Müəllimə göndərin'),
+    h('p',{class:'muted'},'Nəticəni WhatsApp ilə müəllimə göndərin. Düymə açılmasa, mətni kopyalayıb WhatsApp-a yapışdırın.'),
+    h('a',{class:'wa',href:'https://wa.me/?text='+encodeURIComponent(txt),target:'_blank',rel:'noopener'},'💬 WhatsApp-da göndər'),cp,ta);
+}
+boot();
+</script>
+</body></html>
