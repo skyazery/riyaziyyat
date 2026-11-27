@@ -1,0 +1,121 @@
+{
+ "15": {
+  "scenes": [
+   {
+    "say": "Burada 3 alma var.",
+    "audio": "e74e8f0e43",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l15_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_02.webp",
+      "at": 0.35,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_03.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Daha 2 alma gətirdik.",
+    "audio": "d9b00c6060",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l15_04.webp",
+      "at": 0.25,
+      "fx": "fly"
+     },
+     {
+      "src": "img/lesson/l15_05.webp",
+      "at": 0.5,
+      "fx": "fly"
+     }
+    ]
+   },
+   {
+    "say": "Sayaq: 1, 2, 3, 4, 5. Cəmi 5 alma oldu.",
+    "audio": "ffeda0c974",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l15_06.webp",
+      "at": 0.12,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_07.webp",
+      "at": 0.22999999999999998,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_08.webp",
+      "at": 0.33999999999999997,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_09.webp",
+      "at": 0.45,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_10.webp",
+      "at": 0.56,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Belə yazırıq: 3 üstəgəl 2 bərabərdir 5.",
+    "audio": "65fb0cc212",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l15_11.webp",
+      "at": 0.18,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_12.webp",
+      "at": 0.31,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_13.webp",
+      "at": 0.44,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_14.webp",
+      "at": 0.5700000000000001,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l15_15.webp",
+      "at": 0.7,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l15_16.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ }
+}

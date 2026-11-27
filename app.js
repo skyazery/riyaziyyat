@@ -2,7 +2,7 @@ const SECTIONS=BOOK.sections;
 const ICON=BOOK.icons;
 const TP=n=>D&&D.topics[n-BOOK.first];
 const app=document.getElementById('app'),bar=document.getElementById('bar'),barIn=document.getElementById('barIn');
-let D=null,AUD={};
+let D=null,AUD={},LES={};
 const KEY=BOOK.key;
 let P=load(); function load(){try{return JSON.parse(localStorage.getItem(KEY))||{sound:true,t:{}}}catch(e){return{sound:true,t:{}}}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}}
@@ -284,8 +284,43 @@ function teacher(text,aud,tag,mini){
 }
 function pic(src,alt){const i=h('img',{src,alt:alt||'',onload(){i.classList.add('ok')},onerror(){i.classList.add('ok')}});if(i.complete)i.classList.add('ok');return i}
 function conceptView(){
-  app.append(teacher(T.concept,T.conceptAudio,'Əsas fikir'),h('div',{class:'card task concept pop'},h('div',{class:'paper'},pic(T.conceptImg,T.concept))));
+  if(LES[T.n]&&!LVM)app.append(lessonView(LES[T.n]));
+  else app.append(teacher(T.concept,T.conceptAudio,'Əsas fikir'),h('div',{class:'card task concept pop'},h('div',{class:'paper'},pic(T.conceptImg,T.concept))));
   setBar(null,'Tapşırıqlara başlayın →',()=>{step=1;if(!LVM&&typeof st.n==='number')dStart(st.n);go()},'go');
+}
+/* Qısa video dərs: səhnələr ardıcıl oynanır; hər səhnədə səs + vaxtı gələndə görünən şəkil qatları (data/lessons.json) */
+let LP=null; // oynayan video dərs
+function lessonStop(){if(!LP)return;LP.stopped=true;LP.timers.forEach(clearTimeout);LP.timers=[];if(LP.audio){LP.audio.onended=null;LP.audio.pause()}talking(false);LP=null}
+function lessonView(L){
+  lessonStop();
+  const stage=h('div',{class:'lstage'}),dots=h('div',{class:'ldots'},L.scenes.map(()=>h('i')));
+  const big=h('button',{class:'lplay','aria-label':'Videoya baxın'},h('span',{},'▶'),h('b',{},'Videoya baxın'));
+  const btnPause=h('button',{class:'lbtn'},'⏸ Dayandırın'),btnAgain=h('button',{class:'lbtn'},'↺ Yenidən');
+  const box=h('div',{class:'card lesson pop'},h('div',{class:'ltag'},h('span',{},'🎬'),h('b',{},'Qısa video'),h('i',{},T.title)),h('div',{class:'lwrap'},stage,big),dots,h('div',{class:'lctl'},btnPause,btnAgain));
+  L.scenes.forEach(sc=>sc.layers.forEach(l=>{const im=new Image();im.src=l.src}));
+  let cur=0,paused=false;
+  const mark=i=>[...dots.children].forEach((d,j)=>d.className=j<i?'done':j===i?'on':'');
+  function addLayer(l){const im=h('img',{src:l.src,alt:'',class:'fx-'+(l.fx||'pop')});stage.append(im);return im}
+  function scene(i){
+    if(!LP||LP.stopped)return;
+    if(i>=L.scenes.length){mark(L.scenes.length);btnPause.hidden=true;LP.done=true;talking(false);return}
+    cur=i;mark(i);const sc=L.scenes[i];
+    if(!sc.keep)stage.replaceChildren();
+    const start=dur=>{sc.layers.forEach(l=>{LP.timers.push(setTimeout(()=>{const im=addLayer(l);if(l.out!=null)LP.timers.push(setTimeout(()=>{im.classList.add('gone');setTimeout(()=>im.remove(),400)},(l.out-l.at)*dur))},l.at*dur))})};
+    const u=audioUrl(sc.audio);
+    if(!u){start(3000);LP.timers.push(setTimeout(()=>scene(i+1),3400));return}
+    const a=new Audio(u);LP.audio=a;let begun=false;
+    const go2=()=>{if(begun)return;begun=true;start((isFinite(a.duration)&&a.duration>0?a.duration:3)*1000)};
+    a.onloadedmetadata=go2;a.onplay=()=>{talking(true);setTimeout(go2,150)};
+    a.onended=()=>{talking(false);LP.timers.push(setTimeout(()=>scene(i+1),450))};
+    const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{big.hidden=false;lessonStop()});
+  }
+  function run(){stop();lessonStop();LP={timers:[],stopped:false};big.hidden=true;btnPause.hidden=false;btnPause.textContent='⏸ Dayandırın';paused=false;stage.replaceChildren();scene(0)}
+  big.onclick=run;btnAgain.onclick=run;
+  btnPause.onclick=()=>{if(!LP)return run();if(!paused){paused=true;LP.audio&&LP.audio.pause();LP.timers.forEach(clearTimeout);LP.timers=[];talking(false);btnPause.textContent='▶ Davam edin'}else{paused=false;btnPause.textContent='⏸ Dayandırın';const i=cur;LP.audio&&(LP.audio.onended=null);scene(i)}};
+  btnPause.hidden=true;
+  if(P.sound)setTimeout(()=>{if(box.isConnected&&!LP)run()},350);
+  return box;
 }
 function problemView(p,k){
   const c=p.check, done=st.first[k]!==undefined||st.shown[k];
@@ -432,7 +467,7 @@ function setBar(k,label,fn,kind,disabled){
 
 /* ---------- router ---------- */
 function render(){stop();LVM=false;LOCKV=false;app.replaceChildren();bar.hidden=true;if(location.hash==='#seviyye'){levelPage();return}const m=location.hash.match(/^#t(\d+)$/);if(m&&TP(+m[1]))topic(+m[1]);else home();playPraise();showFb()}
-function go(){render();scrollTo(0,0)}
+function go(){lessonStop();render();scrollTo(0,0)}
 addEventListener('hashchange',()=>{dLeave();st=null;step=0;lastAuto=null;if(location.hash!=='#seviyye'||!LT||LT.phase!=='intro')LT=null;go()});
 const KOD=sagirdKodu();
 let SAGIRD=KOD?{name:sagirdAdiYaddas(KOD),done:false}:null;
@@ -444,4 +479,4 @@ if(KOD&&API_URL)sagirdMelumati(KOD).then(r=>{if(r&&r.ok){
   if(!srv&&P.lv&&!P.lv.sent)lvSend();             // əvvəl göndərilməyən nəticə
   if(D){if(!location.hash||LOCKV)render();maybeAutoLevel()}
 }}).catch(()=>{});
-Promise.all([fetch('data/topics.json').then(r=>r.json()),fetch('data/audio.json').then(r=>r.json()).catch(()=>[])]).then(([d,a])=>{D=d;a.forEach(id=>AUD[id]=1);go();maybeAutoLevel()}).catch(()=>{app.replaceChildren(h('p',{class:'muted'},'Məlumat yüklənmədi. Səhifəni yeniləyin.'))});
+Promise.all([fetch('data/topics.json').then(r=>r.json()),fetch('data/audio.json').then(r=>r.json()).catch(()=>[]),fetch('data/lessons.json').then(r=>r.ok?r.json():{}).catch(()=>({}))]).then(([d,a,l])=>{D=d;LES=l||{};a.forEach(id=>AUD[id]=1);go();maybeAutoLevel()}).catch(()=>{app.replaceChildren(h('p',{class:'muted'},'Məlumat yüklənmədi. Səhifəni yeniləyin.'))});

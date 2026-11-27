@@ -1,0 +1,106 @@
+{
+ "59": {
+  "scenes": [
+   {
+    "say": "Hər boşqabda 3 alma var.",
+    "audio": "373261ad8f",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l59_01.webp",
+      "at": 0.1,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l59_05.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Belə 4 boşqab var.",
+    "audio": "5696b9ff69",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l59_02.webp",
+      "at": 0.15,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l59_06.webp",
+      "at": 0.15,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l59_03.webp",
+      "at": 0.35,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l59_07.webp",
+      "at": 0.35,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l59_04.webp",
+      "at": 0.55,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l59_08.webp",
+      "at": 0.55,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Toplayaq: 3 üstəgəl 3 üstəgəl 3 üstəgəl 3 bərabərdir 12.",
+    "audio": "5caa11b726",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l59_09.webp",
+      "at": 0.1,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l59_10.webp",
+      "at": 0.78,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Qısa yazırıq: 3 vur 4 bərabərdir 12. Hər qrupda 3, cəmi 4 qrup.",
+    "audio": "e1465a28d7",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l59_11.webp",
+      "at": 0.08,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l59_12.webp",
+      "at": 0.38,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "İndi siz cəhd edin!",
+    "audio": "ba1fb868fd",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l59_13.webp",
+      "at": 0.05,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -173,3 +173,29 @@ textarea{font:inherit;font-size:14px;width:100%;box-sizing:border-box;min-height
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:20}
 @media (prefers-reduced-motion:reduce){.fox.talk{animation:none}.track i{transition:none}}
 @media (prefers-reduced-motion:no-preference){.pop{animation:pop .28s ease-out}@keyframes pop{from{transform:translateY(6px);opacity:.5}to{transform:none;opacity:1}}}
+
+/* qısa video dərs */
+.lesson{padding:14px;display:flex;flex-direction:column;gap:10px}
+.ltag{display:flex;align-items:center;gap:8px;font-weight:900}
+.ltag i{font-style:normal;font-weight:700;color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.lwrap{position:relative;border-radius:18px;overflow:hidden;background:#fff;border:3px solid var(--line, #E6E1D6)}
+.lstage{position:relative;aspect-ratio:4/3;width:100%}
+.lstage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.lplay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(255,253,247,.86);border:0;font:inherit;cursor:pointer;color:#33393f}
+.lplay span{width:84px;height:84px;border-radius:50%;background:#F0A020;color:#fff;display:grid;place-items:center;font-size:38px;box-shadow:0 6px 0 #C47F0C;padding-left:6px}
+.lplay b{font-size:20px;font-weight:900}
+.ldots{display:flex;gap:6px;justify-content:center}
+.ldots i{width:28px;height:7px;border-radius:4px;background:#E2DED4}
+.ldots i.on{background:#F0A020}.ldots i.done{background:#43A047}
+.lctl{display:flex;gap:8px;justify-content:center}
+.lbtn{border:2px solid #E2DED4;background:#fff;border-radius:14px;padding:10px 16px;min-height:48px;font:inherit;font-weight:800;cursor:pointer;color:#33393f}
+@media (prefers-reduced-motion:no-preference){
+  .lstage img.fx-pop{animation:lpop .45s cubic-bezier(.2,1.4,.4,1) both}
+  .lstage img.fx-fly{animation:lfly .6s cubic-bezier(.2,.9,.3,1) both}
+  .lstage img.fx-fade{animation:lfade .5s ease-out both}
+  @keyframes lpop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+  @keyframes lfly{from{opacity:0;transform:translateX(30%)}to{opacity:1;transform:none}}
+  @keyframes lfade{from{opacity:0}to{opacity:1}}
+}
+.lstage img.gone{opacity:0;transition:opacity .35s}
+@media (prefers-color-scheme:dark){.lplay{background:rgba(30,30,30,.7);color:#fff}.lbtn{background:#2a2a2a;color:#eee;border-color:#444}.ldots i{background:#444}}

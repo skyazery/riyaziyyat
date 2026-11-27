@@ -1,0 +1,122 @@
+{
+ "33": {
+  "scenes": [
+   {
+    "say": "8 üstəgəl 5 neçə edir?",
+    "audio": "a8845dcc35",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l33_01.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_02.webp",
+      "at": 0.5,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Onluq qutuya 8 qırmızı top qoyaq.",
+    "audio": "f687931729",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l33_03.webp",
+      "at": 0.0,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l33_04.webp",
+      "at": 0.3,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_05.webp",
+      "at": 0.6,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "5 göy topdan 2-sini qutuya qoyuruq. Qutu doldu: 10 oldu.",
+    "audio": "c007243f39",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l33_06.webp",
+      "at": 0.05,
+      "fx": "pop",
+      "out": 0.42
+     },
+     {
+      "src": "img/lesson/l33_07.webp",
+      "at": 0.42,
+      "fx": "fly"
+     },
+     {
+      "src": "img/lesson/l33_08.webp",
+      "at": 0.42,
+      "fx": "fade"
+     },
+     {
+      "src": "img/lesson/l33_09.webp",
+      "at": 0.78,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Qalan 3-ü də əlavə edirik: 10 üstəgəl 3 bərabərdir 13.",
+    "audio": "f1817830af",
+    "keep": true,
+    "layers": [
+     {
+      "src": "img/lesson/l33_10.webp",
+      "at": 0.32,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_11.webp",
+      "at": 0.44,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_12.webp",
+      "at": 0.56,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_13.webp",
+      "at": 0.6799999999999999,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_14.webp",
+      "at": 0.8,
+      "fx": "pop"
+     }
+    ]
+   },
+   {
+    "say": "Deməli, 8 üstəgəl 5 bərabərdir 13. İndi siz cəhd edin!",
+    "audio": "75433f00d2",
+    "keep": false,
+    "layers": [
+     {
+      "src": "img/lesson/l33_15.webp",
+      "at": 0.05,
+      "fx": "pop"
+     },
+     {
+      "src": "img/lesson/l33_16.webp",
+      "at": 0.62,
+      "fx": "pop"
+     }
+    ]
+   }
+  ]
+ }
+}
