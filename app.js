@@ -80,14 +80,14 @@ function lvStart(){
 function lvCanRetake(){return !KOD||!!(SAGIRD&&SAGIRD.level&&SAGIRD.level.retry)}
 
 /* ---------- gündəlik limit ----------
-   Yalnız şəxsi linklə: yeni mövzu gündə LIMIT dənə açılır (geri qalan uşaq gündə 2×LIMIT-ə qədər çata bilər).
+   Yalnız şəxsi linklə: bir gündə ən çox LIMIT yeni mövzu (iş vərəqi) etmək olar (müəllimin istəyi: gündə 2).
    Bitmiş mövzular və səviyyə testinə görə keçilmiş mövzular həmişə açıqdır (təkrar).
    LIMIT müəllim cədvəlindən gəlir (Ayarlar → GUNDELIK_LIMIT, 0 = limitsiz). Gün Tbilisi vaxtı ilə dəyişir. */
 const dayStr=()=>{try{return new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Tbilisi'})}catch(e){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}};
 const dKey=()=>'riyaziyyat-gundelik-'+KOD;
 function dLocal(){try{return JSON.parse(localStorage.getItem(dKey()))||[]}catch(e){return[]}}
 function dSaveLocal(a){try{localStorage.setItem(dKey(),JSON.stringify(a))}catch(e){}}
-function dLimit(){const d=SAGIRD&&SAGIRD.daily;return d&&typeof d.limit==='number'?d.limit:1}
+function dLimit(){const d=SAGIRD&&SAGIRD.daily;return d&&typeof d.limit==='number'?d.limit:2}
 /* yeni bitirilmiş mövzular (bütün kitablar): serverdəki + hələ göndərilməyənlər */
 function dNews(){
   const m=new Map(),add=(d,b,n)=>{const k=b+':'+n;if(!m.has(k))m.set(k,{d,b,n:+n})};
@@ -99,10 +99,8 @@ const dDiff=(a,b)=>Math.round((Date.parse(b)-Date.parse(a))/864e5);
 /* bu gün neçə yeni mövzu açmaq olar */
 function dLeft(){
   const L=dLimit();if(!L)return Infinity;
-  const ns=dNews(),t=dayStr();if(!ns.length)return L;
-  const first=ns.reduce((m,x)=>x.d<m?x.d:m,ns[0].d);
-  const earned=(Math.max(0,dDiff(first,t))+1)*L;
-  return Math.max(0,Math.min(2*L-ns.filter(x=>x.d===t).length,earned-ns.length));
+  const t=dayStr();
+  return Math.max(0,L-dNews().filter(x=>x.d===t).length); // bu gün bitirilən yeni mövzular sayılır
 }
 const isDone=n=>!!(P.t[n]&&P.t[n].done)||(!!KOD&&dNews().some(x=>x.b===BOOK.id&&x.n===n));
 function nextNew(){const s=lvStart();if(s==null)return null;for(let n=Math.max(s,BOOK.first);n<=BOOK.last;n++)if(!isDone(n))return n;return null}
