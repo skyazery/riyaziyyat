@@ -48,6 +48,7 @@ def speakable(t):
     s = s.replace('>, < və ya =', 'böyükdür, kiçikdir və ya bərabərdir işarəsini')
     s = re.sub(r'(\d+),(\d\d) manat(\w*)', lambda m: (('%s manat %s qəpik' % (m.group(1), int(m.group(2)))) if m.group(1) != '0' else '%d qəpik' % int(m.group(2))) + front(m.group(3)), s)
     s = re.sub(r'neçə km/saat(\w*)', lambda m: 'saatda neçə kilometr' + front(m.group(1)), s)
+    s = re.sub(r'(\d+(?:,\d+)?)%(?:-(\w+))?', lambda m: m.group(1) + ' faiz' + front(re.sub(r'^[nsy](?=[aəıiouöüe])', '', m.group(2) or '')), s)  # 15%-i → 15 faizi
     s = re.sub(r'(\d+) km/saat(\w*)', lambda m: 'saatda %s kilometr' % m.group(1) + front(m.group(2)), s)
     s = re.sub(r'kv\. sm', 'kvadrat santimetr', s)
     s = re.sub(r'kv\. m\b', 'kvadrat metr', s)

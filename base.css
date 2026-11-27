@@ -96,7 +96,13 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(-
 .pad button.del.n{grid-column:span 4}
 .pad button.neg{height:46px;font-size:30px;color:var(--primary)}
 .eq .frac{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
-.eq .frac .bar{display:block;width:100%;min-width:72px;height:5px;border-radius:3px;background:var(--ink)}
+.eq .frac .fline{display:block;width:100%;min-width:72px;height:5px;border-radius:3px;background:var(--ink)}
+.eq.fr .slot{height:54px;min-width:62px;font-size:30px;border-radius:14px}
+.eq.fr .frac{gap:4px}
+.frq .paper{min-height:0;padding:6px}
+.frq .paper img{max-height:100px;width:auto;max-width:100%}
+.frq .paperhint{margin:6px 0}
+.eq.fr .frac .fline{min-width:62px;height:4px}
 .eq .fixed.txt{font-size:32px;background:none;min-width:0;padding:0 2px}
 .signs{display:flex;gap:12px;justify-content:center}
 .signs button{width:84px;height:72px;border-radius:18px;border:2px solid #E3E6EF;background:var(--card);font-size:38px;font-weight:900;box-shadow:0 3px 0 #E3E6EF}

@@ -294,17 +294,18 @@ function problemView(p,k){
   const task=h('div',{class:'card task pop'},src?h('div',{class:'paper'},pic(src)):null);
   app.append(task);
   if(w){webView(p,k,task);return}
+  if(c&&c.frac)task.classList.add('frq'); // kəsr xanaları hündürdür: şəkil kiçilir
   if(c){
     let a=st.ans[k]||(st.ans[k]=c.slots.map(()=>null)); let active=Math.max(0,a.indexOf(null));
     let fresh=!!(st.tries[k]&&a.every(v=>v!==null)); // təzə başla: növbəti rəqəm köhnəni əvəz edir
     const solved=st.first[k]!==undefined&&a.every((v,j)=>String(v)===String(c.slots[j]));
     const locked=solved||st.shown[k];
-    const eq=h('div',{class:'eq'+(c.mode==='sign'&&c.pairs.some(pr=>pr.join('').length>10)?' small':'')});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;fresh=true;paint()}});return s});
+    const eq=h('div',{class:'eq'+(c.mode==='sign'&&c.pairs.some(pr=>pr.join('').length>10)?' small':'')+(c.frac?' fr':'')});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;fresh=true;paint()}});return s});
     if(c.mode==='sign')c.pairs.forEach(([x,y],j)=>{if(j)eq.append(h('span',{class:'br'}));eq.append(h('span',{class:'fixed'},x),slots[j],h('span',{class:'fixed'},y))});
     else if(c.frac){ // c.frac: kəsr xanaları üst-üstə (2 xana: surət/məxrəc, 3 xana: tam hissə + surət/məxrəc)
       if(c.pre)eq.append(h('span',{class:'fixed txt'},c.pre));
       const w3=slots.length===3;if(w3)eq.append(slots[0]);
-      eq.append(h('span',{class:'frac'},slots[w3?1:0],h('i',{class:'bar'}),slots[w3?2:1]));
+      eq.append(h('span',{class:'frac'},slots[w3?1:0],h('i',{class:'fline'}),slots[w3?2:1]));
       if(c.suf)eq.append(h('span',{class:'fixed txt'},c.suf))}
     else{if(c.pre)eq.append(h('span',{class:'fixed txt'},c.pre));slots.forEach((s,j)=>{if(j&&c.sep)eq.append(h('span',{class:'op'},c.sep));eq.append(s)});if(c.suf)eq.append(h('span',{class:'fixed txt'},c.suf))} // c.sep: onluq kəsr üçün ',' və ya kəsr üçün '/'
     const paint=()=>slots.forEach((s,j)=>{s.textContent=grp(a[j]).replace('-','−');let cl='slot';if(a[j]!==null)cl+=' filled';if(String(a[j]??'').length>5)cl+=' long';if(!locked&&j===active)cl+=' active';if(locked)cl+=String(a[j])===String(c.slots[j])?' right':' wrong';s.className=cl});

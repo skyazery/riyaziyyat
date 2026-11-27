@@ -257,3 +257,79 @@ def tiles(k, d, size=30, fill=(220, 237, 200)):
 
 def words(s_, size=40):
     return chip(s_, size, fill=(255, 248, 225), outline=GREY)
+
+
+# ---------------------------------------------------------------- avtomatik cavab (Fraction / Decimal)
+from fractions import Fraction as Fr
+from decimal import Decimal as Dm
+
+
+def f2t(x):
+    """Fraction → FX işarəsi: tam ədəd, (a, b) və ya (tam, a, b)"""
+    x = Fr(x)
+    if x.denominator == 1:
+        return x.numerator
+    w, r = divmod(x.numerator, x.denominator)
+    return (r, x.denominator) if w == 0 else (w, r, x.denominator)
+
+
+def ansbox(x):
+    x = Fr(x)
+    if x.denominator == 1:
+        return [BOX]
+    return [(BOX, BOX)] if x < 1 else [BOX, (BOX, BOX)]
+
+
+def fanswer(t, ins, x, stem):
+    x = Fr(x)
+    if x.denominator == 1:
+        t.num(ins, [x.numerator], stem)
+    else:
+        w, r = divmod(x.numerator, x.denominator)
+        frac_num(t, ins, (r, x.denominator) if w == 0 else (w, r, x.denominator), stem)
+
+
+def fcalc(t, ins, toks, x, size=58):
+    """toks: FX işarələri ('=' və cavab xanası avtomatik əlavə olunur)"""
+    fanswer(t, ins, x, FX(*toks, '=', *ansbox(x), size=size))
+
+
+def dfmt(d):
+    d = Dm(d)
+    s = format(d.normalize(), 'f') if d != d.to_integral() else str(int(d))
+    return s.replace('.', ',')
+
+
+def danswer(t, ins, d, stem, suf=None):
+    s = dfmt(d)
+    if ',' in s:
+        dec_num(t, ins, s, stem, suf=suf)
+    else:
+        t.num(ins, [int(s)], stem, disp=s + (' ' + suf if suf else ''))
+        if suf:
+            ck(t, suf=suf)
+
+
+def dbox(d):
+    return 'BOX2' if ',' in dfmt(d) else BOX
+
+
+def dcalc(t, ins, toks, d, size=58):
+    danswer(t, ins, d, DEC(*toks, '=', dbox(d), size=size))
+
+
+def ncalc(t, ins, toks, v, size=58, suf=None):
+    t.num(ins, [v], FX(*toks, '=', BOX, size=size))
+    if suf:
+        ck(t, suf=suf)
+
+
+def story(emojis, toks=None, size=80):
+    """mətnli məsələ şəkli: emojilər + (istəsə) cavab sətri"""
+    row_ = hstack([em(e, size) for e in emojis], 14)
+    return row_ if not toks else vstack([row_, FX(*toks, size=50)], 22)
+
+
+def sup(base, p):
+    """7² kimi"""
+    return str(base) + {2: '²', 3: '³'}[p]
