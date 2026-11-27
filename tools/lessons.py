@@ -1,7 +1,7 @@
 """Qısa video dərslər (mövzudan əvvəl ~30 s): hər səhnə = səs + üst-üstə düşən şəkil qatları.
 Qatlar eyni ölçüdə (800×600, şəffaf) çəkilir, app.js onları səsə uyğun vaxtda göstərir.
-Run: python3 tools/lessons.py   → <kitab>/img/lesson/*.webp, <kitab>/data/lessons.json, voice.json-a səs mətnləri"""
-import hashlib, json, os, sys
+Köməkçilər; dərslərin özü tools/lessons11.py, lessons12.py, lessons21.py, lessons22.py-dadır."""
+import hashlib, json, math, os, sys
 from PIL import Image, ImageDraw
 sys.path.insert(0, os.path.dirname(__file__))
 from draw import txt, em, font, INK, BLUE, RED, GREEN, ORANGE, PURPLE, GREY
@@ -19,7 +19,11 @@ class Lesson:
     def __init__(self, book, n):
         self.book, self.n, self.scenes, self.k = book, n, [], 0
         self.dir = os.path.join(ROOT, book if book != '1-1' else '.')
-        os.makedirs(os.path.join(self.dir, 'img', 'lesson'), exist_ok=True)
+        d = os.path.join(self.dir, 'img', 'lesson')
+        os.makedirs(d, exist_ok=True)
+        for f in os.listdir(d):  # köhnə qatlar
+            if f.startswith('l%d_' % n):
+                os.remove(os.path.join(d, f))
 
     def layer(self, items):
         """items: [(şəkil, x, y)] – (x, y) şəklin mərkəzidir"""
@@ -28,7 +32,7 @@ class Lesson:
             im.alpha_composite(pic, (int(x - pic.width / 2), int(y - pic.height / 2)))
         self.k += 1
         name = 'img/lesson/l%d_%02d.webp' % (self.n, self.k)
-        im.save(os.path.join(self.dir, name), 'WEBP', quality=88, method=6)
+        im.save(os.path.join(self.dir, name), 'WEBP', quality=88, method=4)
         return name
 
     def scene(self, say, layers, keep=False):
@@ -44,10 +48,18 @@ class Lesson:
     def save(self):
         p = os.path.join(self.dir, 'data', 'lessons.json')
         data = json.load(open(p)) if os.path.exists(p) else {}
+        old = data.get(str(self.n), {}).get('scenes', [])
         data[str(self.n)] = {'scenes': self.scenes}
         json.dump(data, open(p, 'w'), ensure_ascii=False, indent=1)
         vp = os.path.join(self.dir, 'data', 'voice.json')
         voice = json.load(open(vp))
+        tp = json.load(open(os.path.join(self.dir, 'data', 'topics.json')))
+        tp = tp['topics'] if isinstance(tp, dict) else tp
+        used = {t['conceptAudio'] for t in tp} | {p.get('audio') for t in tp for p in t['problems']}
+        others = {s['audio'] for k, v in data.items() if k != str(self.n) for s in v['scenes']}
+        for s in old:  # bu dərsin köhnə mətnləri
+            if s['audio'] not in used and s['audio'] not in others:
+                voice.pop(s['audio'], None)
         for s in self.scenes:
             voice[s['audio']] = s['say']
         json.dump(voice, open(vp, 'w'), ensure_ascii=False, indent=1)
@@ -101,55 +113,204 @@ def plate(n_apples, size=150):
 
 FOX = lambda: [(em('🦊', 220), W / 2, 250), (txt('İndi siz!', 64, ORANGE), W / 2, 450), (em('⭐', 70), W / 2 - 220, 170), (em('⭐', 56), W / 2 + 230, 210)]
 
-# ============================================================ 1-1 · 15 Ədədlərin toplanması
-L = Lesson('1-1', 15)
-A = em('🍎', 104)
-xs = [130, 250, 370, 540, 660]
-ap = [L.layer([(A, x, 170)]) for x in xs]
-L.scene('Burada 3 alma var.', [(ap[0], 0.1, 'pop'), (ap[1], 0.35, 'pop'), (ap[2], 0.6, 'pop')])
-L.scene('Daha 2 alma gətirdik.', [(ap[3], 0.25, 'fly'), (ap[4], 0.5, 'fly')], keep=True)
-nums = [L.layer([(txt(str(i + 1), 64, BLUE), x, 290)]) for i, x in enumerate(xs)]
-L.scene('Sayaq: 1, 2, 3, 4, 5. Cəmi 5 alma oldu.', [(nums[i], 0.12 + i * 0.11, 'pop') for i in range(5)], keep=True)
-eq = eq_items(['3', '+', '2', '=', '5'], 470)
-L.scene('Belə yazırıq: 3 üstəgəl 2 bərabərdir 5.', [(L.layer([eq[i]]), 0.18 + i * 0.13, 'pop') for i in range(5)], keep=True)
-L.scene('İndi siz cəhd edin!', [(L.layer(FOX()), 0.05, 'pop')])
-L.save()
 
-# ============================================================ 1-2 · 33 10-a tamamlamaqla toplama
-L = Lesson('1-2', 33)
-F = frame10()
-fx, fy, cell = 300, 300, 84
-cpos = lambda i: (fx - 2 * cell + (i % 5) * cell, fy - cell / 2 + (i // 5) * cell)
-red = dot(RED)
-blue = dot(BLUE)
-top = eq_items(['8', '+', '5', '=', '?'], 80, 84)
-L.scene('8 üstəgəl 5 neçə edir?', [(L.layer(top[:3]), 0.05, 'pop'), (L.layer(top[3:]), 0.5, 'pop')])
-fr = L.layer([(F, fx, fy)])
-r5 = L.layer([(red, *cpos(i)) for i in range(5)])
-r3 = L.layer([(red, *cpos(i)) for i in range(5, 8)])
-L.scene('Onluq qutuya 8 qırmızı top qoyaq.', [(fr, 0.0, 'fade'), (r5, 0.3, 'pop'), (r3, 0.6, 'pop')], keep=True)
-side = [(640, 230), (720, 230), (640, 310), (720, 310), (680, 390)]
-b5 = L.layer([(blue, x, y) for x, y in side])
-b2in = L.layer([(blue, *cpos(8)), (blue, *cpos(9))])
-b3 = L.layer([(blue, x, y) for x, y in side[2:]])
-ten = L.layer([(txt('10', 72, GREEN), fx, fy + 140)])
-L.scene('5 göy topdan 2-sini qutuya qoyuruq. Qutu doldu: 10 oldu.', [(b5, 0.05, 'pop', 0.42), (b2in, 0.42, 'fly'), (b3, 0.42, 'fade'), (ten, 0.78, 'pop')], keep=True)
-eq = eq_items(['10', '+', '3', '=', '13'], 530, 80)
-L.scene('Qalan 3-ü də əlavə edirik: 10 üstəgəl 3 bərabərdir 13.', [(L.layer([e]), 0.32 + i * 0.12, 'pop') for i, e in enumerate(eq)], keep=True)
-fin = eq_items(['8', '+', '5', '=', '13'], 300, 110)
-L.scene('Deməli, 8 üstəgəl 5 bərabərdir 13. İndi siz cəhd edin!', [(L.layer(fin), 0.05, 'pop'), (L.layer([(em('🦊', 140), W / 2, 480)]), 0.62, 'pop')])
-L.save()
 
-# ============================================================ 2-1 · 59 Vurma
-L = Lesson('2-1', 59)
-px = [130, 310, 490, 670]
-pl = [L.layer([(plate(3), x, 170)]) for x in px]
-L.scene('Hər boşqabda 3 alma var.', [(pl[0], 0.1, 'pop'), (L.layer([(txt('3', 56, BLUE), px[0], 280)]), 0.6, 'pop')])
-lab = [L.layer([(txt('3', 56, BLUE), x, 280)]) for x in px[1:]]
-L.scene('Belə 4 boşqab var.', [(pl[1], 0.15, 'pop'), (lab[0], 0.15, 'pop'), (pl[2], 0.35, 'pop'), (lab[1], 0.35, 'pop'), (pl[3], 0.55, 'pop'), (lab[2], 0.55, 'pop')], keep=True)
-eq = eq_items(['3', '+', '3', '+', '3', '+', '3', '=', '12'], 400, 72, 18)
-L.scene('Toplayaq: 3 üstəgəl 3 üstəgəl 3 üstəgəl 3 bərabərdir 12.', [(L.layer(eq[:7]), 0.1, 'fade'), (L.layer(eq[7:]), 0.78, 'pop')], keep=True)
-m = eq_items(['3', '·', '4', '=', '12'], 520, 92)
-L.scene('Qısa yazırıq: 3 vur 4 bərabərdir 12. Hər qrupda 3, cəmi 4 qrup.', [(L.layer(m[:3]), 0.08, 'pop'), (L.layer(m[3:]), 0.38, 'pop')], keep=True)
-L.scene('İndi siz cəhd edin!', [(L.layer(FOX()), 0.05, 'pop')])
-L.save()
+# ---------------------------------------------------------------- tez yazmaq üçün
+def T(s, size=72, color=INK):
+    return txt(s, size, color)
+
+
+def seq(layers, a=0.1, b=0.75, fx='pop'):
+    """qatları səsin a..b hissəsinə bərabər yaymaq"""
+    n = len(layers)
+    if n == 1:
+        return [(layers[0], a, fx)]
+    return [(L_, a + (b - a) * i / (n - 1), fx) for i, L_ in enumerate(layers)]
+
+
+def row(n, y, x0=None, dx=110):
+    x0 = W / 2 - dx * (n - 1) / 2 if x0 is None else x0
+    return [(x0 + i * dx, y) for i in range(n)]
+
+
+def grid(n, cols, y0, dx=100, dy=100, x0=None):
+    x0 = W / 2 - dx * (cols - 1) / 2 if x0 is None else x0
+    return [(x0 + (i % cols) * dx, y0 + (i // cols) * dy) for i in range(n)]
+
+
+def canvas():
+    im = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    return im, ImageDraw.Draw(im)
+
+
+def shape(kind, size=150, color=BLUE, fill=True):
+    im = Image.new('RGBA', (size + 8, size + 8), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    c = color + (255,)
+    f = tuple(min(255, int(v * 0.35 + 255 * 0.65)) for v in color) + (255,) if fill else None
+    s = size
+    if kind == 'tri':
+        d.polygon([(s / 2 + 4, 4), (s + 4, s + 4), (4, s + 4)], fill=f, outline=c, width=6)
+    elif kind == 'circle':
+        d.ellipse([4, 4, s + 4, s + 4], fill=f, outline=c, width=6)
+    elif kind == 'square':
+        d.rectangle([4, 4, s + 4, s + 4], fill=f, outline=c, width=6)
+    elif kind == 'rect':
+        d.rectangle([4, s * 0.25 + 4, s + 4, s * 0.75 + 4], fill=f, outline=c, width=6)
+    return im
+
+
+def nline(a, b, y=330, x0=70, x1=730, marks=(), size=34):
+    """ədəd oxu qatı və nöqtənin x-i üçün funksiya"""
+    im, d = canvas()
+    ux = (x1 - x0) / (b - a)
+    X = lambda v: x0 + (v - a) * ux
+    d.line([(x0 - 20, y), (x1 + 30, y)], fill=INK + (255,), width=5)
+    d.polygon([(x1 + 44, y), (x1 + 26, y - 10), (x1 + 26, y + 10)], fill=INK + (255,))
+    for v in range(a, b + 1):
+        d.line([(X(v), y - 12), (X(v), y + 12)], fill=INK + (255,), width=4)
+        d.text((X(v), y + 36), str(v), font=font(size), fill=(RED if v in marks else INK) + (255,), anchor='mm')
+    return im, X
+
+
+def hop(X, v0, v1, y=330, color=ORANGE, label=None):
+    im, d = canvas()
+    xa, xb = X(v0), X(v1)
+    hgt = 26 + abs(xb - xa) * 0.25
+    d.arc([min(xa, xb), y - hgt * 2, max(xa, xb), y + 2], 180, 360, fill=color + (255,), width=6)
+    tip = xb
+    up = -1 if xb > xa else 1
+    d.polygon([(tip, y - 2), (tip - 12 * (1 if xb > xa else -1), y - 18), (tip + 4 * (1 if xb > xa else -1), y - 20)], fill=color + (255,))
+    if label:
+        d.text(((xa + xb) / 2, y - hgt - 22), label, font=font(30), fill=color + (255,), anchor='mm')
+    return im
+
+
+def rod(cell=26, color=BLUE):
+    """onluq çubuq (10 kub)"""
+    im = Image.new('RGBA', (cell + 6, 10 * cell + 6), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    for i in range(10):
+        d.rectangle([3, 3 + i * cell, 3 + cell, 3 + (i + 1) * cell], fill=tuple(int(v * 0.4 + 255 * 0.6) for v in color) + (255,), outline=color + (255,), width=3)
+    return im
+
+
+def unit(cell=26, color=ORANGE):
+    im = Image.new('RGBA', (cell + 6, cell + 6), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rectangle([3, 3, 3 + cell, 3 + cell], fill=tuple(int(v * 0.4 + 255 * 0.6) for v in color) + (255,), outline=color + (255,), width=3)
+    return im
+
+
+def flat(cell=18, color=GREEN):
+    """yüzlük lövhə (10×10)"""
+    im = Image.new('RGBA', (10 * cell + 6, 10 * cell + 6), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    for r in range(10):
+        for c in range(10):
+            d.rectangle([3 + c * cell, 3 + r * cell, 3 + (c + 1) * cell, 3 + (r + 1) * cell], fill=tuple(int(v * 0.4 + 255 * 0.6) for v in color) + (255,), outline=color + (255,), width=2)
+    return im
+
+
+def blocks(tens, ones, x, y, cell=26, gap=12):
+    """onluq çubuqlar və təkliklər: [(şəkil, x, y)]"""
+    out = []
+    R = rod(cell)
+    for i in range(tens):
+        out.append((R, x + i * (cell + gap), y))
+    U = unit(cell)
+    ux = x + tens * (cell + gap) + 20
+    for i in range(ones):
+        out.append((U, ux + (i % 2) * (cell + 8), y - 4 * cell + (i // 2) * (cell + 8)))
+    return out
+
+
+def clock(h, m=0, size=300):
+    im = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    c, r = size / 2, size / 2 - 6
+    d.ellipse([6, 6, size - 6, size - 6], fill=(255, 255, 255, 255), outline=INK + (255,), width=7)
+    for k in range(1, 13):
+        a = math.radians(k * 30 - 90)
+        d.text((c + (r - 34) * math.cos(a), c + (r - 34) * math.sin(a)), str(k), font=font(30), fill=INK + (255,), anchor='mm')
+    am = math.radians(m * 6 - 90)
+    ah = math.radians((h % 12 + m / 60) * 30 - 90)
+    d.line([(c, c), (c + (r - 40) * math.cos(am), c + (r - 40) * math.sin(am))], fill=BLUE + (255,), width=8)
+    d.line([(c, c), (c + (r - 85) * math.cos(ah), c + (r - 85) * math.sin(ah))], fill=RED + (255,), width=11)
+    d.ellipse([c - 9, c - 9, c + 9, c + 9], fill=INK + (255,))
+    return im
+
+
+def coin(v, r=58, color=(240, 180, 40)):
+    im = Image.new('RGBA', (2 * r + 6, 2 * r + 6), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.ellipse([3, 3, 2 * r + 3, 2 * r + 3], fill=color + (255,), outline=tuple(int(x * 0.7) for x in color) + (255,), width=5)
+    d.text((r + 3, r - 6), str(v), font=font(int(r * 0.75)), fill=(255, 255, 255, 255), anchor='mm')
+    d.text((r + 3, r + r * 0.5), 'q', font=font(int(r * 0.35)), fill=(255, 255, 255, 255), anchor='mm')
+    return im
+
+
+def bar(hgt, w=70, color=BLUE):
+    im = Image.new('RGBA', (w, hgt + 4), (0, 0, 0, 0))
+    ImageDraw.Draw(im).rounded_rectangle([0, 0, w - 1, hgt + 3], 8, fill=color + (255,))
+    return im
+
+
+def tally(n, size=60, color=INK):
+    """cizgilər: 5-lik dəstələr"""
+    w = int(size * 0.28)
+    groups = [5] * (n // 5) + ([n % 5] if n % 5 else [])
+    W_ = sum(w * min(g, 4) + 24 for g in groups) + 10
+    im = Image.new('RGBA', (W_, size + 10), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    x = 5
+    for g in groups:
+        for i in range(min(g, 4)):
+            d.line([(x + i * w, 5), (x + i * w, size + 5)], fill=color + (255,), width=6)
+        if g == 5:
+            d.line([(x - 6, size - 5), (x + 3 * w + 6, 15)], fill=RED + (255,), width=6)
+        x += w * min(g, 4) + 24
+    return im
+
+
+def ring(w, h, color=ORANGE):
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    ImageDraw.Draw(im).rounded_rectangle([3, 3, w - 3, h - 3], 26, outline=color + (255,), width=6)
+    return im
+
+
+def L1(L, items):
+    """bir neçə şəkli bir qatda"""
+    return L.layer(items)
+
+
+def fin(L, say='İndi siz cəhd edin!'):
+    L.scene(say, [(L.layer(FOX()), 0.05, 'pop')])
+
+
+def card(s, size=80, color=INK):
+    """ağ kart üstündə ədəd"""
+    t = txt(s, size, color)
+    im = Image.new('RGBA', (t.width + 50, t.height + 40), (0, 0, 0, 0))
+    ImageDraw.Draw(im).rounded_rectangle([2, 2, im.width - 3, im.height - 3], 18, fill=(255, 255, 255, 255), outline=GREY + (255,), width=4)
+    im.alpha_composite(t, (25, 20))
+    return im
+
+
+def numcards(vals, y, dx=150, size=80, color=INK):
+    return [(card(str(v), size, color), x, y) for v, (x, _) in zip(vals, row(len(vals), y, dx=dx))]
+
+
+def box(w, h, color=GREY, fill=(255, 255, 255)):
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    ImageDraw.Draw(im).rounded_rectangle([3, 3, w - 3, h - 3], 14, fill=fill + (255,), outline=color + (255,), width=5)
+    return im
+
+
+def label(s, size=40, color=INK, pad=14):
+    """ağ fonlu yazı"""
+    t = txt(s, size, color)
+    im = Image.new('RGBA', (t.width + 2 * pad, t.height + 2 * pad), (0, 0, 0, 0))
+    ImageDraw.Draw(im).rounded_rectangle([0, 0, im.width - 1, im.height - 1], 12, fill=(255, 255, 255, 235))
+    im.alpha_composite(t, (pad, pad))
+    return im
