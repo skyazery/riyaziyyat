@@ -9,7 +9,7 @@
  *  - 부모가 동의서(qeydiyyat.html)를 내면 Qeydiyyat 탭에 동의 기록이 남고, Şagirdlər 탭에 학생이
  *    자동으로 추가되며(코드·개인 링크·왓츠앱 보내기 링크까지), 선생님 텔레그램으로 알림이 갑니다.
  *  - 학생이 주제(10문제)를 끝낼 때마다 Gündəlik 탭에 기록됩니다. 개인 링크로 공부하는 학생은
- *    새 주제가 하루 GUNDELIK_LIMIT개(Ayarlar 탭, 기본 1)씩 열리고, 밀렸으면 하루 그 2배까지 따라잡을 수 있습니다.
+ *    학생은 하루에 새 주제를 최대 GUNDELIK_LIMIT개(Ayarlar 탭, 기본 2)까지 할 수 있습니다. 끝낸 주제 복습은 제한 없음.
  *  - 📋 현황판: 학생마다 상태(잘하고 있음/살펴보기/연락 필요)·최근 7일·진도·정답률. 매시간 자동으로 새로 고침.
  *  - 🔍 학생 보기: 이름을 고르면 그 학생 정보와 최근 기록이 나옴.
  *  - 메뉴 「주간 리포트 만들기」(일요일 저녁) / 「월간 리포트 만들기」(월말)를 누르면 Hesabatlar 탭에 학생별 줄이 생깁니다.
@@ -245,7 +245,7 @@ function setup() {
   }
   if (!hasSetting_('GUNDELIK_LIMIT')) {
     SETTINGS_ = null;
-    se.appendRow(['GUNDELIK_LIMIT', 1, '하루에 열리는 새 주제 수 (0 = 제한 없음). 밀린 학생은 하루 이 수의 2배까지 따라잡기']);
+    se.appendRow(['GUNDELIK_LIMIT', 2, '학생이 하루에 할 수 있는 새 주제(학습지) 최대 수 (0 = 제한 없음)']);
     se.getRange(se.getLastRow(), 1).setFontWeight('bold');
   }
   setupRegistration_(ss);
@@ -393,9 +393,9 @@ function setupDaily_(ss) {
 }
 
 function dailyLimit_() {
-  if (!hasSetting_('GUNDELIK_LIMIT')) return 1;
+  if (!hasSetting_('GUNDELIK_LIMIT')) return 2;
   const v = parseInt(setting_('GUNDELIK_LIMIT'), 10);
-  return v >= 0 ? v : 1;
+  return v >= 0 ? v : 2;
 }
 
 // 이 학생의 기록: new = 새 주제를 끝낸 [날짜, 책, 주제] 목록 (사이트가 열림 계산에 씀)
