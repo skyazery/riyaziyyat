@@ -61,6 +61,8 @@ def speakable(t):
     s = re.sub(r'\b(mm|sm|dm|km|m)³', lambda m: 'kub ' + UNIT[m.group(1)], s)
     s = re.sub(r'([\d)a-z])([⁰¹²³⁴⁵⁶⁷⁸⁹]+)', lambda m: m.group(1) + ' üstü ' + ''.join(SUP[c] for c in m.group(2)), s)
     s = re.sub(r'\|([^|]+)\|', r'modul \1', s)
+    for a_, b_ in (('π', ' pi '), ('∠', 'bucaq '), ('∉', ' daxil deyil '), ('∈', ' daxildir '), ('∩', ' kəsişmə '), ('∪', ' birləşmə '), (' \\ ', ' fərq '), ('d₁', 'd bir'), ('d₂', 'd iki'), ('≤', ' kiçik və ya bərabərdir '), ('≥', ' böyük və ya bərabərdir ')):
+        s = s.replace(a_, b_)
     s = re.sub(r'(ƏBOB|ƏKOB)\(', r'\1 ', s)
     s = re.sub(r'\((−?\d+); (−?\d+)\)', r' \1 və \2 ', s)
     if 'nisbət' in s or 'tənasüb' in s or 'miqyas' in s:

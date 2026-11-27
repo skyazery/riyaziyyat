@@ -8,7 +8,7 @@ belə ki «düz bucaq», «alma» (meyvə) kimi sözlər toxunulmaz qalır.
 import hashlib, json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BOOKS = ['.', '1-2', '2-1', '2-2', '3-1', '3-2', '4-1', '4-2', '5-1', '5-2', '6-1']
+BOOKS = ['.', '1-2', '2-1', '2-2', '3-1', '3-2', '4-1', '4-2', '5-1', '5-2', '6-1', '6-2']
 
 # 2-ci şəxs təki → 2-ci şəxs cəmi (hörmət)
 VERBS = {

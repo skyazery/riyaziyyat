@@ -533,3 +533,135 @@ def cgrid(n=5, pts=(), cell=34, poly_=None, color=(187, 222, 251)):
         if lab:
             d.text((cx + 18 * S, cy - 18 * S), lab, font=font(28 * S), fill=RED, anchor='mm')
     return done(im)
+
+
+# ---------------------------------------------------------------- 6-2: Venn, paralel xətlər, üçbucaq elementləri, dairə, silindr
+def venn(a, ab, b, la='A', lb='B', out=None, W=520, H=300):
+    im, d = vec(W, H)
+    d.rounded_rectangle([4 * S, 4 * S, (W - 4) * S, (H - 4) * S], 18 * S, outline=GREY, width=3 * S)
+    r = 105
+    c1, c2, cy = W / 2 - 62, W / 2 + 62, H / 2 + 14
+    for cx, col in ((c1, (255, 167, 38, 90)), (c2, (66, 165, 245, 90))):
+        d.ellipse([(cx - r) * S, (cy - r) * S, (cx + r) * S, (cy + r) * S], fill=col, outline=INK, width=4 * S)
+    f_ = font(34 * S)
+    for x, v in ((c1 - 55, a), (W / 2, ab), (c2 + 55, b)):
+        d.text((x * S, cy * S), str(v), font=f_, fill=INK, anchor='mm')
+    d.text(((c1 - 60) * S, 26 * S), la, font=font(26 * S), fill=(230, 81, 0), anchor='mm')
+    d.text(((c2 + 60) * S, 26 * S), lb, font=font(26 * S), fill=(21, 101, 192), anchor='mm')
+    if out is not None:
+        d.text(((W - 16) * S, (H - 26) * S), str(out), font=font(26 * S), fill=INK, anchor='rm')
+    return done(im)
+
+
+def trans(deg, labs, L=230):
+    """iki paralel düz xətt (a, b) və kəsən; deg = 1-ci bucaq. labs: {1..8: yazı}. 1 sağ-yuxarı, 2 sol-yuxarı, 3 sol-aşağı, 4 sağ-aşağı (yuxarı kəsişmə); 5–8 aşağı kəsişmədə eyni qayda ilə"""
+    W, H = 2 * L + 120, 360
+    im, d = vec(W, H)
+    y1, y2 = 110, 250
+    cx = W / 2
+    for y, nm in ((y1, 'a'), (y2, 'b')):
+        d.line([(30 * S, y * S), ((W - 30) * S, y * S)], fill=BLUE, width=5 * S)
+        d.text(((W - 20) * S, (y - 18) * S), nm, font=font(26 * S), fill=BLUE, anchor='mm')
+    k = 1 / math.tan(math.radians(deg))
+    xm = (y2 - y1) / 2
+    x1, x2 = cx + xm * k, cx - xm * k
+    ext = 90
+    dx = ext * k
+    d.line([((x1 + dx) * S, (y1 - ext) * S), ((x2 - dx) * S, (y2 + ext) * S)], fill=PURPLE, width=5 * S)
+    for (px, py), base in (((x1, y1), 0), ((x2, y2), 4)):
+        bounds = [(0, deg), (deg, 180), (180, 180 + deg), (180 + deg, 360)]
+        for i, (a0, a1) in enumerate(bounds):
+            lab = labs.get(base + i + 1)
+            if lab:
+                _arc_lbl(d, px, py, 30, a0, a1, lab, RED if lab != '?' else (46, 125, 50), 26)
+    return done(im)
+
+
+def tri_el(kind, size=230):
+    """üçbucaq ABC və A-dan çəkilmiş median / tənbölən / hündürlük"""
+    A, B, C = (0.38, 0.05), (0.0, 0.95), (1.0, 0.95)
+    im, d = vec(size + 120, size + 90)
+    P = lambda p: ((p[0] * size + 60) * S, (p[1] * size + 40) * S)
+    d.polygon([P(A), P(B), P(C)], fill=(255, 243, 224), outline=INK, width=4 * S)
+    if kind == 'median':
+        M = ((B[0] + C[0]) / 2, B[1])
+        for xx in ((B[0] + M[0]) / 2, (M[0] + C[0]) / 2):
+            d.line([P((xx, B[1] - 0.04)), P((xx, B[1] + 0.04))], fill=RED, width=3 * S)
+    elif kind == 'height':
+        M = (A[0], B[1])
+        q = 0.05
+        d.line([P((M[0] + q, M[1])), P((M[0] + q, M[1] - q)), P((M[0], M[1] - q))], fill=RED, width=3 * S)
+    else:
+        a_ = math.atan2(B[1] - A[1], B[0] - A[0]); c_ = math.atan2(C[1] - A[1], C[0] - A[0])
+        m_ = (a_ + c_) / 2
+        tt = (B[1] - A[1]) / math.sin(m_)
+        M = (A[0] + tt * math.cos(m_), B[1])
+        for a0, a1 in ((a_, m_), (m_, c_)):
+            d.arc([P((A[0] - 0.09, A[1] - 0.09)), P((A[0] + 0.09, A[1] + 0.09))], math.degrees(min(a0, a1)), math.degrees(max(a0, a1)), fill=RED, width=3 * S)
+    d.line([P(A), P(M)], fill=RED, width=4 * S)
+    f_ = font(26 * S)
+    for p, nm, dx, dy in ((A, 'A', 0, -0.06), (B, 'B', -0.05, 0.03), (C, 'C', 0.05, 0.03), (M, 'M', 0, 0.08)):
+        d.text(P((p[0] + dx, p[1] + dy)), nm, font=f_, fill=INK, anchor='mm')
+    return done(im)
+
+
+def tri_h(la, lh, unit=30, a=8, h=5, off=2.5):
+    """üçbucaq: oturacaq a, hündürlük h (qırıq xətt)"""
+    pts = [(0, h), (a, h), (off, 0)]
+    im = poly_l(pts, [(a / 2, h + 26 / unit, la), (off + 40 / unit, h / 2, lh)], unit, (255, 236, 179))
+    dd = ImageDraw.Draw(im)
+    x = 80 + off * unit
+    for y in range(int(50), int(50 + h * unit), 14):
+        dd.line([x, y, x, y + 7], fill=RED, width=3)
+    return im
+
+
+def para(la, lh, unit=30, a=8, h=4, sh=2):
+    pts = [(sh, 0), (a + sh, 0), (a, h), (0, h)]
+    im = poly_l(pts, [(a / 2, h + 26 / unit, la), (sh + 40 / unit, h / 2, lh)], unit, (200, 230, 201))
+    dd = ImageDraw.Draw(im)
+    x = 80 + sh * unit
+    for y in range(50, int(50 + h * unit), 14):
+        dd.line([x, y, x, y + 7], fill=RED, width=3)
+    return im
+
+
+def rhomb(l1, l2, unit=26, d1=8, d2=6):
+    pts = [(d1 / 2, 0), (d1, d2 / 2), (d1 / 2, d2), (0, d2 / 2)]
+    im = poly_l(pts, [(d1 / 2 + 0.9, d2 / 2 - 0.5, l1), (d1 / 2 + 0.7, d2 * 0.78, l2)], unit, (248, 187, 208))
+    dd = ImageDraw.Draw(im)
+    T_ = lambda p: (80 + p[0] * unit, 50 + p[1] * unit)
+    dd.line([T_((0, d2 / 2)), T_((d1, d2 / 2))], fill=RED, width=3)
+    dd.line([T_((d1 / 2, 0)), T_((d1 / 2, d2))], fill=RED, width=3)
+    return im
+
+
+def circ(lab, kind='r', R=110):
+    W = 2 * R + 60
+    im, d = vec(W, W)
+    c = W / 2
+    d.ellipse([(c - R) * S, (c - R) * S, (c + R) * S, (c + R) * S], fill=(225, 245, 254), outline=INK, width=5 * S)
+    d.ellipse([(c - 5) * S, (c - 5) * S, (c + 5) * S, (c + 5) * S], fill=INK)
+    x0 = c if kind == 'r' else c - R
+    d.line([(x0 * S, c * S), ((c + R) * S, c * S)], fill=RED, width=4 * S)
+    d.text((((x0 + c + R) / 2) * S, (c - 22) * S), lab, font=font(28 * S), fill=RED, anchor='mm')
+    return done(im)
+
+
+def cyl(lr, lh, w=180, h=200, e=34):
+    W, H = w + 140, h + 2 * e + 40
+    im, d = vec(W, H)
+    x0, y0 = 40, 20 + e
+    col = (178, 223, 219)
+    d.rectangle([x0 * S, y0 * S, (x0 + w) * S, (y0 + h) * S], fill=col)
+    d.ellipse([x0 * S, (y0 + h - e) * S, (x0 + w) * S, (y0 + h + e) * S], fill=col, outline=INK, width=4 * S)
+    d.rectangle([(x0 + 2) * S, (y0 + h - e) * S, (x0 + w - 2) * S, (y0 + h) * S], fill=col)
+    d.line([(x0 * S, y0 * S), (x0 * S, (y0 + h) * S)], fill=INK, width=4 * S)
+    d.line([((x0 + w) * S, y0 * S), ((x0 + w) * S, (y0 + h) * S)], fill=INK, width=4 * S)
+    d.arc([x0 * S, (y0 + h - e) * S, (x0 + w) * S, (y0 + h + e) * S], 0, 180, fill=INK, width=4 * S)
+    d.ellipse([x0 * S, (y0 - e) * S, (x0 + w) * S, (y0 + e) * S], fill=(224, 242, 241), outline=INK, width=4 * S)
+    cx = x0 + w / 2
+    d.line([(cx * S, y0 * S), ((x0 + w) * S, y0 * S)], fill=RED, width=4 * S)
+    d.text(((cx + w / 4) * S, (y0 - 16) * S), lr, font=font(26 * S), fill=RED, anchor='mm')
+    d.text(((x0 + w + 12) * S, (y0 + h / 2) * S), lh, font=font(26 * S), fill=BLUE, anchor='lm')
+    return done(im)
