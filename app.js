@@ -18,7 +18,9 @@ let PRAISE=null;
 function praise(ok){PRAISE=ok}
 function playPraise(){if(PRAISE===null||!P.sound){PRAISE=null;return}const f=PRAISE?'p_ok'+(1+Math.random()*4|0):'p_no'+(1+Math.random()*2|0);PRAISE=null;setTimeout(()=>{try{stop();player=new Audio((BOOK.praise||'audio/')+f+'.mp3');player.play().catch(()=>{})}catch(e){}},450)}
 function stop(){try{if(player){player.onpause=null;player.pause()}}catch(e){}talking(false)}
-let ac=null;function chime(ok){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;(ok?[523,659,784]:[392,330]).forEach((f,k)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+k*.12);g.gain.exponentialRampToValueAtTime(.18,t+k*.12+.02);g.gain.exponentialRampToValueAtTime(.0001,t+k*.12+.3);o.connect(g).connect(ac.destination);o.start(t+k*.12);o.stop(t+k*.12+.32)})}catch(e){}}
+let ac=null;// böyük ədədləri siniflərə ayırır: 325236 → 325 236 (10 000-dən başlayaraq)
+function grp(v){if(v==null)return '';const t=String(v);return /^\d{5,}$/.test(t)?t.replace(/\B(?=(\d{3})+$)/g,'\u202F'):t}
+function chime(ok){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const t=ac.currentTime;(ok?[523,659,784]:[392,330]).forEach((f,k)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+k*.12);g.gain.exponentialRampToValueAtTime(.18,t+k*.12+.02);g.gain.exponentialRampToValueAtTime(.0001,t+k*.12+.3);o.connect(g).connect(ac.destination);o.start(t+k*.12);o.stop(t+k*.12+.32)})}catch(e){}}
 function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.getElementById('cf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#F6C343','#5145E6','#38C172','#E35D7F','#3BA6F5'];const Q=Array.from({length:60},()=>({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.45,vx:(Math.random()-.5)*9,vy:-Math.random()*11-4,s:6+Math.random()*6,c:cols[Math.random()*5|0],r:Math.random()*6}));let n=0;(function f(){x.clearRect(0,0,c.width,c.height);Q.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++n<70)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
 
 function ring(done,total){const r=15,c=2*Math.PI*r,ns='http://www.w3.org/2000/svg',sv=document.createElementNS(ns,'svg');sv.setAttribute('viewBox','0 0 36 36');sv.setAttribute('aria-hidden','true');
@@ -298,15 +300,15 @@ function problemView(p,k){
     let fresh=!!(st.tries[k]&&a.every(v=>v!==null)); // təzə başla: növbəti rəqəm köhnəni əvəz edir
     const solved=st.first[k]!==undefined&&a.every((v,j)=>String(v)===String(c.slots[j]));
     const locked=solved||st.shown[k];
-    const eq=h('div',{class:'eq'});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;fresh=true;paint()}});return s});
+    const eq=h('div',{class:'eq'+(c.mode==='sign'&&c.pairs.some(pr=>pr.join('').length>10)?' small':'')});const slots=c.slots.map((_,j)=>{const s=h('button',{class:'slot',disabled:locked,onclick(){active=j;fresh=true;paint()}});return s});
     if(c.mode==='sign')c.pairs.forEach(([x,y],j)=>{if(j)eq.append(h('span',{class:'br'}));eq.append(h('span',{class:'fixed'},x),slots[j],h('span',{class:'fixed'},y))});
     else slots.forEach(s=>eq.append(s));
-    const paint=()=>slots.forEach((s,j)=>{s.textContent=a[j]??'';let cl='slot';if(a[j]!==null)cl+=' filled';if(!locked&&j===active)cl+=' active';if(locked)cl+=String(a[j])===String(c.slots[j])?' right':' wrong';s.className=cl});
+    const paint=()=>slots.forEach((s,j)=>{s.textContent=grp(a[j]);let cl='slot';if(a[j]!==null)cl+=' filled';if(String(a[j]??'').length>5)cl+=' long';if(!locked&&j===active)cl+=' active';if(locked)cl+=String(a[j])===String(c.slots[j])?' right':' wrong';s.className=cl});
     task.append(h('p',{class:'paperhint'},c.slots.length>1?'Cavabları soldan sağa yazın:':'Cavabı yazın:'),eq);
     const set=v=>{if(v===null)fresh=false;a[active]=v;if(v!==null&&active<a.length-1&&c.mode==='sign')active++;paint();upd()};
     if(!locked){
       if(c.mode==='sign')task.append(h('div',{class:'signs'},['>','<','='].map(sg=>h('button',{onclick(){set(sg)}},sg))));
-      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=fresh||a[active]==null?'':String(a[active]);fresh=false;let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>5)v=String(d);set(Number(v))}},String(d))));pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Silin'));task.append(pad)}
+      else{const pad=h('div',{class:'pad'});[1,2,3,4,5,6,7,8,9,0].forEach(d=>pad.append(h('button',{onclick(){const cur=fresh||a[active]==null?'':String(a[active]);fresh=false;let v=(cur+d).replace(/^0(\d)/,'$1');if(v.length>7)v=String(d);set(Number(v))}},String(d))));pad.append(h('button',{class:'del',onclick(){set(null)}},'⌫ Silin'));task.append(pad)}
     }
     const tries=st.tries[k]||0;
     if(solved)(task).append(cheer(st.first[k]));

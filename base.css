@@ -81,6 +81,10 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(-
 .eq .br{flex-basis:100%;height:0}
 .eq .op{color:var(--primary)}
 .slot{min-width:72px;height:72px;border-radius:18px;border:4px dashed var(--primary);background:var(--card);color:var(--ink);font-size:36px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;padding:0 8px}
+.slot.long{font-size:28px}
+.eq.small{font-size:22px;gap:6px}
+.eq.small .fixed{height:52px;min-width:0;padding:0 8px;border-radius:14px}
+.eq.small .slot{min-width:52px;height:52px;font-size:26px;border-radius:14px}
 .slot.active{border-style:solid;border-color:#F0A020;box-shadow:0 0 0 4px var(--chip)}
 .slot.filled{border-style:solid}
 .slot.right{border-color:var(--good);background:var(--good-soft)}
