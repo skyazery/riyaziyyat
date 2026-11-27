@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from speak import speakable  # 4-cü sinif: riyazi işarələr sözlə oxunur
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BOOKS = ['.', '1-2', '2-1', '2-2', '3-1', '3-2', '4-1', '4-2']
+BOOKS = ['.', '1-2', '2-1', '2-2', '3-1', '3-2', '4-1', '4-2', '5-1']
 VOICE, PITCH, RATE = 'az-AZ-BanuNeural', '+17Hz', '+0%'
 GREET = os.path.join(ROOT, 'tools', 'greet.mp3')  # salamlama (1-2, mövzu 29 girişinin ilk 3.95 s)
 GREET_OLD = os.path.join(ROOT, '1-2', 'audio', '4fb7a9b7b8.mp3')
@@ -84,7 +84,7 @@ async def main():
         for k, v in voice.items():
             out = os.path.join(ad, k + '.mp3')
             if not os.path.exists(out):
-                jobs.append(synth(sem, speakable(v) if b.startswith('4-') else v, out, k in concepts))
+                jobs.append(synth(sem, speakable(v) if b[:1] in '456' else v, out, k in concepts))
         plan.append((b, dd, ad, voice))
     if '--praise' in sys.argv:  # tərif səslərini yenidən yarat
         for k, v in PRAISE.items():
@@ -104,13 +104,13 @@ async def main():
                 if item.get('aid') == aid(item['ins']):
                     continue  # səs bu mətnə uyğundur – yenidən yaratmağa ehtiyac yoxdur
                 out = os.path.join(tmp, 'test_%s_%d.mp3' % (b.replace('.', 'b11'), i))
-                jobs.append(synth(sem, speakable(item['ins']) if b.startswith('4-') else item['ins'], out))
+                jobs.append(synth(sem, speakable(item['ins']) if b[:1] in '456' else item['ins'], out))
                 tests.append((f, i, out))
             elif a:
                 k = aid(item['ins'])
                 out = os.path.join(ROOT, b, 'audio', k + '.mp3')
                 if not os.path.exists(out):
-                    jobs.append(synth(sem, speakable(item['ins']) if b.startswith('4-') else item['ins'], out))
+                    jobs.append(synth(sem, speakable(item['ins']) if b[:1] in '456' else item['ins'], out))
                 tests.append((f, i, k))
     print('işlər:', len(jobs))
     res = await asyncio.gather(*jobs)

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>5-ci sinif riyaziyyat · 1-ci hissə</title>
+<meta name="description" content="3-cü sinif üçün şəkilli və səsli riyaziyyat tapşırıqları (2-ci hissə, 26 mövzu).">
+<meta property="og:title" content="3-cü sinif riyaziyyat (2-ci hissə) – şəkilli və səsli tapşırıqlar">
+<meta property="og:description" content="26 mövzu, 260 şəkilli tapşırıq, səsli izah və yoxlama testi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="../base.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../sagird.js"></script>
+</head>
+<body>
+<div class="wrap" id="app"><p class="muted" style="text-align:center;padding:40px">Yüklənir...</p></div>
+<div class="bar" id="bar" hidden><div class="in" id="barIn"></div></div>
+<canvas class="confetti" id="cf"></canvas>
+<script>
+const BOOK={id:'5-1',praise:'../audio/',first:191,last:223,key:'riyaziyyat-5-1-progress',logo:'📙',
+  title:'5-ci sinif riyaziyyat',sub:'Mövzu 191–223 · şəkilli və səsli tapşırıqlar',part:'1',partName:'1-ci hissə',
+  sections:[['Natural ədədlər',191,198],['Adi kəsrlər',199,203],['Qarışıq ədədlər, vurma və bölmə',204,208],['Onluq kəsrlər',209,213],['Onluq kəsrlərin vurulması və bölünməsi',214,219],['Faiz',220,223]],
+  icons:{191:'🔢',192:'⚖️',193:'🎯',194:'➕',195:'🟦',196:'✖️',197:'🧮',198:'🔍',199:'🍕',200:'📊',201:'🍰',202:'➕',203:'➖',204:'✖️',205:'🧁',206:'➗',207:'🥧',208:'🍫',209:'🔟',210:'⚖️',211:'🎯',212:'🔄',213:'🧾',214:'🚀',215:'🛒',216:'📐',217:'🎀',218:'🥛',219:'🧩',220:'💯',221:'🏷️',222:'🔎',223:'📈'},
+  /* səviyyə testi: hər bölmədən 2 tapşırıq [mövzu, tapşırığın sırası (0-dan)] */
+  lvq:[[[193,0],[196,1]],[[200,4],[201,0]],[[204,0],[208,0]],[[212,0],[213,0]],[[215,0],[218,1]],[[221,0],[222,1]]],
+  allText:'İstədiyi mövzunu təkrar edə bilər. Hazır olanda yoxlama testini edin.',
+  footer:'Mövzular Azərbaycan Respublikasının «Riyaziyyat 5» dərsliyinin (1-ci hissə) ardıcıllığı ilə hazırlanıb.',
+  noTest:true,
+  other:{id:'4-2',href:'../4-2/',label:'📔 ← 4-cü sinif, 2-ci hissə: Mövzu 171–190',text:'Kəsrlər, onluq kəsrlər, pullar, ölçü vahidləri, məlumatların təsviri'}};
+const KITAB=BOOK.id;
+</script>
+<script src="../app.js"></script>
+</body>
+</html>
