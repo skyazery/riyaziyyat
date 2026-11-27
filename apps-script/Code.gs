@@ -15,7 +15,7 @@
  *  - 메뉴 「주간 리포트 만들기」(일요일 저녁) / 「월간 리포트 만들기」(월말)를 누르면 Hesabatlar 탭에 학생별 줄이 생깁니다.
  *    선생님 한마디를 적고 「💬 Göndər」를 누르면 부모님께 리포트 링크(hesabat.html)를 왓츠앱으로 보냅니다.
  *
- * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권
+ * Şagirdlər 탭 칸:  A~F 학생 정보 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 이름 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권 · AM~AQ 4-1권 · AR~AV 4-2권
  * 개인정보(생년월일, 전화번호)는 이 시트 안에만 있고, 사이트에는 학생 이름만 전달됩니다.
  */
 
@@ -39,7 +39,7 @@ const DONE = 'Tamamlandı';
 
 // Şagirdlər 탭 열 순서 (1부터)
 const C = { NAME: 1, BIRTH: 2, PHONE: 3, CODE: 4, LINK: 5, WA: 6, GRADE: 17, PARENT: 18 };
-const NCOL = 38; // A~F 학생 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권
+const NCOL = 48; // A~F 학생 · G~K 1-1권 · L~P 1-2권 · Q 학년 · R 부모 · S~W 2-1권 · X~AB 2-2권 · AC~AG 3-1권 · AH~AL 3-2권 · AM~AQ 4-1권 · AR~AV 4-2권
 const REG_HEADERS = ['Tarix (제출 시각)', 'Şagirdin adı (이름)', 'Soyadı (성)', 'Doğum tarixi (생년월일)', 'Sinif (학년)',
   'Valideyn (부모 이름)', 'Telefon (전화)', 'Valideyn təsdiqi (보호자 확인)', 'Razılıq 1 (정보 이용)', 'Razılıq 2 (결과 저장·발송)',
   'Razılıq 3 – reklam (홍보, 선택)', 'Kod (코드)', 'Qeyd (메모)'];
@@ -144,6 +144,36 @@ const BOOKS = {
     lvAll: 143,
     lvSections: [[117, 121], [122, 128], [129, 131], [132, 134], [135, 139], [140, 142]],
     topics: ["Kəsişən və paralel düz xətlər", "Müstəvi fiqurlar", "Simmetriya və yerdəyişmə", "Fəza fiqurları", "Müstəvi və fəza fiqurlarının əlaqəsi", "Vurmanın xassələri", "İkirəqəmli ədədin birrəqəmli ədədə vurulması", "Üçrəqəmli ədədin birrəqəmli ədədə vurulması", "Qalıqlı bölmə", "İkirəqəmli ədədin birrəqəmli ədədə bölünməsi", "Üçrəqəmli ədədin birrəqəmli ədədə bölünməsi", "Vurma və bölmənin digər üsulları", "Tam və bərabər hissələr. Kəsr", "Ədədin hissəsi", "Kəsrlərin müqayisəsi", "Dördrəqəmli ədədlər", "Pullarla hesablamalar", "Gəlir, xərc, qazanc", "Uzunluq", "Perimetr və sahə", "Kütlə", "Tutum", "Saat", "Xətti diaqram", "Hadisələr", "Məlumatların təsviri. Praktik dərs"]
+  },
+  '4-1': {
+    name: '4-1', color: '#DBE4FF',
+    col: { STATUS: 39, DATE: 40, LV_START: 41, LV_DATE: 42, LV_RETRY: 43 },
+    results: 'Nəticələr 4-1', level: 'Səviyyə 4-1', first: 143,
+    key: [
+      { a: 'A', ans: [435207] }, { a: 'A', k: 'choice', ans: 1 }, { a: 'A', k: 'choice', ans: 1 }, { a: 'A', ans: [19000] },
+      { a: 'B', ans: [63887] }, { a: 'B', ans: [1248] }, { a: 'B', ans: [2111] }, { a: 'B', ans: [19882] },
+      { a: 'C', ans: [25266] }, { a: 'C', ans: [1346] }, { a: 'C', ans: [2875] }, { a: 'C', ans: [102] },
+      { a: 'D', ans: [55] }, { a: 'D', ans: [171] }, { a: 'D', ans: [96] }, { a: 'D', ans: [192] },
+      { a: 'E', ans: [14] }, { a: 'E', k: 'choice', ans: 2 }, { a: 'E', ans: [3] }, { a: 'E', ans: [12] }
+    ],
+    lvAll: 171,
+    lvSections: [[143, 145], [146, 148], [149, 154], [155, 159], [160, 163], [164, 170]],
+    topics: ["Çoxrəqəmli ədədlər", "Müqayisə və sıralama", "Yuvarlaqlaşdırma", "Çoxrəqəmli ədədlərin toplanması", "Çoxrəqəmli ədədlərin çıxılması", "Toplama və çıxmanın digər üsulları", "Dördrəqəmli ədədin birrəqəmli ədədə vurulması", "Çoxrəqəmli ədədin birrəqəmli ədədə vurulması", "Dördrəqəmli ədədin birrəqəmli ədədə bölünməsi", "Çoxrəqəmli ədədin birrəqəmli ədədə bölünməsi", "Ədədin bölənləri və bölünənləri", "Vurma və bölmənin digər üsulları", "Ədədi ifadələr", "Dəyişəni olan ifadələr", "Tənlik", "Tənlik qurmaqla məsələ həlli", "Riyazi qanunauyğunluq", "İkirəqəmli ədədə vurma", "Üçrəqəmli ədədə vurma", "İkirəqəmli ədədin ikirəqəmli ədədə bölünməsi", "Çoxrəqəmli ədədin ikirəqəmli ədədə bölünməsi", "Sadə həndəsi fiqurlar. Çevrə", "Bucaq. Bucağın ölçüsü", "Bucağın ölçülməsi. Transportir", "Koordinat şəbəkəsi", "Həndəsi ornamentlər", "Fəza fiqurlarının açılışı", "Fiqurların müxtəlif tərəflərdən görünüşü"]
+  },
+  '4-2': {
+    name: '4-2', color: '#E9FAC8',
+    col: { STATUS: 44, DATE: 45, LV_START: 46, LV_DATE: 47, LV_RETRY: 48 },
+    results: 'Nəticələr 4-2', level: 'Səviyyə 4-2', first: 171,
+    key: [
+      { a: 'A', ans: [9] }, { a: 'A', k: 'choice', ans: 1 }, { a: 'A', ans: [5] }, { a: 'A', ans: [7] },
+      { a: 'B', ans: [2, 3] }, { a: 'B', k: 'choice', ans: 1 }, { a: 'B', ans: [5, 2] }, { a: 'B', ans: [3, 4] },
+      { a: 'C', ans: [250] }, { a: 'C', ans: [2] }, { a: 'C', ans: [3, 50] }, { a: 'C', ans: [120] },
+      { a: 'D', ans: [2500] }, { a: 'D', ans: [34] }, { a: 'D', ans: [35] }, { a: 'D', ans: [180] },
+      { a: 'E', ans: [40] }, { a: 'E', ans: [20] }, { a: 'E', ans: [12] }, { a: 'E', k: 'choice', ans: 0 }
+    ],
+    lvAll: 191,
+    lvSections: [[171, 174], [175, 177], [178, 180], [181, 183], [184, 187], [188, 190]],
+    topics: ["Bərabər kəsrlər", "Kəsrlərin müqayisəsi", "Məxrəcləri bərabər olan kəsrlərin toplanması və çıxılması", "Qarışıq ədədlər", "Onluq kəsrlər", "Onluq kəsrlərin müqayisəsi", "Onluq kəsrlərin toplanması və çıxılması", "Pullar və onluq kəsrlər", "Pullarla hesablamalar", "Dəyişən və dəyişməyən xərclər", "Uzunluq", "Perimetr", "Sahə", "Kütlə və tutum", "Həcm", "Zaman", "Sürət", "Cədvəl. Piktoqram", "Dairəvi diaqram", "Xətti diaqram"]
   }
 };
 
@@ -223,8 +253,8 @@ function setup() {
   setupReports_(ss);
   SpreadsheetApp.getUi().alert('준비 완료! Şagirdlər 탭에 학생 이름·생년월일·부모 전화번호를 적고 「② 새 학생 링크 만들기」를 누르세요.\n\n' +
     '동의서(qeydiyyat.html)로 등록한 학생은 자동으로 추가되고 링크도 자동으로 만들어집니다. Ayarlar 탭 ELAQE_NOMRESI 칸에 연락처를 넣어 주세요.\n\n' +
-    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름, S~W = 2-1권, X~AB = 2-2권, AC~AG = 3-1권, AH~AL = 3-2권.\n' +
-    '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49, 2-1권 50~69, 2-2권 70~91, 3-1권 92~116, 3-2권 117~142), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
+    '칸 안내: G~K = 1-1권, L~P = 1-2권, Q = 학년, R = 부모 이름, S~W = 2-1권, X~AB = 2-2권, AC~AG = 3-1권, AH~AL = 3-2권, AM~AQ = 4-1권, AR~AV = 4-2권.\n' +
+    '「시작 단원」칸은 학생이 레벨테스트를 보면 자동으로 채워집니다. 숫자를 직접 바꾸면 그 단원부터 시작하고(1-1권 1~28, 1-2권 29~49, 2-1권 50~69, 2-2권 70~91, 3-1권 92~116, 3-2권 117~142, 4-1권 143~170, 4-2권 171~190), 비우면 레벨테스트를 다시 봅니다. 「재응시」칸에 체크하면 한 번 더 볼 수 있습니다.');
 }
 
 /* ---------------- 학생 링크 만들기 ---------------- */
@@ -955,7 +985,7 @@ function sanitizeAns_(raw, KEY) {
     const v = raw[k];
     if (v === undefined || v === null) return;
     if (it.k === 'choice') { if (typeof v === 'number') out[k] = v; }
-    else if (Array.isArray(v)) out[k] = v.slice(0, it.ans.length).map(x => (x === null ? null : String(x).slice(0, 5)));
+    else if (Array.isArray(v)) out[k] = v.slice(0, it.ans.length).map(x => (x === null ? null : String(x).slice(0, 8))); // 4-cü sinif: 7 rəqəmə qədər
   });
   return out;
 }
@@ -1062,7 +1092,7 @@ const COL = { brand: '#5145E6', brandSoft: '#ECEAFF', sun: '#FFF4D6', sunInk: '#
   warn: '#B06000', warnSoft: '#FEF7E0', bad: '#C5221F', badSoft: '#FCE8E6', grey: '#BDC1C6', muted: '#5F6368', edit: '#FFF8C5' };
 const STATUS = { bad: ['연락 필요', COL.bad, COL.badSoft], warn: ['살펴보기', COL.warn, COL.warnSoft], ok: ['잘하고 있음', COL.ok, COL.okSoft] };
 
-function bookByTopic_(n) { return n >= BOOKS['3-2'].first ? BOOKS['3-2'] : n >= BOOKS['3-1'].first ? BOOKS['3-1'] : n >= BOOKS['2-2'].first ? BOOKS['2-2'] : n >= BOOKS['2-1'].first ? BOOKS['2-1'] : n >= BOOKS['1-2'].first ? BOOKS['1-2'] : BOOKS['1-1']; }
+function bookByTopic_(n) { return n >= BOOKS['4-2'].first ? BOOKS['4-2'] : n >= BOOKS['4-1'].first ? BOOKS['4-1'] : n >= BOOKS['3-2'].first ? BOOKS['3-2'] : n >= BOOKS['3-1'].first ? BOOKS['3-1'] : n >= BOOKS['2-2'].first ? BOOKS['2-2'] : n >= BOOKS['2-1'].first ? BOOKS['2-1'] : n >= BOOKS['1-2'].first ? BOOKS['1-2'] : BOOKS['1-1']; }
 
 // 학생 한 명의 요약 (현황판·학생 보기가 같이 씀)
 function studentSummary_(stu, rows, today) {
@@ -1322,7 +1352,7 @@ function tidySheets() {
   refreshPanel();
   const order = [
     [SH_PANEL, '#5145E6'], [SH_DETAIL, '#E8790C'], [SH_STUDENTS, '#F6A623'], [SH_REPORTS, '#8E6CEF'], [SH_DAILY, '#3BA6F5'],
-    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['2-1'].level, '#9AA0A6'], [BOOKS['2-2'].level, '#9AA0A6'], [BOOKS['3-1'].level, '#9AA0A6'], [BOOKS['3-2'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'], [BOOKS['2-1'].results, '#9AA0A6'], [BOOKS['2-2'].results, '#9AA0A6'], [BOOKS['3-1'].results, '#9AA0A6'], [BOOKS['3-2'].results, '#9AA0A6'],
+    [SH_REG, '#E35D7F'], [BOOKS['1-1'].level, '#9AA0A6'], [BOOKS['1-2'].level, '#9AA0A6'], [BOOKS['2-1'].level, '#9AA0A6'], [BOOKS['2-2'].level, '#9AA0A6'], [BOOKS['3-1'].level, '#9AA0A6'], [BOOKS['3-2'].level, '#9AA0A6'], [BOOKS['4-1'].level, '#9AA0A6'], [BOOKS['4-2'].level, '#9AA0A6'], [BOOKS['1-1'].results, '#9AA0A6'], [BOOKS['1-2'].results, '#9AA0A6'], [BOOKS['2-1'].results, '#9AA0A6'], [BOOKS['2-2'].results, '#9AA0A6'], [BOOKS['3-1'].results, '#9AA0A6'], [BOOKS['3-2'].results, '#9AA0A6'], [BOOKS['4-1'].results, '#9AA0A6'], [BOOKS['4-2'].results, '#9AA0A6'],
     [SH_SETTINGS, '#5F6368']];
   let pos = 1;
   order.forEach(([name, color]) => {
