@@ -1621,8 +1621,8 @@
  "23": {
   "scenes": [
    {
-    "say": "3 alma görünür, bir neçəsi dəsmalın altındadır. Cəmi 5 almadır.",
-    "audio": "435a367565",
+    "say": "3 alma görünür, bir neçəsi şərfin altındadır. Cəmi 5 almadır.",
+    "audio": "c4dc8b3445",
     "keep": false,
     "layers": [
      {
@@ -1643,8 +1643,8 @@
     ]
    },
    {
-    "say": "Dəsmalın altında neçə alma var? 5 çıx 3 bərabərdir 2.",
-    "audio": "b4992840b6",
+    "say": "Şərfin altında neçə alma var? 5 çıx 3 bərabərdir 2.",
+    "audio": "a19a31ec19",
     "keep": false,
     "layers": [
      {
@@ -1835,8 +1835,8 @@
  "26": {
   "scenes": [
    {
-    "say": "10 çöpü bir dəstə bağlayırıq. Bu, 1 onluqdur.",
-    "audio": "6d66bcb2d5",
+    "say": "10 kubu birləşdiririk. Bu, 1 onluqdur.",
+    "audio": "27159ed2f2",
     "keep": false,
     "layers": [
      {
@@ -1852,8 +1852,8 @@
     ]
    },
    {
-    "say": "Daha 4 çöp var. Bunlar 4 təklikdir.",
-    "audio": "98d85e6b5a",
+    "say": "Daha 4 kub var. Bunlar 4 təklikdir.",
+    "audio": "98ba1540a3",
     "keep": true,
     "layers": [
      {

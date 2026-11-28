@@ -105,7 +105,7 @@ def plate(n_apples, size=150):
     d.ellipse([4, size * 0.18, size - 4, size - 4], fill=(255, 255, 255, 255), outline=GREY + (255,), width=5)
     d.ellipse([size * 0.18, size * 0.32, size * 0.82, size * 0.84], outline=(225, 228, 234, 255), width=4)
     a = em('🍎', int(size * 0.34))
-    pos = [(0.5, 0.42), (0.3, 0.64), (0.7, 0.64)][:n_apples]
+    pos = [(0.34, 0.56), (0.66, 0.56)] if n_apples == 2 else [(0.5, 0.42), (0.3, 0.64), (0.7, 0.64)][:n_apples]
     for px, py in pos:
         im.alpha_composite(a, (int(px * size - a.width / 2), int(py * size - a.height / 2)))
     return im

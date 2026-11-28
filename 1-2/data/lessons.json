@@ -836,8 +836,8 @@
  "42": {
   "scenes": [
    {
-    "say": "Göy qələm uzundur, sarı qələm qısadır.",
-    "audio": "f7a20d142b",
+    "say": "Yuxarıdakı qələm uzundur, aşağıdakı qələm qısadır.",
+    "audio": "6c44dc1d15",
     "keep": false,
     "layers": [
      {

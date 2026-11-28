@@ -21,15 +21,21 @@ fin(L); L.save()
 L = Lesson(B, 31)
 
 
-def half(cut=False, sep=0):
+def half(cut=True, sep=0):
     im = Image.new('RGBA', (300 + sep, 300), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    d.pieslice([0, 0, 296, 296], 90, 270, fill=(250, 200, 80, 255), outline=ORANGE + (255,), width=6)
-    d.pieslice([sep + 4, 0, sep + 300, 296], 270, 90, fill=(250, 200, 80, 255), outline=ORANGE + (255,), width=6)
+    if not cut:
+        d.ellipse([0, 0, 296, 296], fill=(250, 200, 80, 255), outline=ORANGE + (255,), width=6)
+    else:
+        d.pieslice([0, 0, 296, 296], 90, 270, fill=(250, 200, 80, 255), outline=ORANGE + (255,), width=6)
+        d.pieslice([sep + 4, 0, sep + 300, 296], 270, 90, fill=(250, 200, 80, 255), outline=ORANGE + (255,), width=6)
+    for px, py in [(.3, .3), (.62, .25), (.25, .6), (.38, .42), (.7, .6), (.4, .78), (.72, .8)]:
+        x = px * 296 + (sep if px > .5 else 0)
+        d.ellipse([x - 16, py * 296 - 16, x + 16, py * 296 + 16], fill=RED + (255,))
     return im
 
 
-L.scene('Bu, tam pizzadır.', [(L.layer([(half(), 400, 240)]), 0.1, 'pop'), (L.layer([(T('tam', 56, BLUE), 400, 450)]), 0.5, 'pop', 1.4)])
+L.scene('Bu, tam pizzadır.', [(L.layer([(half(cut=False), 400, 240)]), 0.1, 'pop'), (L.layer([(T('tam', 56, BLUE), 400, 450)]), 0.5, 'pop', 1.4)])
 L.scene('Onu 2 bərabər hissəyə bölürük.', [(L.layer([(half(sep=60), 400, 240)]), 0.3, 'fade')])
 L.scene('Hər hissə yarıdır.', [(L.layer([(half(sep=60), 400, 240)]), 0.0, 'fade'), (L.layer([(T('yarı', 50, RED), 270, 450), (T('yarı', 50, RED), 530, 450)]), 0.3, 'pop')])
 fin(L); L.save()
@@ -142,14 +148,15 @@ L = Lesson(B, 42)
 
 
 def _pencil(n, cell):
-    im = Image.new('RGBA', (n * cell + 40, 50), (0, 0, 0, 0))
+    L_ = n * cell  # qələmin bütün uzunluğu (ucu da daxil)
+    im = Image.new('RGBA', (L_ + 2, 50), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    d.rectangle([0, 8, n * cell, 42], fill=(250, 200, 40, 255), outline=INK + (255,), width=3)
-    d.polygon([(n * cell, 8), (n * cell + 38, 25), (n * cell, 42)], fill=(240, 210, 170, 255), outline=INK + (255,))
+    d.rectangle([0, 8, L_ - 38, 42], fill=(250, 200, 40, 255), outline=INK + (255,), width=3)
+    d.polygon([(L_ - 38, 8), (L_, 25), (L_ - 38, 42)], fill=(240, 210, 170, 255), outline=INK + (255,))
     return im
 
 
-L.scene('Göy qələm uzundur, sarı qələm qısadır.', [(L.layer([(_pencil(8, 56), 100 + (8 * 56 + 40) / 2, 150)]), 0.05, 'fly'), (L.layer([(_pencil(4, 56), 100 + (4 * 56 + 40) / 2, 300)]), 0.45, 'fly')])
+L.scene('Yuxarıdakı qələm uzundur, aşağıdakı qələm qısadır.', [(L.layer([(_pencil(8, 56), 100 + (8 * 56 + 2) / 2, 150)]), 0.05, 'fly'), (L.layer([(_pencil(4, 56), 100 + (4 * 56 + 2) / 2, 300)]), 0.45, 'fly')])
 L.scene('Kublarla ölçək: uzun qələm 8 kub, qısa qələm 4 kubdur.', [(L.layer([(unit(50, BLUE), 128 + i * 56, 210) for i in range(8)] + [(T('8', 56, BLUE), 680, 210)]), 0.25, 'pop'), (L.layer([(unit(50, BLUE), 128 + i * 56, 360) for i in range(4)] + [(T('4', 56, BLUE), 400, 360)]), 0.6, 'pop')], keep=True)
 L.scene('Ağac hündürdür, kol isə alçaqdır.', [(L.layer([(E('🌳', 160), 620, 465), (E('🌿', 80), 740, 505)]), 0.2, 'pop')], keep=True)
 fin(L); L.save()
@@ -170,7 +177,7 @@ def ruler(n=10, cm=60):
 
 L = Lesson(B, 43)
 L.scene('Uzunluğu santimetrlə ölçürük. Bu, xətkeşdir.', [(L.layer([(ruler(), 400, 360)]), 0.1, 'fly')])
-L.scene('Xətkeşin 0-ını qələmin ucuna qoyuruq.', [(L.layer([(_pencil(6, 60), 100 + (6 * 60 + 40) / 2, 285)]), 0.2, 'fly'), (L.layer([(ring(80, 140, RED), 100, 330)]), 0.6, 'pop', 0.95)], keep=True)
+L.scene('Xətkeşin 0-ını qələmin ucuna qoyuruq.', [(L.layer([(_pencil(6, 60), 100 + (6 * 60 + 2) / 2, 285)]), 0.2, 'fly'), (L.layer([(ring(80, 140, RED), 100, 330)]), 0.6, 'pop', 0.95)], keep=True)
 L.scene('Qələm 6 santimetrdir.', [(L.layer([(ring(80, 140, RED), 460, 330), (label('6 sm', 60, RED), 460, 160)]), 0.2, 'pop')], keep=True)
 fin(L); L.save()
 
@@ -212,8 +219,8 @@ def glass(level, w=110, h=180, color=BLUE):
 
 L = Lesson(B, 45)
 L.scene('Bu iki qabdan hansı çox su tutur?', [(L.layer([(glass(0, 120, 160), 230, 260), (glass(0, 200, 240), 560, 220)]), 0.1, 'pop')])
-L.scene('Kiçik qab 2 stəkan, böyük qab 5 stəkan su tutur.', [(L.layer([(glass(1, 120, 160), 230, 260)]), 0.1, 'fade'), (L.layer([(glass(1, 200, 240), 560, 220)]), 0.5, 'fade'), (L.layer([(T('2 stəkan', 44, BLUE), 230, 400), (T('5 stəkan', 44, BLUE), 560, 400)]), 0.6, 'pop')], keep=True)
-L.scene('Çox su tutan qabın tutumu böyükdür. Tutumu litrlə ölçürük.', [(L.layer([(ring(260, 330, GREEN), 560, 270)]), 0.2, 'pop'), (L.layer([(label('litr', 54, GREEN), 400, 70)]), 0.7, 'pop')], keep=True)
+L.scene('Kiçik qab 2 stəkan, böyük qab 5 stəkan su tutur.', [(L.layer([(glass(1, 120, 160), 230, 260)]), 0.1, 'fade'), (L.layer([(glass(1, 200, 240), 560, 220)]), 0.5, 'fade'), (L.layer([(E('🥛', 62), 200 + i * 60, 385) for i in range(2)] + [(E('🥛', 62), 440 + i * 60, 385) for i in range(5)] + [(T('2 stəkan', 40, BLUE), 230, 450), (T('5 stəkan', 40, BLUE), 560, 450)]), 0.6, 'pop')], keep=True)
+L.scene('Çox su tutan qabın tutumu böyükdür. Tutumu litrlə ölçürük.', [(L.layer([(ring(250, 270, GREEN), 560, 225)]), 0.2, 'pop'), (L.layer([(label('litr', 54, GREEN), 400, 70)]), 0.7, 'pop')], keep=True)
 fin(L); L.save()
 
 # 46 Gün, həftə, ay

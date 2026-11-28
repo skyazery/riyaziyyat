@@ -176,7 +176,7 @@ fin(L); L.save()
 # 17 Üç toplananlı ifadələr
 L = Lesson(B, 17)
 st = E('⭐', 70)
-g = [(2, 130), (3, 360), (1, 600)]
+g = [(2, 120), (3, 340), (1, 650)]
 L.scene('2 ulduz, 3 ulduz və 1 ulduz var.', seq([L.layer([(st, x, 150) for x, _ in row(n, 0, x0=x0, dx=75)]) for n, x0 in g], 0.1, 0.75))
 L.scene('Əvvəlcə 2 üstəgəl 3 bərabərdir 5.', [(L.layer(eq_items(['2', '+', '3', '=', '5'], 320, 80)), 0.2, 'pop')], keep=True)
 L.scene('Sonra 5 üstəgəl 1 bərabərdir 6.', [(L.layer(eq_items(['5', '+', '1', '=', '6'], 450, 80)), 0.2, 'pop')], keep=True)
@@ -240,8 +240,8 @@ fin(L); L.save()
 
 # 23 Məchulun tapılması
 L = Lesson(B, 23)
-L.scene('3 alma görünür, bir neçəsi dəsmalın altındadır. Cəmi 5 almadır.', [(L.layer([(E('🍎', 90), x, 200) for x, _ in row(3, 0, x0=140, dx=105)]), 0.05, 'pop'), (L.layer([(E('🧣', 170), 570, 210)]), 0.35, 'fly'), (L.layer(eq_items(['3', '+', '?', '=', '5'], 420, 96)), 0.7, 'pop')])
-L.scene('Dəsmalın altında neçə alma var? 5 çıx 3 bərabərdir 2.', [(L.layer([(E('🍎', 90), x, 200) for x, _ in row(3, 0, x0=140, dx=105)] + [(E('🧣', 110), 720, 110)] + eq_items(['3', '+', '?', '=', '5'], 420, 96)), 0.0, 'fade'), (L.layer([(E('🍎', 90), 500, 200), (E('🍎', 90), 600, 200), (ring(230, 130, GREEN), 550, 200)]), 0.4, 'pop')])
+L.scene('3 alma görünür, bir neçəsi şərfin altındadır. Cəmi 5 almadır.', [(L.layer([(E('🍎', 90), x, 200) for x, _ in row(3, 0, x0=140, dx=105)]), 0.05, 'pop'), (L.layer([(E('🧣', 170), 570, 210)]), 0.35, 'fly'), (L.layer(eq_items(['3', '+', '?', '=', '5'], 420, 96)), 0.7, 'pop')])
+L.scene('Şərfin altında neçə alma var? 5 çıx 3 bərabərdir 2.', [(L.layer([(E('🍎', 90), x, 200) for x, _ in row(3, 0, x0=140, dx=105)] + [(E('🧣', 110), 720, 110)] + eq_items(['3', '+', '?', '=', '5'], 420, 96)), 0.0, 'fade'), (L.layer([(E('🍎', 90), 500, 200), (E('🍎', 90), 600, 200), (ring(230, 130, GREEN), 550, 200)]), 0.4, 'pop')])
 L.scene('Gizlənən ədəd 2-dir: 3 üstəgəl 2 bərabərdir 5.', [(L.layer(eq_items(['3', '+', '2', '=', '5'], 525, 64)), 0.3, 'pop')], keep=True)
 fin(L); L.save()
 
@@ -263,15 +263,15 @@ fin(L); L.save()
 
 # 26 Onluq və təklik
 L = Lesson(B, 26)
-L.scene('10 çöpü bir dəstə bağlayırıq. Bu, 1 onluqdur.', [(L.layer(blocks(1, 0, 260, 250, 28)), 0.2, 'pop'), (L.layer([(T('1 onluq', 44, BLUE), 220, 450)]), 0.7, 'pop')])
-L.scene('Daha 4 çöp var. Bunlar 4 təklikdir.', [(L.layer([(unit(28), 420 + (i % 2) * 44, 180 + (i // 2) * 44) for i in range(4)]), 0.2, 'pop'), (L.layer([(T('4 təklik', 44, ORANGE), 470, 450)]), 0.6, 'pop')], keep=True)
+L.scene('10 kubu birləşdiririk. Bu, 1 onluqdur.', [(L.layer(blocks(1, 0, 260, 250, 28)), 0.2, 'pop'), (L.layer([(T('1 onluq', 44, BLUE), 220, 450)]), 0.7, 'pop')])
+L.scene('Daha 4 kub var. Bunlar 4 təklikdir.', [(L.layer([(unit(28), 420 + (i % 2) * 44, 180 + (i // 2) * 44) for i in range(4)]), 0.2, 'pop'), (L.layer([(T('4 təklik', 44, ORANGE), 470, 450)]), 0.6, 'pop')], keep=True)
 L.scene('14 – 1 onluq və 4 təklikdir.', [(L.layer([(T('14', 120, RED), 650, 260)]), 0.2, 'pop')], keep=True)
 fin(L); L.save()
 
 # 27 Ədədlərin müqayisəsi (20-yə qədər)
 L = Lesson(B, 27)
 L.scene('15 – 1 onluq və 5 təklik. 12 – 1 onluq və 2 təklik.', [(L.layer(blocks(1, 5, 140, 230, 24) + [(T('15', 70, RED), 190, 420)]), 0.05, 'pop'), (L.layer(blocks(1, 2, 520, 230, 24) + [(T('12', 70, RED), 560, 420)]), 0.5, 'pop')])
-L.scene('Onluqlar bərabərdir. Təkliklərə baxırıq: 5 böyükdür 2-dən.', [(L.layer([(ring(110, 170, GREEN), 236, 215), (ring(110, 120, GREEN), 600, 190)]), 0.45, 'pop')], keep=True)
+L.scene('Onluqlar bərabərdir. Təkliklərə baxırıq: 5 böyükdür 2-dən.', [(L.layer([(ring(90, 120, GREEN), 212, 166), (ring(90, 60, GREEN), 592, 134)]), 0.45, 'pop')], keep=True)
 L.scene('Deməli, 15 ədədi 12-dən böyükdür.', [(L.layer(eq_items(['15', '>', '12'], 515, 72)), 0.3, 'pop')], keep=True)
 fin(L); L.save()
 
