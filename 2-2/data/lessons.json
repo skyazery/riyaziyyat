@@ -847,8 +847,8 @@
     ]
    },
    {
-    "say": "Uzun məsafəni isə metrlə ölçürük.",
-    "audio": "d523b5681d",
+    "say": "Uzun əşyaları isə metrlə ölçürük.",
+    "audio": "0ccc89c46d",
     "keep": true,
     "layers": [
      {
@@ -1194,8 +1194,8 @@
     ]
    },
    {
-    "say": "Sonra cizgiləri sayırıq: alma 7, banan 4.",
-    "audio": "ce733e7240",
+    "say": "Sonra cizgiləri sayırıq: alma 3, banan 2.",
+    "audio": "7ba8445eab",
     "keep": true,
     "layers": [
      {
